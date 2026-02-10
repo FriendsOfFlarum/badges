@@ -13,6 +13,8 @@ A [Flarum](https://flarum.org/) extension. A comprehensive badge and achievement
 - Badge list page, profile tab, rarity tiers, and user card integration
 - Built-in integration with many FoF and Flarum extensions
 
+![](https://i.ibb.co/cSw0DdJF/image.png)
+
 ## Installation
 
 Install manually with composer:

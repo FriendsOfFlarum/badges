@@ -1,0 +1,31 @@
+<?php
+
+/*
+ * This file is part of fof/badges.
+ *
+ * Copyright (c) FriendsOfFlarum.
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+namespace FoF\Badges\Tests\Unit;
+
+use FoF\Badges\Notification\BadgeEarnedBlueprint;
+use FoF\Badges\UserBadge;
+use PHPUnit\Framework\TestCase;
+
+class NotificationBlueprintTest extends TestCase
+{
+    /** @test */
+    public function test_get_type_returns_badge_earned(): void
+    {
+        $this->assertEquals('badgeEarned', BadgeEarnedBlueprint::getType());
+    }
+
+    /** @test */
+    public function test_get_subject_model_returns_user_badge_class(): void
+    {
+        $this->assertEquals(UserBadge::class, BadgeEarnedBlueprint::getSubjectModel());
+    }
+}

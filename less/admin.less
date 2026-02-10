@@ -1,0 +1,1701 @@
+// Admin Badges Extension Styles
+
+// Fallback color variables (in case theme doesn't define them)
+@success-color: #4caf50;
+@error-color: #e53935;
+@warning-color: #ff9800;
+
+// Variables
+@badge-preview-size: 48px;
+@badge-icon-size: 32px;
+@condition-gap: 10px;
+
+// ==========================================
+// Mixins
+// ==========================================
+
+.card-style() {
+  background: var(--body-bg, @body-bg);
+  border: 1px solid var(--control-bg, @control-bg);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+// ==========================================
+// Badges Page
+// ==========================================
+
+.BadgesPage {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  &-tabs {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    background: var(--control-bg, @control-bg);
+    padding: 4px;
+    border-radius: 8px;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+
+    // Direct child selector for specificity
+    > .Button {
+      background: transparent !important;
+      border: none !important;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted-color, @muted-color);
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 150ms ease;
+      white-space: nowrap;
+      box-shadow: none !important;
+
+      &:hover {
+        color: var(--text-color, @text-color);
+        background: rgba(255, 255, 255, 0.08) !important;
+      }
+
+      &.active {
+        background: var(--body-bg, @body-bg) !important;
+        color: var(--primary-color, @primary-color) !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+        font-weight: 700;
+      }
+
+      i {
+        font-size: 14px;
+        margin-right: 6px;
+      }
+
+      @media (max-width: 768px) {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+    }
+
+    .Button-badge {
+      margin-left: 6px;
+      padding: 2px 8px;
+      background: var(--primary-color, @primary-color);
+      color: #fff;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: bold;
+      line-height: 1.2;
+    }
+  }
+
+  &-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  &-content {
+    .card-style();
+    padding: 24px;
+    min-height: 400px;
+
+    @media (max-width: 768px) {
+      padding: 16px;
+    }
+  }
+
+  &-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted-color, @muted-color);
+
+    p {
+      margin: 0;
+      font-size: 16px;
+    }
+  }
+}
+
+// ==========================================
+// Empty State (scoped to BadgesPage)
+// ==========================================
+
+.BadgesPage .EmptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted-color, @muted-color);
+
+  &-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+
+  &-text {
+    font-size: 16px;
+    margin: 0 0 20px;
+  }
+}
+
+// ==========================================
+// CardList (scoped to BadgesPage)
+// ==========================================
+
+.BadgesPage .CardList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  // Desktop header
+  &-header {
+    display: grid;
+    grid-template-columns: var(--grid-cols);
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted-color, @muted-color);
+    align-items: center;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  &-item {
+    .card-style();
+    padding: 12px 16px;
+    display: grid;
+    grid-template-columns: var(--grid-cols);
+    gap: 8px;
+    align-items: center;
+    transition: all 180ms;
+
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
+      border-color: var(--primary-color, @primary-color);
+    }
+
+    &--inactive {
+      opacity: 0.6;
+    }
+
+    @media (max-width: 768px) {
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      gap: 12px;
+    }
+  }
+
+  &-item-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-color, @body-bg-light);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &--primary {
+      font-weight: 600;
+      color: var(--heading-color, @heading-color);
+    }
+
+    &--muted {
+      color: var(--muted-color, @muted-color);
+      font-size: 13px;
+    }
+
+    @media (max-width: 768px) {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--control-bg, @control-bg);
+      gap: 4px;
+
+      &:last-child {
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      &::before {
+        content: attr(data-label);
+        font-weight: 700;
+        font-size: 11px;
+        color: var(--muted-color, @muted-color);
+        text-transform: uppercase;
+        margin-right: 10px;
+        flex-shrink: 0;
+      }
+
+      // Order cell specific overrides (must be after general styles)
+      &.CardList-item-cell--order {
+        justify-content: flex-start;
+        width: auto;
+        padding-bottom: 0;
+        border-bottom: none;
+        margin-bottom: 8px;
+
+        &::before {
+          display: none;
+        }
+      }
+    }
+
+    &--order {
+      display: flex;
+      gap: 4px;
+
+      .Button {
+        padding: 4px 8px;
+        min-width: 28px;
+
+        &[disabled] {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  &-item-actions {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-end;
+
+    .Button {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-weight: 600;
+
+      &--danger {
+        background: rgba(231, 76, 60, 0.1);
+        color: #e74c3c;
+        border: none;
+        &:hover {
+          background: #e74c3c;
+          color: white;
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+      width: 100%;
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 2px solid var(--control-bg, @control-bg);
+      flex-wrap: wrap;
+
+      .Button {
+        flex: 1;
+        justify-content: center;
+        min-width: 80px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .Button {
+        flex: 1 1 100%;
+      }
+    }
+  }
+}
+
+// ==========================================
+// Status/Type Badges (scoped to BadgesPage)
+// ==========================================
+
+.BadgesPage .StatusBadge {
+  display: inline-flex;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+
+  &--active {
+    background: rgba(39, 174, 96, 0.15);
+    color: #27ae60;
+  }
+
+  &--inactive {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--muted-color, @muted-color);
+  }
+}
+
+.BadgesPage .TypeBadge {
+  display: inline-flex;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+
+  &--automatic {
+    background: rgba(52, 152, 219, 0.15);
+    color: #3498db;
+  }
+
+  &--manual {
+    background: rgba(149, 165, 166, 0.15);
+    color: #95a5a6;
+  }
+}
+
+.BadgesPage .CountBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  background: var(--primary-color, @primary-color);
+  color: #fff;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.BadgesPage .BadgeIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+// ==========================================
+// Badge List Grid
+// ==========================================
+
+.BadgesList {
+  .CardList {
+    --grid-cols: 60px 48px 1fr 90px 90px 90px 80px 200px;
+
+    @media (max-width: 1024px) {
+      --grid-cols: 60px 48px 1fr 80px 80px 80px 70px 150px;
+    }
+  }
+
+  .CardList-item-actions {
+    .Button {
+      white-space: nowrap;
+    }
+  }
+
+  &-group {
+    margin-bottom: 30px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &-groupTitle {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--muted-color, @muted-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--control-bg, @control-bg);
+  }
+
+  &-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+// ==========================================
+// Category List Grid
+// ==========================================
+
+.BadgesPage .CategoriesList {
+  .CardList {
+    --grid-cols: 60px 1fr 2fr 80px 80px 150px;
+
+    @media (max-width: 1024px) {
+      --grid-cols: 60px 1fr 1fr 60px 70px 120px;
+    }
+  }
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+// ==========================================
+// Legacy BadgeItem (kept for backwards compat)
+// ==========================================
+
+.BadgeItem {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: var(--control-bg, @control-bg);
+  border-radius: 8px;
+  transition: background 0.15s;
+
+  &:hover {
+    background: darken(@control-bg, 3%);
+  }
+
+  &--inactive {
+    opacity: 0.6;
+  }
+
+  &-icon {
+    width: @badge-preview-size;
+    height: @badge-preview-size;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-right: 15px;
+  }
+
+  &-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &-name {
+    font-weight: bold;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &-status {
+    font-size: 11px;
+    font-weight: normal;
+    padding: 2px 8px;
+    background: var(--muted-color, @muted-color);
+    color: #fff;
+    border-radius: 4px;
+  }
+
+  &-meta {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--muted-color, @muted-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  &-type {
+    &--automatic {
+      color: var(--success-color, #4caf50);
+    }
+    &--manual {
+      color: var(--muted-color, #999);
+    }
+  }
+
+  &-actions {
+    margin-left: 15px;
+    flex-shrink: 0;
+  }
+}
+
+// ==========================================
+// Legacy CategoryItem (kept for backwards compat)
+// ==========================================
+
+.CategoryItem {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: var(--control-bg, @control-bg);
+  border-radius: 8px;
+
+  &--disabled {
+    opacity: 0.6;
+  }
+
+  &-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &-name {
+    font-weight: bold;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &-status {
+    font-size: 11px;
+    font-weight: normal;
+    padding: 2px 8px;
+    background: var(--muted-color, @muted-color);
+    color: #fff;
+    border-radius: 4px;
+  }
+
+  &-meta {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--muted-color, @muted-color);
+  }
+
+  &-description {
+    margin-right: 15px;
+  }
+
+  &-actions {
+    margin-left: 15px;
+    flex-shrink: 0;
+  }
+}
+
+// ==========================================
+// Recalculation Tab
+// ==========================================
+
+.RecalculationTab {
+  &-section {
+    .card-style();
+    padding: 20px;
+    margin-bottom: 20px;
+
+    &-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--control-bg, @control-bg);
+
+      h4 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--heading-color, @heading-color);
+      }
+
+      i {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(77, 105, 142, 0.1);
+        border-radius: 6px;
+        color: var(--primary-color, @primary-color);
+        font-size: 12px;
+      }
+    }
+
+    .helpText {
+      font-size: 13px;
+      color: var(--muted-color, @muted-color);
+      margin-top: 8px;
+    }
+  }
+
+  &-form {
+    .card-style();
+    padding: 20px;
+    margin-bottom: 20px;
+
+    h3 {
+      margin: 0 0 15px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+  }
+
+  &-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background: fade(@primary-color, 10%);
+    border-radius: 6px;
+    color: var(--primary-color, @primary-color);
+    margin-bottom: 15px;
+
+    i {
+      font-size: 18px;
+    }
+  }
+
+  &-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  &-stat {
+    .card-style();
+    padding: 16px;
+    text-align: center;
+
+    &Label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted-color, @muted-color);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+    }
+
+    &Value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--heading-color, @heading-color);
+    }
+  }
+
+  &-jobs {
+    .card-style();
+    padding: 20px;
+    margin-bottom: 20px;
+
+    h3 {
+      margin: 0 0 15px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+  }
+
+  &-jobsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &-showMore {
+    margin-top: 10px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  &-jobsEmpty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted-color, @muted-color);
+  }
+
+  &-job {
+    padding: 15px;
+    background: var(--control-bg, @control-bg);
+    border-radius: 8px;
+    border-left: 4px solid var(--muted-color, @muted-color);
+
+    &--pending { border-left-color: var(--muted-color, @muted-color); }
+    &--running { border-left-color: var(--primary-color, @primary-color); }
+    &--completed { border-left-color: @success-color; }
+    &--failed { border-left-color: @error-color; }
+    &--cancelled { border-left-color: var(--muted-color, @muted-color); }
+  }
+
+  &-jobHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  &-jobStatus {
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  &-jobDate {
+    font-size: 12px;
+    color: var(--muted-color, @muted-color);
+  }
+
+  &-jobStats {
+    display: flex;
+    gap: 15px;
+    font-size: 13px;
+    color: var(--muted-color, @muted-color);
+    flex-wrap: wrap;
+  }
+
+  &-jobError {
+    margin-top: 10px;
+    padding: 8px;
+    background: fade(@error-color, 15%);
+    border-radius: 4px;
+    color: @error-color;
+    font-size: 12px;
+  }
+
+  &-jobActions {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid darken(@control-bg, 5%);
+  }
+
+  &-sync {
+    .card-style();
+    padding: 20px;
+    margin-bottom: 20px;
+
+    h3 {
+      margin: 0 0 15px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+  }
+}
+
+// ==========================================
+// Settings Tab
+// ==========================================
+
+.BadgesPage .SettingsTab {
+  &-section {
+    .card-style();
+    padding: 20px;
+    margin-bottom: 20px;
+
+    h3 {
+      margin: 0 0 20px;
+      font-size: 18px;
+      font-weight: 700;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--control-bg, @control-bg);
+    }
+
+    .Form-group {
+      margin-bottom: 20px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .FormControl {
+        max-width: 200px;
+      }
+    }
+  }
+}
+
+// ==========================================
+// Extension Integrations List
+// ==========================================
+
+.BadgesPage .IntegrationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+
+  &-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    background: var(--control-bg, @control-bg);
+    font-size: 14px;
+
+    &--enabled {
+      .IntegrationsList-status {
+        color: @success-color;
+      }
+    }
+
+    &--disabled {
+      opacity: 0.6;
+
+      .IntegrationsList-status {
+        color: @muted-color;
+      }
+    }
+  }
+
+  &-status {
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  &-name {
+    font-weight: 600;
+    min-width: 140px;
+  }
+
+  &-metrics {
+    color: @muted-color;
+    font-size: 13px;
+  }
+}
+
+// ==========================================
+// Recalculation Progress Bar
+// ==========================================
+
+.RecalculationProgress {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: var(--control-bg, @control-bg);
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-color, @primary-color);
+
+  &--running {
+    border-left-color: var(--primary-color, @primary-color);
+  }
+
+  &--completed {
+    border-left-color: @success-color;
+    background: fade(@success-color, 10%);
+  }
+
+  &--failed {
+    border-left-color: @error-color;
+    background: fade(@error-color, 10%);
+  }
+
+  &--cancelled {
+    border-left-color: var(--muted-color, @muted-color);
+    background: fade(@muted-color, 10%);
+  }
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  &-status {
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    i {
+      font-size: 16px;
+    }
+  }
+
+  &-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &-bar {
+    height: 8px;
+    background: darken(@control-bg, 5%);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  &-barFill {
+    height: 100%;
+    background: linear-gradient(90deg, @primary-color, lighten(@primary-color, 10%));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+
+  &--completed &-barFill {
+    background: linear-gradient(90deg, @success-color, lighten(@success-color, 10%));
+  }
+
+  &--failed &-barFill {
+    background: linear-gradient(90deg, @error-color, lighten(@error-color, 10%));
+  }
+
+  &-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--muted-color, @muted-color);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &-error {
+    margin-top: 10px;
+    padding: 10px;
+    background: fade(@error-color, 15%);
+    border-radius: 4px;
+    color: @error-color;
+    font-size: 13px;
+  }
+
+  .Button--small {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+}
+
+// ==========================================
+// Badge Edit Modal
+// ==========================================
+
+.BadgeEditModal {
+  .Modal-body {
+    padding: 20px;
+  }
+
+  &-appearance {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    background: var(--control-bg, @control-bg);
+    border-radius: 8px;
+  }
+
+  &-preview {
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  &-colors {
+    display: flex;
+    gap: 15px;
+
+    @media (max-width: 500px) {
+      flex-direction: column;
+    }
+  }
+
+  &-colorInput {
+    flex: 1;
+    min-width: 0;
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+  }
+
+  &-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    background: var(--control-bg, @control-bg);
+    border-radius: 8px;
+  }
+
+  &-groupSelect {
+    margin-top: 10px;
+  }
+
+  &-status {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+.BadgeEditModal .BadgePreview {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 16px;
+
+  i {
+    font-size: 18px;
+  }
+}
+
+// ==========================================
+// Trigger Builder
+// ==========================================
+
+.TriggerBuilder {
+  padding: 15px;
+  background: var(--control-bg, @control-bg);
+  border-radius: 8px;
+
+  &-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background: fade(@primary-color, 10%);
+    border-radius: 6px;
+    color: var(--primary-color, @primary-color);
+    margin-bottom: 15px;
+
+    i {
+      font-size: 18px;
+    }
+  }
+
+  &-conditions {
+    display: flex;
+    flex-direction: column;
+    gap: @condition-gap;
+    margin-bottom: 15px;
+  }
+
+  &-condition {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: var(--body-bg, @body-bg);
+    border-radius: 6px;
+
+    .Select {
+      min-width: 150px;
+    }
+
+    .FormControl {
+      flex: 1;
+    }
+  }
+
+  &-value {
+    max-width: 100px;
+  }
+
+  &-logic {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid darken(@control-bg, 5%);
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .ButtonGroup {
+      margin-bottom: 10px;
+    }
+  }
+
+  &-dateRange {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid darken(@control-bg, 5%);
+  }
+
+  &-dateInputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  &-tagFilter {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid darken(@control-bg, 5%);
+  }
+}
+
+// ==========================================
+// Icon Picker
+// ==========================================
+
+.BadgeEditModal .IconPicker {
+  &-selected {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &-preview {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--control-bg, @control-bg);
+    border-radius: 6px;
+    font-size: 20px;
+  }
+
+  &-input {
+    flex: 1;
+  }
+
+  &-dropdown {
+    margin-top: 10px;
+    padding: 15px;
+    background: var(--body-bg, @body-bg);
+    border: 1px solid var(--control-bg, @control-bg);
+    border-radius: 8px;
+  }
+
+  &-hint {
+    font-size: 12px;
+    color: var(--muted-color, @muted-color);
+    margin-bottom: 10px;
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+    gap: 5px;
+  }
+
+  &-item {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--control-bg, @control-bg);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.15s;
+
+    &:hover {
+      background: darken(@control-bg, 5%);
+      transform: scale(1.1);
+    }
+
+    &.active {
+      background: var(--primary-color, @primary-color);
+      color: #fff;
+    }
+  }
+}
+
+// ==========================================
+// Manual Assign Modal
+// ==========================================
+
+.ManualAssignModal {
+  &--tabbed {
+    .Modal-content {
+      min-width: 500px;
+      max-width: 600px;
+    }
+  }
+
+  &-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--control-bg, @control-bg);
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  &-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted-color, @muted-color);
+    cursor: pointer;
+    transition: all 150ms ease;
+
+    &:hover {
+      color: var(--text-color, @text-color);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    &.active {
+      background: var(--body-bg, @body-bg);
+      color: var(--primary-color, @primary-color);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    }
+
+    i {
+      font-size: 14px;
+    }
+  }
+
+  &-tabContent {
+    min-height: 300px;
+  }
+
+  &-badgePreview {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  &-search {
+    position: relative;
+  }
+
+  &-searchInput {
+    position: relative;
+
+    i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted-color, @muted-color);
+      font-size: 14px;
+    }
+
+    input {
+      padding-left: 36px;
+    }
+  }
+
+  &-searchSpinner {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--body-bg, @body-bg);
+    border: 1px solid var(--control-bg, @control-bg);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-height: 250px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 5px;
+    margin: 5px 0 0;
+  }
+
+  &-resultItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--control-bg, @control-bg);
+    }
+
+    .Avatar {
+      width: 32px;
+      height: 32px;
+    }
+
+    &-info {
+      flex: 1;
+
+      .displayName {
+        display: block;
+        font-weight: bold;
+      }
+
+      .username {
+        font-size: 12px;
+        color: var(--muted-color, @muted-color);
+      }
+    }
+  }
+
+  &-noResults {
+    padding: 20px;
+    text-align: center;
+    color: var(--muted-color, @muted-color);
+  }
+
+  &-selectedUser {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: var(--control-bg, @control-bg);
+    border-radius: 6px;
+
+    .Avatar {
+      width: 40px;
+      height: 40px;
+    }
+
+    &-info {
+      flex: 1;
+
+      .displayName {
+        display: block;
+        font-weight: bold;
+      }
+
+      .username {
+        font-size: 12px;
+        color: var(--muted-color, @muted-color);
+      }
+    }
+  }
+
+  // Holders Tab
+  &-holders {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  &-holdersSearch {
+    .ManualAssignModal-searchInput {
+      i {
+        pointer-events: none;
+      }
+    }
+  }
+
+  &-holdersLoading {
+    padding: 40px;
+    text-align: center;
+  }
+
+  &-noHolders {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--muted-color, @muted-color);
+    font-size: 14px;
+  }
+
+  &-holdersList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 350px;
+    overflow-y: auto;
+  }
+
+  &-holderItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px;
+    background: var(--control-bg, @control-bg);
+    border-radius: 8px;
+
+    &-user {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+
+      .Avatar {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+      }
+    }
+
+    &-info {
+      flex: 1;
+      min-width: 0;
+
+      .displayName {
+        display: block;
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 2px;
+      }
+
+      .username {
+        display: block;
+        font-size: 12px;
+        color: var(--muted-color, @muted-color);
+        margin-bottom: 4px;
+      }
+    }
+
+    &-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--muted-color, @muted-color);
+
+      span {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      i {
+        font-size: 10px;
+      }
+    }
+
+    &-reason {
+      margin-top: 6px;
+      padding: 6px 10px;
+      background: var(--body-bg, @body-bg);
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--muted-color, @muted-color);
+      font-style: italic;
+    }
+  }
+
+  &-holdersPagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px solid var(--control-bg, @control-bg);
+
+    .Button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+
+      &[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  &-paginationInfo {
+    font-size: 13px;
+    color: var(--muted-color, @muted-color);
+  }
+}
+
+// ==========================================
+// Category Edit Modal
+// ==========================================
+
+.CategoryEditModal {
+  .Modal-body {
+    padding: 20px;
+  }
+}
+
+// ==========================================
+// Help Text
+// ==========================================
+
+.helpText {
+  font-size: 12px;
+  color: var(--muted-color, @muted-color);
+  margin-top: 5px;
+}
+
+// ==========================================
+// Recalculation Jobs Modal
+// ==========================================
+
+.RecalculationJobsModal {
+  &-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted-color, @muted-color);
+  }
+
+  &-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+.RecalculationJob {
+  padding: 15px;
+  background: var(--control-bg, @control-bg);
+  border-radius: 8px;
+  border-left: 4px solid var(--muted-color, @muted-color);
+
+  &--pending {
+    border-left-color: var(--muted-color, @muted-color);
+  }
+
+  &--running {
+    border-left-color: var(--primary-color, @primary-color);
+  }
+
+  &--completed {
+    border-left-color: @success-color;
+  }
+
+  &--failed {
+    border-left-color: @error-color;
+  }
+
+  &--cancelled {
+    border-left-color: var(--muted-color, @muted-color);
+  }
+
+  &--stuck {
+    background: fade(@error-color, 10%);
+  }
+
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  &-id {
+    font-weight: bold;
+    color: var(--muted-color, @muted-color);
+  }
+
+  &-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+
+    i {
+      font-size: 12px;
+    }
+
+    &--pending { color: var(--muted-color, @muted-color); }
+    &--running { color: var(--primary-color, @primary-color); }
+    &--completed { color: @success-color; }
+    &--failed { color: @error-color; }
+    &--cancelled { color: var(--muted-color, @muted-color); }
+  }
+
+  &-stuckBadge {
+    margin-left: 6px;
+    padding: 2px 6px;
+    background: @error-color;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  &-date {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--muted-color, @muted-color);
+  }
+
+  &-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  &-progressBar {
+    flex: 1;
+    height: 6px;
+    background: darken(@control-bg, 5%);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  &-progressFill {
+    height: 100%;
+    background: var(--primary-color, @primary-color);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  &--completed &-progressFill {
+    background: @success-color;
+  }
+
+  &--failed &-progressFill {
+    background: @error-color;
+  }
+
+  &-progressText {
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 50px;
+    text-align: right;
+  }
+
+  &-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted-color, @muted-color);
+    margin-bottom: 8px;
+  }
+
+  &-error {
+    padding: 8px;
+    background: fade(@error-color, 15%);
+    border-radius: 4px;
+    color: @error-color;
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  &-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 8px;
+    border-top: 1px solid darken(@control-bg, 5%);
+  }
+}

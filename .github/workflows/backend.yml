@@ -1,0 +1,21 @@
+name: FoF Badges PHP
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  run:
+    uses: flarum/framework/.github/workflows/REUSABLE_backend.yml@1.x
+    with:
+      enable_backend_testing: true
+      enable_phpstan: false
+
+      backend_directory: .
+
+      php_versions: '["8.1", "8.2", "8.3"]'
+      db_versions: '["mysql:5.7", "mariadb"]'
+      php_extensions: ''

@@ -1,0 +1,755 @@
+// Forum Badges Extension Styles
+
+// Variables
+@badge-card-width: 280px;
+@badge-icon-large: 64px;
+@badge-icon-xlarge: 96px;
+
+// ==========================================
+// Badges Page
+// ==========================================
+
+.BadgesPage {
+  &-empty {
+    text-align: center;
+    padding: 60px 20px;
+
+    &-icon {
+      font-size: 64px;
+      color: @muted-more-color;
+      margin-bottom: 20px;
+    }
+
+    p {
+      color: @muted-color;
+      font-size: 16px;
+      margin: 0;
+    }
+  }
+}
+
+// ==========================================
+// Badges List
+// ==========================================
+
+.BadgesList {
+  &-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+
+    .Button .icon {
+      margin-right: 6px;
+    }
+  }
+
+  &-category {
+    margin-bottom: 40px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &--uncategorized {
+      margin-top: 40px;
+      padding-top: 40px;
+      border-top: 1px solid @control-bg;
+    }
+  }
+
+  &-categoryTitle {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 0 10px;
+  }
+
+  &-categoryDescription {
+    color: @muted-color;
+    margin: 0 0 20px;
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(@badge-card-width, 1fr));
+    gap: 20px;
+  }
+}
+
+// ==========================================
+// Badge Card
+// ==========================================
+
+.BadgeCard {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  padding: 20px;
+  background: @control-bg;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 100%;
+  box-sizing: border-box;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  &:focus {
+    outline: 2px solid @primary-color;
+    outline-offset: 2px;
+  }
+
+  &-indicators {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    display: flex;
+    gap: 4px;
+    z-index: 10;
+  }
+
+  &-indicator {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+
+    &--favorite {
+      background: rgba(241, 196, 15, 0.9);
+      color: #fff;
+    }
+
+    &--hidden {
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+    }
+
+    &--new {
+      background: rgba(231, 76, 60, 0.9);
+      color: #fff;
+    }
+
+    &--manual {
+      background: rgba(155, 89, 182, 0.9);
+      color: #fff;
+    }
+
+    &--owned {
+      background: rgba(39, 174, 96, 0.9);
+      color: #fff;
+    }
+  }
+
+  &-icon {
+    width: @badge-icon-large;
+    height: @badge-icon-large;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-right: 15px;
+  }
+
+  &-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+
+  &-description {
+    font-size: 13px;
+    color: @muted-color;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    font-size: 12px;
+    color: @muted-color;
+    margin-top: auto;
+
+    i {
+      margin-right: 4px;
+      flex-shrink: 0;
+    }
+
+    > span {
+      white-space: nowrap;
+    }
+  }
+
+  &-earnedAt {
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    i {
+      margin-right: 4px;
+    }
+  }
+}
+
+// ==========================================
+// Badge Modal
+// ==========================================
+
+.BadgeModal {
+  .Modal-header {
+    padding: 20px;
+    border-bottom: 1px solid @control-bg;
+  }
+
+  &-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 25px;
+  }
+
+  &-icon {
+    width: @badge-icon-xlarge;
+    height: @badge-icon-xlarge;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    flex-shrink: 0;
+  }
+
+  &-info {
+    flex: 1;
+  }
+
+  &-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 0 10px;
+  }
+
+  &-description {
+    color: @muted-color;
+    margin: 0 0 10px;
+    line-height: 1.5;
+  }
+
+  &-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: @muted-color;
+    padding: 4px 12px;
+    background: @control-bg;
+    border-radius: 20px;
+
+    i {
+      font-size: 11px;
+    }
+  }
+
+  &-stats {
+    margin-bottom: 25px;
+  }
+
+  &-rarity {
+    &Info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    &Tier {
+      font-weight: bold;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      i {
+        font-size: 14px;
+      }
+    }
+
+    &Explain {
+      font-size: 13px;
+      color: @muted-color;
+      margin: 0;
+    }
+  }
+
+  &-earnedCount {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: @muted-color;
+    font-size: 14px;
+  }
+
+  &-users {
+    border-top: 1px solid @control-bg;
+    padding-top: 20px;
+  }
+
+  &-usersTitle {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    i {
+      color: @primary-color;
+    }
+  }
+
+  &-loading {
+    padding: 30px;
+    text-align: center;
+  }
+
+  &-noUsers {
+    text-align: center;
+    padding: 30px;
+    color: @muted-color;
+
+    i {
+      font-size: 32px;
+      margin-bottom: 10px;
+      display: block;
+    }
+  }
+
+  &-userList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  &-userItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: 6px;
+
+    &:hover {
+      background: @control-bg;
+    }
+  }
+
+  &-userLink {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+
+    .Avatar {
+      width: 32px;
+      height: 32px;
+    }
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  &-userName {
+    font-weight: 500;
+  }
+
+  &-earnedDate {
+    font-size: 12px;
+    color: @muted-color;
+  }
+
+  &-moreUsers {
+    text-align: center;
+    padding: 15px;
+    color: @muted-color;
+    font-size: 13px;
+    border-top: 1px solid @control-bg;
+    margin-top: 10px;
+  }
+}
+
+// ==========================================
+// User Badges Page
+// ==========================================
+
+.UserBadgesPage {
+  &--loading {
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  &-emptyState {
+    text-align: center;
+    padding: 60px 20px;
+    color: @muted-color;
+
+    p {
+      margin: 0;
+      font-size: 15px;
+    }
+  }
+
+  &-emptyIcon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: @muted-more-color;
+  }
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0;
+    }
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  &-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-badgeWrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  &-meta {
+    font-size: 12px;
+    color: @muted-color;
+    padding: 0 5px;
+  }
+
+  &-grantedBy {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+
+  &-reason {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-style: italic;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid @control-bg;
+
+    i {
+      margin-top: 2px;
+      font-size: 10px;
+    }
+  }
+
+  &-item {
+    position: relative;
+  }
+
+  &-actions {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+
+    .Button {
+      padding: 4px 8px;
+      min-width: auto;
+    }
+
+    .Dropdown-menu {
+      z-index: 1000;
+    }
+
+    // Show when dropdown is open
+    &.open {
+      opacity: 1;
+    }
+  }
+
+  // Show actions on hover (desktop only)
+  &-badgeWrapper:hover + &-actions,
+  &-item:hover &-actions,
+  &-actions:hover {
+    opacity: 1;
+  }
+
+  // Always visible on mobile/touch devices
+  @media (max-width: 767px) {
+    &-actions {
+      opacity: 1;
+    }
+  }
+
+  &-moderatorActions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  &-loadMore {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid @control-bg;
+  }
+}
+
+// ==========================================
+// Assign Badge Modal (Forum)
+// ==========================================
+
+.AssignBadgeModal {
+  &-loading {
+    padding: 40px;
+    text-align: center;
+  }
+
+  &-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: @muted-color;
+
+    i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      display: block;
+      color: @muted-more-color;
+    }
+  }
+
+  &-buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .helpText {
+    font-size: 12px;
+    color: @muted-color;
+    margin-top: 5px;
+  }
+}
+
+// ==========================================
+// Badge Notification
+// ==========================================
+
+.BadgeNotification {
+  &-content {
+    display: inline;
+  }
+
+  &-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+    font-size: inherit;
+    line-height: inherit;
+    vertical-align: baseline;
+
+    i {
+      font-size: 0.85em;
+    }
+
+    span {
+      font-size: inherit;
+    }
+  }
+}
+
+// ==========================================
+// Primary Badge (next to username)
+// ==========================================
+
+.PrimaryBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  margin-left: 6px;
+
+  &:hover {
+    text-decoration: none;
+    opacity: 0.8;
+  }
+
+  i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: #fff;
+    font-size: 9px;
+  }
+
+  &-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted-color);
+  }
+}
+
+// ==========================================
+// UserCard Badges (Profile Page)
+// ==========================================
+
+.UserCardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 12px;
+  margin-top: 6px;
+
+  &:hover {
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  i {
+    font-size: 11px;
+  }
+
+  &-name {
+    font-weight: 500;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &-more {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 5px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+  }
+}
+
+// ==========================================
+// Post Footer Badges
+// ==========================================
+
+.PostBadges {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+    opacity: 0.8;
+  }
+
+  &-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--muted-more-color);
+    color: #fff;
+    font-size: 10px;
+  }
+
+  &-more {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted-color);
+    margin-left: 2px;
+  }
+}
+
+// ==========================================
+// Responsive
+// ==========================================
+
+@media (max-width: 768px) {
+  .BadgesList-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .BadgeCard {
+    &-icon {
+      width: 48px;
+      height: 48px;
+      font-size: 22px;
+    }
+  }
+
+  .BadgeModal {
+    &-header {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    &-icon {
+      width: 72px;
+      height: 72px;
+      font-size: 32px;
+    }
+  }
+
+  .UserBadgesPage-grid {
+    grid-template-columns: 1fr;
+  }
+}

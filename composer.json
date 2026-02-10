@@ -1,0 +1,115 @@
+{
+    "name": "fof/badges",
+    "description": "A comprehensive badge and achievement system for Flarum with conditional triggers, automatic awarding, and manual assignment.",
+    "keywords": [
+        "flarum",
+        "badges",
+        "achievements",
+        "gamification",
+        "awards"
+    ],
+    "type": "flarum-extension",
+    "license": "MIT",
+    "homepage": "https://friendsofflarum.org",
+    "funding": [
+        {
+            "type": "website",
+            "url": "https://opencollective.com/fof/donate"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/FriendsOfFlarum/badges/issues",
+        "source": "https://github.com/FriendsOfFlarum/badges",
+        "forum": "https://discuss.flarum.org/d/ID"
+    },
+    "require": {
+        "php": "^8.1",
+        "flarum/core": "^1.8.0"
+    },
+    "replace": {
+        "huseyinfiliz/badges": "*"
+    },
+    "suggest": {
+        "flarum/likes": "Required for likes received/given metrics",
+        "flarum/tags": "Required for posts in tag metric",
+        "flarum/nicknames": "Required for has nickname metric",
+        "fof/user-bio": "Required for has bio metric",
+        "fof/best-answer": "Required for best answers received metric",
+        "fof/upload": "Required for files uploaded metric",
+        "fof/polls": "Required for polls created/voted metrics",
+        "fof/byobu": "Required for private discussions created metric",
+        "fof/reactions": "Required for reactions received/given metrics",
+        "fof/gamification": "Required for upvotes/downvotes received/given metrics"
+    },
+    "authors": [
+        {
+            "name": "Hüseyin Filiz",
+            "email": "mysuperuser01@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "FoF Team",
+            "email": "team@friendsofflarum.org",
+            "role": "Maintainer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "FoF\\Badges\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FoF\\Badges\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "FoF Badges",
+            "category": "feature",
+            "icon": {
+                "name": "fas fa-award",
+                "color": "#fff",
+                "backgroundColor": "#e74c3c"
+            }
+        },
+        "flarum-cli": {
+            "modules": {
+                "admin": true,
+                "forum": true,
+                "js": true,
+                "jsCommon": true,
+                "css": true,
+                "locale": true,
+                "gitConf": true,
+                "githubActions": true,
+                "prettier": true,
+                "typescript": true,
+                "bundlewatch": false,
+                "backendTesting": true,
+                "editorConfig": true,
+                "styleci": true
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "test": [
+            "@test:unit",
+            "@test:integration"
+        ],
+        "test:unit": "phpunit -c tests/phpunit.unit.xml",
+        "test:integration": "phpunit -c tests/phpunit.integration.xml",
+        "test:setup": "@php tests/integration/setup.php"
+    },
+    "scripts-descriptions": {
+        "test": "Runs all tests.",
+        "test:unit": "Runs all unit tests.",
+        "test:integration": "Runs all integration tests.",
+        "test:setup": "Sets up a database for use with integration tests. Execute this only once."
+    },
+    "require-dev": {
+        "flarum/testing": "^1.0.0"
+    }
+}

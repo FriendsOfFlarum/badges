@@ -41,6 +41,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class BadgeRecalculationProgress extends AbstractModel
 {
     protected $table = 'fof_badge_recalc';
+    public $timestamps = true;
 
     protected $casts = [
         'no_revoke' => 'boolean',

@@ -1,14 +1,9 @@
 import app from 'flarum/admin/app';
-import { Badge, BadgeCategory, UserBadge } from '../common';
 import BadgesPage from './components/BadgesPage';
 
-app.initializers.add('fof-badges', () => {
-  // Register models
-  app.store.models['badges'] = Badge;
-  app.store.models['badge-categories'] = BadgeCategory;
-  app.store.models['user-badges'] = UserBadge;
+export { default as extend } from './extend';
 
-  // Register admin page
+app.initializers.add('fof-badges', () => {
   app.extensionData
     .for('fof-badges')
     .registerPage(BadgesPage)

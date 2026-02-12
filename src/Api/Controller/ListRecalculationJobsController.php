@@ -62,8 +62,8 @@ class ListRecalculationJobsController implements RequestHandlerInterface
             'percentage' => $job->getProgressPercentage(),
             'startedAt' => $job->started_at?->toIso8601String(),
             'completedAt' => $job->completed_at?->toIso8601String(),
-            'createdAt' => $job->created_at?->toIso8601String(),
-            'updatedAt' => $job->updated_at?->toIso8601String(),
+            'createdAt' => $job->created_at->toIso8601String(),
+            'updatedAt' => $job->updated_at->toIso8601String(),
             'errorMessage' => $job->error_message,
         ];
     }
@@ -74,12 +74,6 @@ class ListRecalculationJobsController implements RequestHandlerInterface
             return false;
         }
 
-        $lastUpdate = $job->updated_at ?? $job->created_at;
-
-        if (!$lastUpdate) {
-            return false;
-        }
-
-        return $lastUpdate->diffInMinutes(Carbon::now()) >= $this->stuckThresholdMinutes;
+        return $job->updated_at->diffInMinutes(Carbon::now()) >= $this->stuckThresholdMinutes;
     }
 }

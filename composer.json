@@ -71,7 +71,19 @@
                 "name": "fas fa-award",
                 "color": "#fff",
                 "backgroundColor": "#e74c3c"
-            }
+            },
+            "optional_dependencies": [
+                "flarum/likes",
+                "flarum/tags",
+                "flarum/nicknames",
+                "fof/user-bio",
+                "fof/best-answer",
+                "fof/upload",
+                "fof/polls",
+                "fof/byobu",
+                "fof/reactions",
+                "fof/gamification"
+            ]
         },
         "flarum-cli": {
             "modules": {
@@ -101,15 +113,28 @@
         ],
         "test:unit": "phpunit -c tests/phpunit.unit.xml",
         "test:integration": "phpunit -c tests/phpunit.integration.xml",
-        "test:setup": "@php tests/integration/setup.php"
+        "test:setup": "@php tests/integration/setup.php",
+        "analyse:phpstan": "phpstan analyse"
     },
     "scripts-descriptions": {
         "test": "Runs all tests.",
         "test:unit": "Runs all unit tests.",
         "test:integration": "Runs all integration tests.",
-        "test:setup": "Sets up a database for use with integration tests. Execute this only once."
+        "test:setup": "Sets up a database for use with integration tests. Execute this only once.",
+        "analyse:phpstan": "Run PHPStan static analysis."
     },
     "require-dev": {
-        "flarum/testing": "^1.0.0"
+        "flarum/testing": "^1.0.0",
+        "flarum/phpstan": "^1.8",
+        "flarum/likes": "*",
+        "flarum/tags": "*",
+        "flarum/nicknames": "*",
+        "fof/user-bio": "*",
+        "fof/best-answer": "*",
+        "fof/upload": "*",
+        "fof/polls": "*",
+        "fof/byobu": "*",
+        "fof/reactions": "*",
+        "fof/gamification": "*"
     }
 }

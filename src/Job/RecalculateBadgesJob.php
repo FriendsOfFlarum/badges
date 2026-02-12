@@ -102,7 +102,7 @@ class RecalculateBadgesJob extends AbstractJob
      */
     protected function dispatchSingleBadgeChunks(
         BadgeRecalculationProgress $progress,
-        $badge,
+        \FoF\Badges\Badge $badge,
         BadgeRecalculationOptimizer $optimizer,
         Queue $queue,
         int $chunkSize,
@@ -161,7 +161,7 @@ class RecalculateBadgesJob extends AbstractJob
      */
     protected function dispatchGroupedBadgeChunks(
         BadgeRecalculationProgress $progress,
-        $badges,
+        \Illuminate\Support\Collection $badges,
         BadgeRecalculationOptimizer $optimizer,
         Queue $queue,
         int $chunkSize,

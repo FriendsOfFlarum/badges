@@ -34,7 +34,7 @@ interface MetricInterface
      *
      * Returns a map of Event class => callable that extracts the User from the event.
      *
-     * @return array<class-string, callable> e.g., [Posted::class => fn($event) => $event->actor]
+     * @return array<string, callable> e.g., [Posted::class => fn($event) => $event->actor]
      */
     public function getEventTriggers(): array;
 

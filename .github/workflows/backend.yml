@@ -12,10 +12,10 @@ jobs:
     uses: flarum/framework/.github/workflows/REUSABLE_backend.yml@1.x
     with:
       enable_backend_testing: true
-      enable_phpstan: false
+      enable_phpstan: true
 
       backend_directory: .
 
-      php_versions: '["8.1", "8.2", "8.3"]'
+      php_versions: '["8.1", "8.2", "8.3", "8.4", "8.5"]'
       db_versions: '["mysql:5.7", "mariadb"]'
       php_extensions: ''

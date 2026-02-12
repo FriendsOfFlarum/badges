@@ -36,7 +36,7 @@ class HasBioMetric implements MetricInterface
 
     public function getValue(User $user, array $config = []): int
     {
-        return ! empty($user->bio) ? 1 : 0;
+        return ! empty($user->getAttribute('bio')) ? 1 : 0;
     }
 
     public function isBoolean(): bool

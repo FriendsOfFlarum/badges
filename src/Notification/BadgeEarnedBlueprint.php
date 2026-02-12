@@ -49,11 +49,11 @@ class BadgeEarnedBlueprint implements BlueprintInterface
         $badge = $this->userBadge->badge;
 
         return [
-            'badgeId' => $badge ? $badge->id : null,
-            'badgeName' => $badge ? $badge->name : null,
-            'badgeIcon' => $badge ? $badge->icon : null,
-            'badgeIconColor' => $badge ? $badge->icon_color : null,
-            'badgeBackgroundColor' => $badge ? $badge->background_color : null,
+            'badgeId' => $badge->id,
+            'badgeName' => $badge->name,
+            'badgeIcon' => $badge->icon,
+            'badgeIconColor' => $badge->icon_color,
+            'badgeBackgroundColor' => $badge->background_color,
         ];
     }
 

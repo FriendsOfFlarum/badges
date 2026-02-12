@@ -41,7 +41,7 @@ class UserBadgePolicy extends AbstractPolicy
 
         // Check if the badge itself is visible
         $badge = $userBadge->badge;
-        if ($badge && !$badge->is_visible && !$actor->hasPermission('badges.moderate')) {
+        if (!$badge->is_visible && !$actor->hasPermission('badges.moderate')) {
             return $this->deny();
         }
 

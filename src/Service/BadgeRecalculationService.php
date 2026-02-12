@@ -109,10 +109,10 @@ class BadgeRecalculationService
 
         // If map wasn't provided, check directly
         if (empty($userBadgesMap)) {
-            $hasBadge = $user->badges()->where('badge_id', $badge->id)->exists();
-            if ($hasBadge) {
-                $userBadge = $user->badges()->where('badge_id', $badge->id)->first();
-            }
+            $userBadge = UserBadge::where('user_id', $user->id)
+                ->where('badge_id', $badge->id)
+                ->first();
+            $hasBadge = $userBadge !== null;
         }
 
         // For manual badges, only re-apply actions if requested and user has the badge
@@ -131,7 +131,7 @@ class BadgeRecalculationService
             // Award returns [userBadge, wasCreated] to handle race conditions
             [$awardedBadge, $wasCreated] = $this->awarder->award($user, $badge, UserBadge::GRANTED_BY_SYSTEM);
             return $wasCreated ? 'awarded' : 'skipped';
-        } elseif ($qualifies && $hasBadge && $reapplyActions) {
+        } elseif ($qualifies && $reapplyActions) {
             // Re-apply actions for existing badge holders
             $this->awarder->executeActionsOnly($user, $badge);
             return 'reapplied';

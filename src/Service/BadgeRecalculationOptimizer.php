@@ -669,7 +669,7 @@ class BadgeRecalculationOptimizer
     /**
      * Get summary statistics for grouped badges.
      */
-    public function getGroupedOptimizationStats($badges, bool $noRevoke): array
+    public function getGroupedOptimizationStats(\Illuminate\Support\Collection $badges, bool $noRevoke): array
     {
         $groups = $this->groupBadgesByOptimizationStrategy($badges, $noRevoke);
         $totalUsers = User::count();

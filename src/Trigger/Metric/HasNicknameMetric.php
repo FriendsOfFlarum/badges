@@ -36,7 +36,7 @@ class HasNicknameMetric implements MetricInterface
     public function getValue(User $user, array $config = []): int
     {
         // flarum/nicknames stores nickname in the 'nickname' attribute
-        return ! empty($user->nickname) ? 1 : 0;
+        return ! empty($user->getAttribute('nickname')) ? 1 : 0;
     }
 
     public function isBoolean(): bool

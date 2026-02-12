@@ -114,14 +114,10 @@ class BadgeAwarder
         $userBadge->delete();
 
         // Decrement earned count
-        if ($badge) {
-            $badge->decrementEarnedCount();
-        }
+        $badge->decrementEarnedCount();
 
         // Dispatch event
-        if ($user && $badge) {
-            $this->events->dispatch(new BadgeRevoked($user, $badge, 'revoked'));
-        }
+        $this->events->dispatch(new BadgeRevoked($user, $badge, 'revoked'));
     }
 
     /**

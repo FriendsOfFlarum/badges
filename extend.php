@@ -162,7 +162,7 @@ return [
             // otherwise query and cache on the model to avoid re-querying when
             // tobscure/json-api re-invokes getAttributes() for merged Resources.
             if ($user->relationLoaded('userBadges')) {
-                $userBadges = $user->userBadges;
+                $userBadges = $user->getRelation('userBadges');
 
                 // Ensure nested badge relationship is loaded
                 if ($userBadges->isNotEmpty() && ! $userBadges->first()->relationLoaded('badge')) {
@@ -228,6 +228,38 @@ return [
         ->listen(\Flarum\Discussion\Event\Started::class, Listener\EvaluateBadges::class)
         ->listen(\Flarum\User\Event\AvatarChanged::class, Listener\EvaluateBadges::class)
         ->listen(\Flarum\User\Event\LoggedIn::class, Listener\EvaluateBadges::class),
+
+    // Conditional event listeners for optional extensions
+    (new Extend\Conditional())
+        ->whenExtensionEnabled('flarum-likes', fn () => [
+            (new Extend\Event())
+                ->listen(\Flarum\Likes\Event\PostWasLiked::class, Listener\EvaluateBadges::class),
+        ])
+        ->whenExtensionEnabled('fof-best-answer', fn () => [
+            (new Extend\Event())
+                ->listen(\FoF\BestAnswer\Events\BestAnswerSet::class, Listener\EvaluateBadges::class),
+        ])
+        ->whenExtensionEnabled('fof-upload', fn () => [
+            (new Extend\Event())
+                ->listen(\FoF\Upload\Events\File\WasSaved::class, Listener\EvaluateBadges::class),
+        ])
+        ->whenExtensionEnabled('fof-polls', fn () => [
+            (new Extend\Event())
+                ->listen(\FoF\Polls\Events\PollWasCreated::class, Listener\EvaluateBadges::class)
+                ->listen(\FoF\Polls\Events\PollVotesChanged::class, Listener\EvaluateBadges::class),
+        ])
+        ->whenExtensionEnabled('fof-byobu', fn () => [
+            (new Extend\Event())
+                ->listen(\FoF\Byobu\Events\Created::class, Listener\EvaluateBadges::class),
+        ])
+        ->whenExtensionEnabled('fof-reactions', fn () => [
+            (new Extend\Event())
+                ->listen(\FoF\Reactions\Event\PostWasReacted::class, Listener\EvaluateBadges::class),
+        ])
+        ->whenExtensionEnabled('fof-gamification', fn () => [
+            (new Extend\Event())
+                ->listen(\FoF\Gamification\Events\PostWasVoted::class, Listener\EvaluateBadges::class),
+        ]),
 
     // Notification
     (new Extend\Notification())

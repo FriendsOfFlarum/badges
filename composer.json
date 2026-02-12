@@ -20,7 +20,7 @@
     "support": {
         "issues": "https://github.com/FriendsOfFlarum/badges/issues",
         "source": "https://github.com/FriendsOfFlarum/badges",
-        "forum": "https://discuss.flarum.org/d/ID"
+        "forum": "https://discuss.flarum.org/d/38762-fof-badges"
     },
     "require": {
         "php": "^8.1",

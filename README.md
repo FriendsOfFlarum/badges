@@ -52,7 +52,7 @@ This extension integrates with the following extensions to provide additional ba
 
 - [Packagist](https://packagist.org/packages/fof/badges)
 - [GitHub](https://github.com/FriendsOfFlarum/badges)
-- [Discuss](https://discuss.flarum.org/d/ID)
+- [Discuss](https://discuss.flarum.org/d/38762-fof-badges)
 - [Issues](https://github.com/FriendsOfFlarum/badges/issues)
 
 An extension by [FriendsOfFlarum](https://github.com/FriendsOfFlarum).

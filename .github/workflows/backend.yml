@@ -1,11 +1,6 @@
 name: FoF Badges PHP
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-  workflow_dispatch:
+on: [workflow_dispatch, push, pull_request]
 
 jobs:
   run:
@@ -17,5 +12,3 @@ jobs:
       backend_directory: .
 
       php_versions: '["8.1", "8.2", "8.3", "8.4", "8.5"]'
-      db_versions: '["mysql:5.7", "mariadb"]'
-      php_extensions: ''

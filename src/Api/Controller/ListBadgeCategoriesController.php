@@ -40,8 +40,11 @@ class ListBadgeCategoriesController extends AbstractListController
             ->withCount('badges')
             ->orderBy('order', 'asc');
 
-        // Non-moderators only see enabled categories by default
-        if (! $actor->hasPermission('badges.moderate') || ! Arr::get($filter, 'includeDisabled')) {
+        // Filter by enabled status
+        if ($enabled = Arr::get($filter, 'enabled')) {
+            $query->where('is_enabled', (bool) $enabled);
+        } elseif (!$actor->hasPermission('badges.moderate')) {
+            // Non-moderators only see enabled categories by default
             $query->where('is_enabled', true);
         }
 

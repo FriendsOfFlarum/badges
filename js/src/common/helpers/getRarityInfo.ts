@@ -14,9 +14,9 @@ export interface RarityInfo {
 export default function getRarityInfo(earnedCount: number | undefined, totalUsers: number | undefined): RarityInfo {
   if (!earnedCount || !totalUsers || totalUsers <= 0 || earnedCount <= 0) {
     return {
-      tier: 'common',
-      label: app.translator.trans('fof-badges.lib.rarity_common') as string,
-      color: '#95a5a6',
+      tier: 'legendary',
+      label: app.translator.trans('fof-badges.lib.rarity_legendary') as string,
+      color: '#e74c3c',
       percent: 0,
     };
   }

@@ -58,7 +58,7 @@ export default class AssignBadgeModal extends Modal<AssignBadgeModalAttrs> {
         // Manual badge = no trigger config or no conditions
         return !triggerConfig || !triggerConfig.conditions || triggerConfig.conditions.length === 0;
       });
-      this.categories = (categories as BadgeCategory[]).filter((c) => c && typeof c.id === 'function');
+      this.categories = (categories as BadgeCategory[]).filter((c) => c && typeof c.id === 'function' && c.isEnabled());
     } catch (error) {
       console.error('Failed to load badges:', error);
       this.badges = [];

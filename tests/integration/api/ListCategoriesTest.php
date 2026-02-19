@@ -55,13 +55,11 @@ class ListCategoriesTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_list_all_categories(): void
+    public function admin_can_list_all_categories_without_filter(): void
     {
         $response = $this->send(
             $this->request('GET', '/api/badge-categories', [
                 'authenticatedAs' => 1,
-            ])->withQueryParams([
-                'filter' => ['includeDisabled' => true],
             ])
         );
 
@@ -71,8 +69,72 @@ class ListCategoriesTest extends TestCase
 
         $slugs = array_column(array_column($body['data'], 'attributes'), 'slug');
 
+        $this->assertContains('test-achievement', $slugs);
+        $this->assertContains('test-community', $slugs);
         $this->assertContains('test-disabled', $slugs);
         $this->assertGreaterThanOrEqual(3, count($body['data']));
+    }
+
+    /** @test */
+    public function admin_can_filter_only_enabled_categories(): void
+    {
+        $response = $this->send(
+            $this->request('GET', '/api/badge-categories', [
+                'authenticatedAs' => 1,
+            ])->withQueryParams([
+                'filter' => ['enabled' => '1'],
+            ])
+        );
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = json_decode($response->getBody()->getContents(), true);
+
+        $slugs = array_column(array_column($body['data'], 'attributes'), 'slug');
+
+        $this->assertContains('test-achievement', $slugs);
+        $this->assertContains('test-community', $slugs);
+        $this->assertNotContains('test-disabled', $slugs);
+    }
+
+    /** @test */
+    public function admin_can_filter_only_disabled_categories(): void
+    {
+        $response = $this->send(
+            $this->request('GET', '/api/badge-categories', [
+                'authenticatedAs' => 1,
+            ])->withQueryParams([
+                'filter' => ['enabled' => '0'],
+            ])
+        );
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = json_decode($response->getBody()->getContents(), true);
+
+        $slugs = array_column(array_column($body['data'], 'attributes'), 'slug');
+
+        $this->assertNotContains('test-achievement', $slugs);
+        $this->assertNotContains('test-community', $slugs);
+        $this->assertContains('test-disabled', $slugs);
+    }
+
+    /** @test */
+    public function normal_user_cannot_see_disabled_categories(): void
+    {
+        $response = $this->send(
+            $this->request('GET', '/api/badge-categories', [
+                'authenticatedAs' => 2,
+            ])
+        );
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = json_decode($response->getBody()->getContents(), true);
+
+        $slugs = array_column(array_column($body['data'], 'attributes'), 'slug');
+
+        $this->assertNotContains('test-disabled', $slugs);
     }
 
     /** @test */

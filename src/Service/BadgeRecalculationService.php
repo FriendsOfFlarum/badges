@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges\Service;
@@ -45,7 +45,7 @@ class BadgeRecalculationService
         // This allows manual badges to be selected for re-apply actions
         if ($badgeId) {
             $query->where('id', $badgeId);
-        } elseif (!$includeManual) {
+        } elseif (! $includeManual) {
             // Only filter by trigger_config when not including manual badges
             $query->whereNotNull('trigger_config');
         }
@@ -119,8 +119,10 @@ class BadgeRecalculationService
         if ($isManualBadge) {
             if ($hasBadge && $reapplyActions) {
                 $this->awarder->executeActionsOnly($user, $badge);
+
                 return 'reapplied';
             }
+
             return 'skipped';
         }
 
@@ -130,13 +132,16 @@ class BadgeRecalculationService
         if ($qualifies && ! $hasBadge) {
             // Award returns [userBadge, wasCreated] to handle race conditions
             [$awardedBadge, $wasCreated] = $this->awarder->award($user, $badge, UserBadge::GRANTED_BY_SYSTEM);
+
             return $wasCreated ? 'awarded' : 'skipped';
         } elseif ($qualifies && $reapplyActions) {
             // Re-apply actions for existing badge holders
             $this->awarder->executeActionsOnly($user, $badge);
+
             return 'reapplied';
         } elseif (! $qualifies && $hasBadge && ! $noRevoke && $userBadge) {
             $this->awarder->revoke($userBadge);
+
             return 'revoked';
         }
 

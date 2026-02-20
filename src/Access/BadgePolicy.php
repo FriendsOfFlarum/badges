@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges\Access;
@@ -35,7 +35,7 @@ class BadgePolicy extends AbstractPolicy
     public function view(User $actor, Badge $badge): ?string
     {
         // Hidden badges require moderate permission
-        if (!$badge->is_visible && !$actor->hasPermission('badges.moderate')) {
+        if (! $badge->is_visible && ! $actor->hasPermission('badges.moderate')) {
             return $this->deny();
         }
 

@@ -1,20 +1,20 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges\Api\Controller;
 
 use Flarum\Api\Controller\AbstractListController;
 use Flarum\Http\RequestUtil;
-use Flarum\User\Exception\PermissionDeniedException;
 use Flarum\Http\UrlGenerator;
+use Flarum\User\Exception\PermissionDeniedException;
 use FoF\Badges\Api\Serializer\UserBadgeSerializer;
 use FoF\Badges\Badge;
 use FoF\Badges\UserBadge;
@@ -57,7 +57,7 @@ class ListBadgeHoldersController extends AbstractListController
 
         $badgeId = Arr::get($request->getQueryParams(), 'id');
 
-        if (!$badgeId) {
+        if (! $badgeId) {
             return [];
         }
 
@@ -74,7 +74,7 @@ class ListBadgeHoldersController extends AbstractListController
             ->with(['user', 'badge', 'grantedByUser']);
 
         // Search by username or display name
-        if (!empty($search)) {
+        if (! empty($search)) {
             // Escape special LIKE characters and trim
             $search = trim($search);
             $escapedSearch = str_replace(['%', '_', '\\'], ['\\%', '\\_', '\\\\'], $search);

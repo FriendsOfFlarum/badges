@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges\Access;
@@ -35,7 +35,7 @@ class BadgeCategoryPolicy extends AbstractPolicy
     public function view(User $actor, BadgeCategory $category): ?string
     {
         // Disabled categories require moderate permission
-        if (!$category->is_enabled && !$actor->hasPermission('badges.moderate')) {
+        if (! $category->is_enabled && ! $actor->hasPermission('badges.moderate')) {
             return $this->deny();
         }
 

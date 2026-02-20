@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges\Listener;
@@ -39,24 +39,27 @@ class EvaluateBadges
         // Handle PostWasLiked specially - evaluates both post author and liker
         if ($this->isPostWasLikedEvent($event)) {
             $this->handlePostWasLiked($event);
+
             return;
         }
 
         // Handle PostWasReacted specially - evaluates both post author and reactor
         if ($this->isPostWasReactedEvent($event)) {
             $this->handlePostWasReacted($event);
+
             return;
         }
 
         // Handle PostWasVoted specially - evaluates both post author and voter
         if ($this->isPostWasVotedEvent($event)) {
             $this->handlePostWasVoted($event);
+
             return;
         }
 
         $user = $this->extractUser($event);
 
-        if (!$user || !$user->exists) {
+        if (! $user || ! $user->exists) {
             return;
         }
 
@@ -72,7 +75,7 @@ class EvaluateBadges
 
         // Load post author
         $post = $event->post;
-        if (!$post->relationLoaded('user')) {
+        if (! $post->relationLoaded('user')) {
             $post->load('user');
         }
 
@@ -85,7 +88,7 @@ class EvaluateBadges
 
         // Evaluate for liker (likes_given metric) - skip if same as author
         $liker = $event->actor;
-        if ($liker && $liker->exists && (!$postAuthor || $liker->id !== $postAuthor->id)) {
+        if ($liker && $liker->exists && (! $postAuthor || $liker->id !== $postAuthor->id)) {
             $this->evaluateAndAwardBadges($liker, $eventClass);
         }
     }
@@ -110,9 +113,10 @@ class EvaluateBadges
     {
         if ($event instanceof Posted) {
             $post = $event->post;
-            if (!$post->relationLoaded('user')) {
+            if (! $post->relationLoaded('user')) {
                 $post->load('user');
             }
+
             return $post->user;
         }
 
@@ -135,9 +139,10 @@ class EvaluateBadges
         // FoF Best Answer - post author receives the best answer
         if ($this->isBestAnswerSetEvent($event)) {
             $post = $event->post;
-            if (!$post->relationLoaded('user')) {
+            if (! $post->relationLoaded('user')) {
                 $post->load('user');
             }
+
             return $post->user;
         }
 
@@ -240,7 +245,7 @@ class EvaluateBadges
 
         // Load post author via the vote's post
         $post = $event->vote->post;
-        if (!$post->relationLoaded('user')) {
+        if (! $post->relationLoaded('user')) {
             $post->load('user');
         }
 
@@ -253,7 +258,7 @@ class EvaluateBadges
 
         // Evaluate for voter (upvotes_given / downvotes_given metric) - skip if same as author
         $voter = $event->vote->user;
-        if ($voter && $voter->exists && (!$postAuthor || $voter->id !== $postAuthor->id)) {
+        if ($voter && $voter->exists && (! $postAuthor || $voter->id !== $postAuthor->id)) {
             $this->evaluateAndAwardBadges($voter, $eventClass);
         }
     }
@@ -267,7 +272,7 @@ class EvaluateBadges
 
         // Load post author
         $post = $event->post;
-        if (!$post->relationLoaded('user')) {
+        if (! $post->relationLoaded('user')) {
             $post->load('user');
         }
 
@@ -280,7 +285,7 @@ class EvaluateBadges
 
         // Evaluate for reactor (reactions_given metric) - skip if same as author
         $reactor = $event->user;
-        if ($reactor && $reactor->exists && (!$postAuthor || $reactor->id !== $postAuthor->id)) {
+        if ($reactor && $reactor->exists && (! $postAuthor || $reactor->id !== $postAuthor->id)) {
             $this->evaluateAndAwardBadges($reactor, $eventClass);
         }
     }

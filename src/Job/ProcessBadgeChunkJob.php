@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges\Job;
@@ -66,7 +66,7 @@ class ProcessBadgeChunkJob extends AbstractJob
     {
         $progress = BadgeRecalculationProgress::find($this->progressId);
 
-        if (!$progress) {
+        if (! $progress) {
             return;
         }
 
@@ -102,12 +102,13 @@ class ProcessBadgeChunkJob extends AbstractJob
     protected function processChunk(BadgeRecalculationProgress $progress, BadgeRecalculationService $service): void
     {
         // Get badges to evaluate - use chunk's assigned badgeIds, not progress->badge_id
-        $badges = !empty($this->badgeIds)
+        $badges = ! empty($this->badgeIds)
             ? Badge::whereIn('id', $this->badgeIds)->where('is_active', true)->get()
             : $service->getBadgesToEvaluate($progress->badge_id);
 
         if ($badges->isEmpty()) {
             $progress->incrementChunkProgress(count($this->userIds), 0, 0, 0);
+
             return;
         }
 
@@ -116,6 +117,7 @@ class ProcessBadgeChunkJob extends AbstractJob
 
         if ($users->isEmpty()) {
             $progress->incrementChunkProgress(0, 0, 0, 0);
+
             return;
         }
 

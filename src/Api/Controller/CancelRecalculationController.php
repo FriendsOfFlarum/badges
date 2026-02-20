@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges\Api\Controller;
@@ -40,7 +40,7 @@ class CancelRecalculationController implements RequestHandlerInterface
             $progress = BadgeRecalculationProgress::getActiveJob();
         }
 
-        if (!$progress) {
+        if (! $progress) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'No active recalculation found.',
@@ -48,7 +48,7 @@ class CancelRecalculationController implements RequestHandlerInterface
         }
 
         // Force cancel allows cancelling stuck jobs regardless of status
-        if (!$force && !$progress->isRunning() && !$progress->isPending()) {
+        if (! $force && ! $progress->isRunning() && ! $progress->isPending()) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Recalculation is not running. Use force=true to cancel anyway.',

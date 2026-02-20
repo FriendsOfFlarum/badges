@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges\Job;
@@ -53,7 +53,7 @@ class RecalculateBadgesJob extends AbstractJob
     ): void {
         $progress = BadgeRecalculationProgress::find($this->progressId);
 
-        if (!$progress) {
+        if (! $progress) {
             return;
         }
 
@@ -65,6 +65,7 @@ class RecalculateBadgesJob extends AbstractJob
             $this->dispatchChunks($progress, $service, $optimizer, $queue);
         } catch (Throwable $e) {
             $progress->markAsFailed($e->getMessage());
+
             throw $e;
         }
     }
@@ -79,6 +80,7 @@ class RecalculateBadgesJob extends AbstractJob
 
         if ($badges->isEmpty()) {
             $progress->markAsCompleted();
+
             return;
         }
 
@@ -90,6 +92,7 @@ class RecalculateBadgesJob extends AbstractJob
         // Single badge: use simple per-badge optimization
         if (count($badges) === 1) {
             $this->dispatchSingleBadgeChunks($progress, $badges->first(), $optimizer, $queue, $chunkSize, $noRevoke, $reapplyActions);
+
             return;
         }
 
@@ -129,6 +132,7 @@ class RecalculateBadgesJob extends AbstractJob
         if ($totalUsers === 0) {
             $progress->markAsRunning(0, 1, 0);
             $progress->markAsCompleted();
+
             return;
         }
 
@@ -173,6 +177,7 @@ class RecalculateBadgesJob extends AbstractJob
 
         if (empty($groups)) {
             $progress->markAsCompleted();
+
             return;
         }
 
@@ -205,6 +210,7 @@ class RecalculateBadgesJob extends AbstractJob
         if ($totalChunks === 0) {
             $progress->markAsRunning(0, count($badges), 0);
             $progress->markAsCompleted();
+
             return;
         }
 

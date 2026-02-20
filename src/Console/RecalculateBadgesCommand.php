@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges\Console;
@@ -44,6 +44,7 @@ class RecalculateBadgesCommand extends Command
 
         if ($badges->isEmpty()) {
             $this->warn('No badges with automatic triggers found.');
+
             return 0;
         }
 
@@ -56,6 +57,7 @@ class RecalculateBadgesCommand extends Command
 
         if ($totalUsers === 0) {
             $this->error('No users found.');
+
             return 1;
         }
 
@@ -90,7 +92,7 @@ class RecalculateBadgesCommand extends Command
         $bar->finish();
         $this->newLine(2);
 
-        $this->info("Recalculation complete!");
+        $this->info('Recalculation complete!');
         $this->table(
             ['Action', 'Count'],
             [

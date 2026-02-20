@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges;
@@ -21,17 +21,17 @@ use Flarum\User\User;
 return [
     // Frontend
     (new Extend\Frontend('forum'))
-        ->js(__DIR__ . '/js/dist/forum.js')
-        ->css(__DIR__ . '/less/forum.less')
+        ->js(__DIR__.'/js/dist/forum.js')
+        ->css(__DIR__.'/less/forum.less')
         ->route('/badges', 'badges.index', Controller\BadgeOverviewController::class)
         ->route('/badges/{slug}', 'badges.show', Controller\BadgeOverviewController::class),
 
     (new Extend\Frontend('admin'))
-        ->js(__DIR__ . '/js/dist/admin.js')
-        ->css(__DIR__ . '/less/admin.less'),
+        ->js(__DIR__.'/js/dist/admin.js')
+        ->css(__DIR__.'/less/admin.less'),
 
     // Locales
-    new Extend\Locales(__DIR__ . '/locale'),
+    new Extend\Locales(__DIR__.'/locale'),
 
     // API Routes
     (new Extend\Routes('api'))
@@ -184,10 +184,10 @@ return [
 
             // Find primary badge (is_primary=true) or rarest badge (lowest earned_count)
             $primaryBadge = $userBadges->firstWhere('is_primary', true);
-            if (!$primaryBadge) {
+            if (! $primaryBadge) {
                 $primaryBadge = $userBadges
-                    ->filter(fn($ub) => $ub->badge !== null)
-                    ->sortBy(fn($ub) => $ub->badge->earned_count ?? PHP_INT_MAX)
+                    ->filter(fn ($ub) => $ub->badge !== null)
+                    ->sortBy(fn ($ub) => $ub->badge->earned_count ?? PHP_INT_MAX)
                     ->first();
             }
 
@@ -199,16 +199,21 @@ return [
             // Get visible badges for card/footer display
             if ($displayLimit > 0) {
                 $visibleBadges = $userBadges
-                    ->filter(fn($ub) => $ub->show_on_card && $ub->badge !== null)
+                    ->filter(fn ($ub) => $ub->show_on_card && $ub->badge !== null)
                     ->sort(function ($a, $b) {
                         // Primary badge always comes first
-                        if ($a->is_primary && !$b->is_primary) return -1;
-                        if (!$a->is_primary && $b->is_primary) return 1;
+                        if ($a->is_primary && ! $b->is_primary) {
+                            return -1;
+                        }
+                        if (! $a->is_primary && $b->is_primary) {
+                            return 1;
+                        }
+
                         // Then sort by rarity (lowest earned_count = rarest)
                         return ($a->badge->earned_count ?? PHP_INT_MAX) <=> ($b->badge->earned_count ?? PHP_INT_MAX);
                     })
                     ->take($displayLimit)
-                    ->map(fn($ub) => ['name' => $ub->badge->name, 'icon' => $ub->badge->icon])
+                    ->map(fn ($ub) => ['name' => $ub->badge->name, 'icon' => $ub->badge->icon])
                     ->values()
                     ->toArray();
 

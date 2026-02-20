@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges\Api\Serializer;
@@ -29,7 +29,7 @@ class UserBadgeSerializer extends AbstractSerializer
     {
         if (! ($userBadge instanceof UserBadge)) {
             throw new InvalidArgumentException(
-                get_class($this) . ' can only serialize instances of ' . UserBadge::class
+                get_class($this).' can only serialize instances of '.UserBadge::class
             );
         }
 
@@ -64,7 +64,7 @@ class UserBadgeSerializer extends AbstractSerializer
      */
     protected function grantedByUser($userBadge): ?Relationship
     {
-        if (!$userBadge->granted_by_user_id) {
+        if (! $userBadge->granted_by_user_id) {
             return null;
         }
 

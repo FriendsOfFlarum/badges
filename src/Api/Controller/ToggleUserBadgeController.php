@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges\Api\Controller;
@@ -37,7 +37,7 @@ class ToggleUserBadgeController implements RequestHandlerInterface
 
         if ($action === 'toggleFavorite') {
             // If setting as favorite, unset any existing favorite first
-            if (!$userBadge->is_primary) {
+            if (! $userBadge->is_primary) {
                 UserBadge::where('user_id', $actor->id)
                     ->where('is_primary', true)
                     ->update(['is_primary' => false]);
@@ -64,7 +64,7 @@ class ToggleUserBadgeController implements RequestHandlerInterface
                     'error' => 'Cannot hide favorite badge',
                 ], 400);
             }
-            $userBadge->show_on_card = !$userBadge->show_on_card;
+            $userBadge->show_on_card = ! $userBadge->show_on_card;
             $userBadge->save();
 
             return new JsonResponse([

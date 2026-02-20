@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges\Api\Serializer;
@@ -28,7 +28,7 @@ class BadgeCategorySerializer extends AbstractSerializer
     {
         if (! ($category instanceof BadgeCategory)) {
             throw new InvalidArgumentException(
-                get_class($this) . ' can only serialize instances of ' . BadgeCategory::class
+                get_class($this).' can only serialize instances of '.BadgeCategory::class
             );
         }
 

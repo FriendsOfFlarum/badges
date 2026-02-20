@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of fof/badges.
+ * This file is part of fof/badges
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) 2026 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\Badges\Service;
@@ -94,12 +94,12 @@ class BadgeRecalculationOptimizer
         }
 
         // Date ranges change how metrics are calculated, so not monotonic-safe
-        if (!empty($config['date_range'])) {
+        if (! empty($config['date_range'])) {
             return false;
         }
 
         // Tag filtering changes metric calculation
-        if (!empty($config['tag_id'])) {
+        if (! empty($config['tag_id'])) {
             return false;
         }
 
@@ -115,17 +115,17 @@ class BadgeRecalculationOptimizer
             $operator = $condition['operator'] ?? '>=';
 
             // Metric must be available (extension dependencies met)
-            if (!$this->metricManager->isAvailable($metric)) {
+            if (! $this->metricManager->isAvailable($metric)) {
                 return false;
             }
 
             // Metric must be monotonic
-            if (!in_array($metric, self::MONOTONIC_METRICS, true)) {
+            if (! in_array($metric, self::MONOTONIC_METRICS, true)) {
                 return false;
             }
 
             // Operator must be >= or >
-            if (!in_array($operator, self::MONOTONIC_SAFE_OPERATORS, true)) {
+            if (! in_array($operator, self::MONOTONIC_SAFE_OPERATORS, true)) {
                 return false;
             }
         }
@@ -197,13 +197,14 @@ class BadgeRecalculationOptimizer
             if (empty($userIdsWithBadge)) {
                 // No users have this badge, return empty query
                 $query->whereRaw('1 = 0');
+
                 return $query;
             }
 
             $query->whereIn('id', $userIdsWithBadge);
 
             // Still apply exclusions
-            if (!empty($excludeUserIds)) {
+            if (! empty($excludeUserIds)) {
                 $query->whereNotIn('id', $excludeUserIds);
             }
 
@@ -211,7 +212,7 @@ class BadgeRecalculationOptimizer
         }
 
         // Exclude specific users
-        if (!empty($excludeUserIds)) {
+        if (! empty($excludeUserIds)) {
             $query->whereNotIn('id', $excludeUserIds);
         }
 
@@ -222,12 +223,12 @@ class BadgeRecalculationOptimizer
         }
 
         // Can't pre-filter if there's a date_range (changes how metrics are calculated)
-        if (!empty($config['date_range'])) {
+        if (! empty($config['date_range'])) {
             return $query;
         }
 
         // Can't pre-filter if there's a tag filter
-        if (!empty($config['tag_id'])) {
+        if (! empty($config['tag_id'])) {
             return $query;
         }
 
@@ -271,12 +272,12 @@ class BadgeRecalculationOptimizer
         $operator = $condition['operator'] ?? '>=';
         $value = (int) ($condition['value'] ?? 0);
 
-        if (!$metric) {
+        if (! $metric) {
             return;
         }
 
         // Skip if metric's extension dependencies are not available
-        if (!$this->metricManager->isAvailable($metric)) {
+        if (! $this->metricManager->isAvailable($metric)) {
             return;
         }
 
@@ -297,6 +298,7 @@ class BadgeRecalculationOptimizer
                         $q->whereNull($column)->orWhere($column, '=', '');
                     });
                 }
+
                 return;
             }
 
@@ -312,6 +314,7 @@ class BadgeRecalculationOptimizer
                         $q->whereNull($column)->orWhere($column, '=', '');
                     });
                 }
+
                 return;
             }
 
@@ -327,6 +330,7 @@ class BadgeRecalculationOptimizer
                         $q->whereNull($column)->orWhere($column, '=', '');
                     });
                 }
+
                 return;
             }
 
@@ -335,12 +339,14 @@ class BadgeRecalculationOptimizer
             if ($sqlOperator && $strict) {
                 $query->where($column, $sqlOperator, $value);
             }
+
             return;
         }
 
         // Handle member_days (requires date calculation)
         if ($metric === 'member_days' && $strict) {
             $this->applyMemberDaysCondition($query, $operator, $value);
+
             return;
         }
 
@@ -354,7 +360,7 @@ class BadgeRecalculationOptimizer
     protected function applyMemberDaysCondition(Builder $query, string $operator, int $days): void
     {
         $sqlOperator = $this->getSqlOperator($operator);
-        if (!$sqlOperator) {
+        if (! $sqlOperator) {
             return;
         }
 
@@ -382,7 +388,7 @@ class BadgeRecalculationOptimizer
             case '<':
                 $query->where('joined_at', '>', $cutoffDate);
                 break;
-            // Skip == and != as they're edge cases
+                // Skip == and != as they're edge cases
         }
     }
 
@@ -444,7 +450,7 @@ class BadgeRecalculationOptimizer
             $strategy = $this->getOptimizationStrategy($badge);
             $key = $strategy['key'];
 
-            if (!isset($groups[$key])) {
+            if (! isset($groups[$key])) {
                 $groups[$key] = [
                     'strategy' => $strategy,
                     'badges' => [],
@@ -456,7 +462,7 @@ class BadgeRecalculationOptimizer
 
             // Track minimum thresholds for each metric in this group
             foreach ($strategy['conditions'] as $metric => $condition) {
-                if (!isset($groups[$key]['minThresholds'][$metric])) {
+                if (! isset($groups[$key]['minThresholds'][$metric])) {
                     $groups[$key]['minThresholds'][$metric] = $condition;
                 } else {
                     // Keep the LEAST restrictive threshold (minimum value for >= operators)
@@ -489,7 +495,7 @@ class BadgeRecalculationOptimizer
             $result[] = [
                 'key' => $key,
                 'badges' => $groupBadges,
-                'badgeIds' => array_map(fn($b) => $b->id, $groupBadges),
+                'badgeIds' => array_map(fn ($b) => $b->id, $groupBadges),
                 'userIds' => $userIds,
                 'skipUserIds' => $skipUserIds,
                 'userCount' => count($userIds),
@@ -497,7 +503,7 @@ class BadgeRecalculationOptimizer
         }
 
         // Sort groups by user count (process smaller groups first for faster feedback)
-        usort($result, fn($a, $b) => $a['userCount'] <=> $b['userCount']);
+        usort($result, fn ($a, $b) => $a['userCount'] <=> $b['userCount']);
 
         return $result;
     }
@@ -525,13 +531,14 @@ class BadgeRecalculationOptimizer
             return $strategy;
         }
 
-        $strategy['hasDateRange'] = !empty($config['date_range']);
-        $strategy['hasTagFilter'] = !empty($config['tag_id']);
+        $strategy['hasDateRange'] = ! empty($config['date_range']);
+        $strategy['hasTagFilter'] = ! empty($config['tag_id']);
         $strategy['logic'] = strtoupper($config['logic'] ?? 'AND');
 
         // If has date_range or tag_filter, can't optimize with SQL
         if ($strategy['hasDateRange'] || $strategy['hasTagFilter']) {
-            $strategy['key'] = 'unfilterable_' . ($strategy['hasDateRange'] ? 'date' : 'tag');
+            $strategy['key'] = 'unfilterable_'.($strategy['hasDateRange'] ? 'date' : 'tag');
+
             return $strategy;
         }
 
@@ -544,7 +551,7 @@ class BadgeRecalculationOptimizer
             $operator = $condition['operator'] ?? '>=';
             $value = (int) ($condition['value'] ?? 0);
 
-            if (!$metric) {
+            if (! $metric) {
                 continue;
             }
 
@@ -565,12 +572,13 @@ class BadgeRecalculationOptimizer
 
         if (empty($filterableConditions)) {
             $strategy['key'] = 'unfilterable_metrics';
+
             return $strategy;
         }
 
         // Sort key parts for consistent grouping
         sort($keyParts);
-        $strategy['key'] = $strategy['logic'] . '_' . implode('_', $keyParts);
+        $strategy['key'] = $strategy['logic'].'_'.implode('_', $keyParts);
         $strategy['type'] = 'filterable';
         $strategy['conditions'] = $filterableConditions;
 
@@ -630,7 +638,7 @@ class BadgeRecalculationOptimizer
     ): Builder {
         $query = User::query();
 
-        if (!empty($excludeUserIds)) {
+        if (! empty($excludeUserIds)) {
             $query->whereNotIn('id', $excludeUserIds);
         }
 
@@ -687,7 +695,7 @@ class BadgeRecalculationOptimizer
             $groupStats = [
                 'key' => $group['key'],
                 'badge_count' => count($group['badges']),
-                'badge_names' => array_map(fn($b) => $b->name, $group['badges']),
+                'badge_names' => array_map(fn ($b) => $b->name, $group['badges']),
                 'user_count' => $group['userCount'],
                 'skip_count' => count($group['skipUserIds']),
             ];

@@ -29,7 +29,7 @@ class BadgeSerializer extends AbstractSerializer
 
     /**
      * Cached earned badge IDs for the current actor (per-request cache).
-     * null = not loaded yet, [] = guest or no badges
+     * null = not loaded yet, [] = guest or no badges.
      */
     protected static ?array $cachedEarnedIds = null;
 

@@ -32,9 +32,9 @@ class ListBadgesController extends AbstractListController
 
     public $sortFields = ['order', 'name', 'earnedCount', 'createdAt'];
 
-    public $limit = 50;
+    public $limit = 1000;
 
-    public $maxLimit = 100;
+    public $maxLimit = 1000;
 
     protected UrlGenerator $url;
 

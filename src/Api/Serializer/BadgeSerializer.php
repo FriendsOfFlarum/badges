@@ -14,6 +14,7 @@ namespace FoF\Badges\Api\Serializer;
 use Flarum\Api\Serializer\AbstractSerializer;
 use Flarum\User\User;
 use FoF\Badges\Badge;
+use FoF\Badges\UserBadge;
 use InvalidArgumentException;
 use Tobscure\JsonApi\Relationship;
 
@@ -25,6 +26,12 @@ class BadgeSerializer extends AbstractSerializer
      * Cached total user count for rarity calculation (per-request cache).
      */
     protected static ?int $cachedTotalUsers = null;
+
+    /**
+     * Cached earned badge IDs for the current actor (per-request cache).
+     * null = not loaded yet, [] = guest or no badges.
+     */
+    protected static ?array $cachedEarnedIds = null;
 
     /**
      * @param Badge $badge
@@ -53,6 +60,7 @@ class BadgeSerializer extends AbstractSerializer
             'order' => (int) $badge->order,
             'createdAt' => $this->formatDate($badge->created_at),
             'rarity' => $this->calculateRarity($badge),
+            'isEarned' => $this->checkIsEarned($badge),
             'canEdit' => $canModerate,
             'categoryId' => $badge->category_id,
         ];
@@ -64,6 +72,28 @@ class BadgeSerializer extends AbstractSerializer
         }
 
         return $attributes;
+    }
+
+    /**
+     * Check if the current actor has earned this badge.
+     * Uses per-request cache — single query for all badges, no N+1.
+     */
+    protected function checkIsEarned(Badge $badge): bool
+    {
+        $actor = $this->getActor();
+
+        if ($actor->isGuest()) {
+            return false;
+        }
+
+        if (self::$cachedEarnedIds === null) {
+            self::$cachedEarnedIds = UserBadge::where('user_id', $actor->id)
+                ->pluck('badge_id')
+                ->map(fn ($id) => (int) $id)
+                ->toArray();
+        }
+
+        return in_array((int) $badge->id, self::$cachedEarnedIds, true);
     }
 
     /**
@@ -85,11 +115,12 @@ class BadgeSerializer extends AbstractSerializer
     }
 
     /**
-     * Reset the cached total user count (useful for testing).
+     * Reset the cached values (useful for testing).
      */
     public static function resetCache(): void
     {
         self::$cachedTotalUsers = null;
+        self::$cachedEarnedIds = null;
     }
 
     /**

@@ -5,7 +5,6 @@ export default class BadgesPage extends Page {
     loading: boolean;
     badges: Badge[];
     categories: BadgeCategory[];
-    ownedBadgeIds: Set<string>;
     oninit(vnode: Mithril.Vnode): void;
     oncreate(vnode: Mithril.VnodeDOM): void;
     loadData(): Promise<void>;

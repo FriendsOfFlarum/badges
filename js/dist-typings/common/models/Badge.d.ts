@@ -33,6 +33,7 @@ export default class Badge extends Model {
     order: () => number;
     createdAt: () => Date;
     rarity: () => number;
+    isEarned: () => boolean;
     canEdit: () => boolean;
     categoryId: () => number | null;
     category: () => false | BadgeCategory;

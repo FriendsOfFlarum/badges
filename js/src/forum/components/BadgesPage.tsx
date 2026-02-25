@@ -2,11 +2,10 @@ import app from 'flarum/forum/app';
 import Page from 'flarum/common/components/Page';
 import IndexPage from 'flarum/forum/components/IndexPage';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
-import Button from 'flarum/common/components/Button';
 import Link from 'flarum/common/components/Link';
 import listItems from 'flarum/common/helpers/listItems';
 import type Mithril from 'mithril';
-import type { Badge, BadgeCategory, UserBadge } from '../../common';
+import type { Badge, BadgeCategory } from '../../common';
 import BadgeCard from './BadgeCard';
 import BadgeModal from './BadgeModal';
 
@@ -14,7 +13,6 @@ export default class BadgesPage extends Page {
   loading: boolean = true;
   badges: Badge[] = [];
   categories: BadgeCategory[] = [];
-  ownedBadgeIds: Set<string> = new Set();
 
   oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
@@ -31,33 +29,16 @@ export default class BadgesPage extends Page {
     m.redraw();
 
     try {
-      const promises: Promise<any>[] = [app.store.find<Badge[]>('badges'), app.store.find<BadgeCategory[]>('badge-categories')];
-
-      // Load user's badges if logged in and has permission
-      const canViewUserBadges = app.session.user && app.forum.attribute('canViewUserBadges');
-      if (canViewUserBadges) {
-        promises.push(
-          app.store.find<UserBadge[]>('user-badges', {
-            filter: { user: String(app.session.user!.id()) },
-            include: 'badge',
-          })
-        );
-      }
-
-      const [badges, categories, userBadges] = await Promise.all(promises);
+      const [badges, categories] = await Promise.all([
+        app.store.find<Badge[]>('badges'),
+        app.store.find<BadgeCategory[]>('badge-categories'),
+      ]);
 
       // Filter to ensure only valid models are stored
       this.badges = (Array.isArray(badges) ? badges : []).filter((b) => b && typeof b.id === 'function' && b.isVisible()) as Badge[];
       this.categories = (Array.isArray(categories) ? categories : []).filter(
         (c) => c && typeof c.id === 'function' && c.isEnabled()
       ) as BadgeCategory[];
-
-      // Build owned badge IDs set
-      if (userBadges) {
-        this.ownedBadgeIds = new Set(
-          (userBadges as UserBadge[]).filter((ub) => ub && typeof ub.badge === 'function' && ub.badge()).map((ub) => (ub.badge() as Badge).id()!)
-        );
-      }
 
       // Check if specific badge is requested via URL query param
       const params = new URLSearchParams(window.location.search);
@@ -149,7 +130,7 @@ export default class BadgesPage extends Page {
             {group.category.description() && <p className="BadgesList-categoryDescription">{group.category.description()}</p>}
             <div className="BadgesList-grid">
               {group.badges.map((badge) => (
-                <BadgeCard key={badge.id()} badge={badge} onclick={() => this.showBadgeModal(badge)} isOwned={this.ownedBadgeIds.has(badge.id()!)} />
+                <BadgeCard key={badge.id()} badge={badge} onclick={() => this.showBadgeModal(badge)} isOwned={badge.isEarned()} />
               ))}
             </div>
           </section>
@@ -160,7 +141,7 @@ export default class BadgesPage extends Page {
             <h2 className="BadgesList-categoryTitle">{app.translator.trans('fof-badges.forum.other_badges')}</h2>
             <div className="BadgesList-grid">
               {uncategorized.map((badge) => (
-                <BadgeCard key={badge.id()} badge={badge} onclick={() => this.showBadgeModal(badge)} isOwned={this.ownedBadgeIds.has(badge.id()!)} />
+                <BadgeCard key={badge.id()} badge={badge} onclick={() => this.showBadgeModal(badge)} isOwned={badge.isEarned()} />
               ))}
             </div>
           </section>

@@ -38,6 +38,7 @@ export default class Badge extends Model {
   order = Model.attribute<number>('order');
   createdAt = Model.attribute<Date, string>('createdAt', Model.transformDate);
   rarity = Model.attribute<number>('rarity');
+  isEarned = Model.attribute<boolean>('isEarned');
   canEdit = Model.attribute<boolean>('canEdit');
   categoryId = Model.attribute<number | null>('categoryId');
 

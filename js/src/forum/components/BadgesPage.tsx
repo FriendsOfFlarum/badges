@@ -29,10 +29,7 @@ export default class BadgesPage extends Page {
     m.redraw();
 
     try {
-      const [badges, categories] = await Promise.all([
-        app.store.find<Badge[]>('badges'),
-        app.store.find<BadgeCategory[]>('badge-categories'),
-      ]);
+      const [badges, categories] = await Promise.all([app.store.find<Badge[]>('badges'), app.store.find<BadgeCategory[]>('badge-categories')]);
 
       // Filter to ensure only valid models are stored
       this.badges = (Array.isArray(badges) ? badges : []).filter((b) => b && typeof b.id === 'function' && b.isVisible()) as Badge[];

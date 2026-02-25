@@ -10,6 +10,15 @@ export interface RarityInfo {
 /**
  * Get rarity information based on earned count and total users.
  * Returns tier key, translated label, color, and percentage.
+ *
+ * Thresholds use whichever is the higher bar — the percentage threshold
+ * or a minimum user count — so small communities get meaningful tiers.
+ *
+ * Legendary : earnedCount < max(1%  of totalUsers, 2)
+ * Epic       : earnedCount < max(5%  of totalUsers, 3)
+ * Rare       : earnedCount < max(20% of totalUsers, 5)
+ * Uncommon   : earnedCount < 50% of totalUsers
+ * Common     : earnedCount >= 50% of totalUsers
  */
 export default function getRarityInfo(earnedCount: number | undefined, totalUsers: number | undefined): RarityInfo {
   if (!earnedCount || !totalUsers || totalUsers <= 0 || earnedCount <= 0) {
@@ -23,8 +32,13 @@ export default function getRarityInfo(earnedCount: number | undefined, totalUser
 
   const percent = Math.min(100, (earnedCount / totalUsers) * 100);
 
-  // Legendary: < 1%
-  if (percent < 1) {
+  const legendaryThreshold = Math.max(totalUsers * 0.01, 2);
+  const epicThreshold = Math.max(totalUsers * 0.05, 3);
+  const rareThreshold = Math.max(totalUsers * 0.2, 5);
+  const uncommonThreshold = totalUsers * 0.5;
+
+  // Legendary: below legendary threshold
+  if (earnedCount < legendaryThreshold) {
     return {
       tier: 'legendary',
       label: app.translator.trans('fof-badges.lib.rarity_legendary') as string,
@@ -33,8 +47,8 @@ export default function getRarityInfo(earnedCount: number | undefined, totalUser
     };
   }
 
-  // Epic: 1-5%
-  if (percent <= 5) {
+  // Epic: below epic threshold
+  if (earnedCount < epicThreshold) {
     return {
       tier: 'epic',
       label: app.translator.trans('fof-badges.lib.rarity_epic') as string,
@@ -43,8 +57,8 @@ export default function getRarityInfo(earnedCount: number | undefined, totalUser
     };
   }
 
-  // Rare: 5-20%
-  if (percent <= 20) {
+  // Rare: below rare threshold
+  if (earnedCount < rareThreshold) {
     return {
       tier: 'rare',
       label: app.translator.trans('fof-badges.lib.rarity_rare') as string,
@@ -53,8 +67,8 @@ export default function getRarityInfo(earnedCount: number | undefined, totalUser
     };
   }
 
-  // Uncommon: 20-50%
-  if (percent <= 50) {
+  // Uncommon: below 50%
+  if (earnedCount < uncommonThreshold) {
     return {
       tier: 'uncommon',
       label: app.translator.trans('fof-badges.lib.rarity_uncommon') as string,
@@ -63,7 +77,7 @@ export default function getRarityInfo(earnedCount: number | undefined, totalUser
     };
   }
 
-  // Common: > 50%
+  // Common: 50%+
   return {
     tier: 'common',
     label: app.translator.trans('fof-badges.lib.rarity_common') as string,

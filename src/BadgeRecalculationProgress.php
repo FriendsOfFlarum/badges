@@ -135,7 +135,7 @@ class BadgeRecalculationProgress extends AbstractModel
     {
         // Use raw SQL for atomic increment
         $connection = $this->getConnection();
-        $table = $this->getTable();
+        $table = $connection->getTablePrefix().$this->getTable();
 
         $connection->statement("
             UPDATE {$table}

@@ -171,6 +171,9 @@ class CreateBadgeTest extends TestCase
             ])
         );
 
+        fwrite(STDERR, "CREATE RESPONSE: " . $response->getStatusCode() . " " . $response->getBody()->getContents() . "\n");
+        $response->getBody()->rewind();
+
         $this->assertEquals(201, $response->getStatusCode());
 
         $body = json_decode($response->getBody()->getContents(), true);

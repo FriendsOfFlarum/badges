@@ -15,8 +15,8 @@
 // ==========================================
 
 .card-style() {
-  background: var(--body-bg, @body-bg);
-  border: 1px solid var(--control-bg, @control-bg);
+  background: var(--body-bg, var(--body-bg));
+  border: 1px solid var(--control-bg, var(--control-bg));
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
@@ -44,7 +44,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 4px;
-    background: var(--control-bg, @control-bg);
+    background: var(--control-bg, var(--control-bg));
     padding: 4px;
     border-radius: 8px;
 
@@ -62,7 +62,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      color: var(--muted-color, @muted-color);
+      color: var(--muted-color, var(--muted-color));
       font-size: 14px;
       font-weight: 600;
       transition: all 150ms ease;
@@ -70,13 +70,13 @@
       box-shadow: none !important;
 
       &:hover {
-        color: var(--text-color, @text-color);
+        color: var(--text-color, var(--text-color));
         background: rgba(255, 255, 255, 0.08) !important;
       }
 
       &.active {
-        background: var(--body-bg, @body-bg) !important;
-        color: var(--primary-color, @primary-color) !important;
+        background: var(--body-bg, var(--body-bg)) !important;
+        color: var(--primary-color, var(--primary-color)) !important;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
         font-weight: 700;
       }
@@ -95,7 +95,7 @@
     .Button-badge {
       margin-left: 6px;
       padding: 2px 8px;
-      background: var(--primary-color, @primary-color);
+      background: var(--primary-color, var(--primary-color));
       color: #fff;
       border-radius: 10px;
       font-size: 11px;
@@ -122,7 +122,7 @@
   &-empty {
     text-align: center;
     padding: 60px 20px;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
 
     p {
       margin: 0;
@@ -136,9 +136,12 @@
 // ==========================================
 
 .BadgesPage .EmptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   padding: 60px 20px;
-  color: var(--muted-color, @muted-color);
+  color: var(--muted-color, var(--muted-color));
 
   &-icon {
     font-size: 48px;
@@ -149,6 +152,12 @@
   &-text {
     font-size: 16px;
     margin: 0 0 20px;
+  }
+
+  .Button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
   }
 }
 
@@ -173,7 +182,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
     align-items: center;
 
     @media (max-width: 768px) {
@@ -193,7 +202,7 @@
     &:hover {
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       transform: translateY(-1px);
-      border-color: var(--primary-color, @primary-color);
+      border-color: var(--primary-color, var(--primary-color));
     }
 
     &--inactive {
@@ -213,18 +222,23 @@
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    color: var(--text-color, @body-bg-light);
+    color: var(--text-color);
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
 
+    i {
+      line-height: 1;
+      vertical-align: middle;
+    }
+
     &--primary {
       font-weight: 600;
-      color: var(--heading-color, @heading-color);
+      color: var(--heading-color, var(--heading-color));
     }
 
     &--muted {
-      color: var(--muted-color, @muted-color);
+      color: var(--muted-color, var(--muted-color));
       font-size: 13px;
     }
 
@@ -234,7 +248,7 @@
       align-items: center;
       width: 100%;
       padding-bottom: 8px;
-      border-bottom: 1px solid var(--control-bg, @control-bg);
+      border-bottom: 1px solid var(--control-bg, var(--control-bg));
       gap: 4px;
 
       &:last-child {
@@ -246,7 +260,7 @@
         content: attr(data-label);
         font-weight: 700;
         font-size: 11px;
-        color: var(--muted-color, @muted-color);
+        color: var(--muted-color, var(--muted-color));
         text-transform: uppercase;
         margin-right: 10px;
         flex-shrink: 0;
@@ -308,7 +322,7 @@
       width: 100%;
       margin-top: 8px;
       padding-top: 12px;
-      border-top: 2px solid var(--control-bg, @control-bg);
+      border-top: 2px solid var(--control-bg, var(--control-bg));
       flex-wrap: wrap;
 
       .Button {
@@ -347,7 +361,7 @@
 
   &--inactive {
     background: rgba(0, 0, 0, 0.05);
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
   }
 }
 
@@ -378,7 +392,7 @@
   min-width: 24px;
   height: 24px;
   padding: 0 8px;
-  background: var(--primary-color, @primary-color);
+  background: var(--primary-color, var(--primary-color));
   color: #fff;
   border-radius: 12px;
   font-size: 12px;
@@ -389,11 +403,17 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
   flex-shrink: 0;
+  line-height: 1;
+  vertical-align: middle;
+
+  i {
+    line-height: 1;
+  }
 }
 
 // ==========================================
@@ -426,12 +446,12 @@
   &-groupTitle {
     font-size: 14px;
     font-weight: bold;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 15px;
     padding-bottom: 10px;
-    border-bottom: 1px solid var(--control-bg, @control-bg);
+    border-bottom: 1px solid var(--control-bg, var(--control-bg));
   }
 
   &-items {
@@ -467,12 +487,12 @@
   display: flex;
   align-items: center;
   padding: 15px;
-  background: var(--control-bg, @control-bg);
+  background: var(--control-bg, var(--control-bg));
   border-radius: 8px;
   transition: background 0.15s;
 
   &:hover {
-    background: darken(@control-bg, 3%);
+    background: var(--control-bg-darken-3);
   }
 
   &--inactive {
@@ -508,7 +528,7 @@
     font-size: 11px;
     font-weight: normal;
     padding: 2px 8px;
-    background: var(--muted-color, @muted-color);
+    background: var(--muted-color, var(--muted-color));
     color: #fff;
     border-radius: 4px;
   }
@@ -516,7 +536,7 @@
   &-meta {
     margin-top: 4px;
     font-size: 13px;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
     display: flex;
     align-items: center;
     gap: 12px;
@@ -546,7 +566,7 @@
   display: flex;
   align-items: center;
   padding: 15px;
-  background: var(--control-bg, @control-bg);
+  background: var(--control-bg, var(--control-bg));
   border-radius: 8px;
 
   &--disabled {
@@ -570,7 +590,7 @@
     font-size: 11px;
     font-weight: normal;
     padding: 2px 8px;
-    background: var(--muted-color, @muted-color);
+    background: var(--muted-color, var(--muted-color));
     color: #fff;
     border-radius: 4px;
   }
@@ -578,7 +598,7 @@
   &-meta {
     margin-top: 4px;
     font-size: 13px;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
   }
 
   &-description {
@@ -607,13 +627,13 @@
       gap: 10px;
       margin-bottom: 15px;
       padding-bottom: 12px;
-      border-bottom: 2px solid var(--control-bg, @control-bg);
+      border-bottom: 2px solid var(--control-bg, var(--control-bg));
 
       h4 {
         margin: 0;
         font-size: 16px;
         font-weight: 700;
-        color: var(--heading-color, @heading-color);
+        color: var(--heading-color, var(--heading-color));
       }
 
       i {
@@ -624,14 +644,14 @@
         justify-content: center;
         background: rgba(77, 105, 142, 0.1);
         border-radius: 6px;
-        color: var(--primary-color, @primary-color);
+        color: var(--primary-color, var(--primary-color));
         font-size: 12px;
       }
     }
 
     .helpText {
       font-size: 13px;
-      color: var(--muted-color, @muted-color);
+      color: var(--muted-color, var(--muted-color));
       margin-top: 8px;
     }
   }
@@ -653,9 +673,9 @@
     align-items: center;
     gap: 10px;
     padding: 15px;
-    background: fade(@primary-color, 10%);
+    background: var(--primary-color-fade-10);
     border-radius: 6px;
-    color: var(--primary-color, @primary-color);
+    color: var(--primary-color, var(--primary-color));
     margin-bottom: 15px;
 
     i {
@@ -664,8 +684,8 @@
   }
 
   &-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 16px;
     margin-top: 20px;
   }
@@ -674,12 +694,14 @@
     .card-style();
     padding: 16px;
     text-align: center;
+    flex: 1 1 150px;
+    min-width: 150px;
 
     &Label {
       display: block;
       font-size: 12px;
       font-weight: 600;
-      color: var(--muted-color, @muted-color);
+      color: var(--muted-color, var(--muted-color));
       text-transform: uppercase;
       letter-spacing: 0.3px;
       margin-bottom: 8px;
@@ -688,7 +710,7 @@
     &Value {
       font-size: 24px;
       font-weight: 700;
-      color: var(--heading-color, @heading-color);
+      color: var(--heading-color, var(--heading-color));
     }
   }
 
@@ -719,20 +741,20 @@
   &-jobsEmpty {
     text-align: center;
     padding: 40px 20px;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
   }
 
   &-job {
     padding: 15px;
-    background: var(--control-bg, @control-bg);
+    background: var(--control-bg, var(--control-bg));
     border-radius: 8px;
-    border-left: 4px solid var(--muted-color, @muted-color);
+    border-left: 4px solid var(--muted-color, var(--muted-color));
 
-    &--pending { border-left-color: var(--muted-color, @muted-color); }
-    &--running { border-left-color: var(--primary-color, @primary-color); }
+    &--pending { border-left-color: var(--muted-color, var(--muted-color)); }
+    &--running { border-left-color: var(--primary-color, var(--primary-color)); }
     &--completed { border-left-color: @success-color; }
-    &--failed { border-left-color: @error-color; }
-    &--cancelled { border-left-color: var(--muted-color, @muted-color); }
+    &--failed { border-left-color: var(--error-color); }
+    &--cancelled { border-left-color: var(--muted-color, var(--muted-color)); }
   }
 
   &-jobHeader {
@@ -749,14 +771,14 @@
 
   &-jobDate {
     font-size: 12px;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
   }
 
   &-jobStats {
     display: flex;
     gap: 15px;
     font-size: 13px;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
     flex-wrap: wrap;
   }
 
@@ -765,14 +787,14 @@
     padding: 8px;
     background: fade(@error-color, 15%);
     border-radius: 4px;
-    color: @error-color;
+    color: var(--error-color);
     font-size: 12px;
   }
 
   &-jobActions {
     margin-top: 10px;
     padding-top: 10px;
-    border-top: 1px solid darken(@control-bg, 5%);
+    border-top: 1px solid var(--control-bg-darken-5);
   }
 
   &-sync {
@@ -803,7 +825,7 @@
       font-size: 18px;
       font-weight: 700;
       padding-bottom: 15px;
-      border-bottom: 2px solid var(--control-bg, @control-bg);
+      border-bottom: 2px solid var(--control-bg, var(--control-bg));
     }
 
     .Form-group {
@@ -842,7 +864,7 @@
     gap: 10px;
     padding: 10px 14px;
     border-radius: 6px;
-    background: var(--control-bg, @control-bg);
+    background: var(--control-bg, var(--control-bg));
     font-size: 14px;
 
     &--enabled {
@@ -855,7 +877,7 @@
       opacity: 0.6;
 
       .IntegrationsList-status {
-        color: @muted-color;
+        color: var(--muted-color);
       }
     }
   }
@@ -871,7 +893,7 @@
   }
 
   &-metrics {
-    color: @muted-color;
+    color: var(--muted-color);
     font-size: 13px;
   }
 }
@@ -883,12 +905,12 @@
 .RecalculationProgress {
   margin-bottom: 20px;
   padding: 15px;
-  background: var(--control-bg, @control-bg);
+  background: var(--control-bg, var(--control-bg));
   border-radius: 8px;
-  border-left: 4px solid var(--primary-color, @primary-color);
+  border-left: 4px solid var(--primary-color, var(--primary-color));
 
   &--running {
-    border-left-color: var(--primary-color, @primary-color);
+    border-left-color: var(--primary-color, var(--primary-color));
   }
 
   &--completed {
@@ -897,13 +919,13 @@
   }
 
   &--failed {
-    border-left-color: @error-color;
+    border-left-color: var(--error-color);
     background: fade(@error-color, 10%);
   }
 
   &--cancelled {
-    border-left-color: var(--muted-color, @muted-color);
-    background: fade(@muted-color, 10%);
+    border-left-color: var(--muted-color, var(--muted-color));
+    background: var(--muted-color-fade-10);
   }
 
   &-header {
@@ -933,7 +955,7 @@
 
   &-bar {
     height: 8px;
-    background: darken(@control-bg, 5%);
+    background: var(--control-bg-darken-5);
     border-radius: 4px;
     overflow: hidden;
     margin-bottom: 10px;
@@ -941,7 +963,7 @@
 
   &-barFill {
     height: 100%;
-    background: linear-gradient(90deg, @primary-color, lighten(@primary-color, 10%));
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-color-lighten-10));
     border-radius: 4px;
     transition: width 0.3s ease;
   }
@@ -958,7 +980,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 13px;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
     flex-wrap: wrap;
     gap: 10px;
   }
@@ -968,7 +990,7 @@
     padding: 10px;
     background: fade(@error-color, 15%);
     border-radius: 4px;
-    color: @error-color;
+    color: var(--error-color);
     font-size: 13px;
   }
 
@@ -992,7 +1014,7 @@
     flex-direction: column;
     gap: 15px;
     padding: 15px;
-    background: var(--control-bg, @control-bg);
+    background: var(--control-bg, var(--control-bg));
     border-radius: 8px;
   }
 
@@ -1026,7 +1048,7 @@
     flex-direction: column;
     gap: 15px;
     padding: 15px;
-    background: var(--control-bg, @control-bg);
+    background: var(--control-bg, var(--control-bg));
     border-radius: 8px;
   }
 
@@ -1061,7 +1083,7 @@
 
 .TriggerBuilder {
   padding: 15px;
-  background: var(--control-bg, @control-bg);
+  background: var(--control-bg, var(--control-bg));
   border-radius: 8px;
 
   &-info {
@@ -1069,9 +1091,9 @@
     align-items: center;
     gap: 10px;
     padding: 15px;
-    background: fade(@primary-color, 10%);
+    background: var(--primary-color-fade-10);
     border-radius: 6px;
-    color: var(--primary-color, @primary-color);
+    color: var(--primary-color, var(--primary-color));
     margin-bottom: 15px;
 
     i {
@@ -1091,7 +1113,7 @@
     align-items: center;
     gap: 10px;
     padding: 10px;
-    background: var(--body-bg, @body-bg);
+    background: var(--body-bg, var(--body-bg));
     border-radius: 6px;
 
     .Select {
@@ -1110,7 +1132,7 @@
   &-logic {
     margin-top: 15px;
     padding-top: 15px;
-    border-top: 1px solid darken(@control-bg, 5%);
+    border-top: 1px solid var(--control-bg-darken-5);
 
     label {
       display: block;
@@ -1126,7 +1148,7 @@
   &-dateRange {
     margin-top: 15px;
     padding-top: 15px;
-    border-top: 1px solid darken(@control-bg, 5%);
+    border-top: 1px solid var(--control-bg-darken-5);
   }
 
   &-dateInputs {
@@ -1139,7 +1161,7 @@
   &-tagFilter {
     margin-top: 15px;
     padding-top: 15px;
-    border-top: 1px solid darken(@control-bg, 5%);
+    border-top: 1px solid var(--control-bg-darken-5);
   }
 }
 
@@ -1160,7 +1182,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--control-bg, @control-bg);
+    background: var(--control-bg, var(--control-bg));
     border-radius: 6px;
     font-size: 20px;
   }
@@ -1172,14 +1194,14 @@
   &-dropdown {
     margin-top: 10px;
     padding: 15px;
-    background: var(--body-bg, @body-bg);
-    border: 1px solid var(--control-bg, @control-bg);
+    background: var(--body-bg, var(--body-bg));
+    border: 1px solid var(--control-bg, var(--control-bg));
     border-radius: 8px;
   }
 
   &-hint {
     font-size: 12px;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
     margin-bottom: 10px;
   }
 
@@ -1195,7 +1217,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--control-bg, @control-bg);
+    background: var(--control-bg, var(--control-bg));
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -1203,12 +1225,12 @@
     transition: all 0.15s;
 
     &:hover {
-      background: darken(@control-bg, 5%);
+      background: var(--control-bg-darken-5);
       transform: scale(1.1);
     }
 
     &.active {
-      background: var(--primary-color, @primary-color);
+      background: var(--primary-color, var(--primary-color));
       color: #fff;
     }
   }
@@ -1230,7 +1252,7 @@
     display: flex;
     gap: 4px;
     padding: 4px;
-    background: var(--control-bg, @control-bg);
+    background: var(--control-bg, var(--control-bg));
     border-radius: 8px;
     margin-bottom: 20px;
   }
@@ -1247,18 +1269,18 @@
     border-radius: 6px;
     font-size: 14px;
     font-weight: 600;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
     cursor: pointer;
     transition: all 150ms ease;
 
     &:hover {
-      color: var(--text-color, @text-color);
+      color: var(--text-color, var(--text-color));
       background: rgba(255, 255, 255, 0.08);
     }
 
     &.active {
-      background: var(--body-bg, @body-bg);
-      color: var(--primary-color, @primary-color);
+      background: var(--body-bg, var(--body-bg));
+      color: var(--primary-color, var(--primary-color));
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     }
 
@@ -1288,7 +1310,7 @@
       left: 12px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--muted-color, @muted-color);
+      color: var(--muted-color, var(--muted-color));
       font-size: 14px;
     }
 
@@ -1310,8 +1332,8 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: var(--body-bg, @body-bg);
-    border: 1px solid var(--control-bg, @control-bg);
+    background: var(--body-bg, var(--body-bg));
+    border: 1px solid var(--control-bg, var(--control-bg));
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     max-height: 250px;
@@ -1330,7 +1352,7 @@
     cursor: pointer;
 
     &:hover {
-      background: var(--control-bg, @control-bg);
+      background: var(--control-bg, var(--control-bg));
     }
 
     .Avatar {
@@ -1348,7 +1370,7 @@
 
       .username {
         font-size: 12px;
-        color: var(--muted-color, @muted-color);
+        color: var(--muted-color, var(--muted-color));
       }
     }
   }
@@ -1356,7 +1378,7 @@
   &-noResults {
     padding: 20px;
     text-align: center;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
   }
 
   &-selectedUser {
@@ -1364,7 +1386,7 @@
     align-items: center;
     gap: 10px;
     padding: 10px 15px;
-    background: var(--control-bg, @control-bg);
+    background: var(--control-bg, var(--control-bg));
     border-radius: 6px;
 
     .Avatar {
@@ -1382,7 +1404,7 @@
 
       .username {
         font-size: 12px;
-        color: var(--muted-color, @muted-color);
+        color: var(--muted-color, var(--muted-color));
       }
     }
   }
@@ -1410,7 +1432,7 @@
   &-noHolders {
     padding: 40px 20px;
     text-align: center;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
     font-size: 14px;
   }
 
@@ -1431,7 +1453,7 @@
     justify-content: space-between;
     gap: 12px;
     padding: 12px;
-    background: var(--control-bg, @control-bg);
+    background: var(--control-bg, var(--control-bg));
     border-radius: 8px;
 
     &-user {
@@ -1462,7 +1484,7 @@
       .username {
         display: block;
         font-size: 12px;
-        color: var(--muted-color, @muted-color);
+        color: var(--muted-color, var(--muted-color));
         margin-bottom: 4px;
       }
     }
@@ -1473,7 +1495,7 @@
       gap: 12px;
       flex-wrap: wrap;
       font-size: 11px;
-      color: var(--muted-color, @muted-color);
+      color: var(--muted-color, var(--muted-color));
 
       span {
         display: inline-flex;
@@ -1489,10 +1511,10 @@
     &-reason {
       margin-top: 6px;
       padding: 6px 10px;
-      background: var(--body-bg, @body-bg);
+      background: var(--body-bg, var(--body-bg));
       border-radius: 4px;
       font-size: 12px;
-      color: var(--muted-color, @muted-color);
+      color: var(--muted-color, var(--muted-color));
       font-style: italic;
     }
   }
@@ -1503,7 +1525,7 @@
     justify-content: space-between;
     gap: 10px;
     padding-top: 15px;
-    border-top: 1px solid var(--control-bg, @control-bg);
+    border-top: 1px solid var(--control-bg, var(--control-bg));
 
     .Button {
       display: inline-flex;
@@ -1519,7 +1541,7 @@
 
   &-paginationInfo {
     font-size: 13px;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
   }
 }
 
@@ -1539,7 +1561,7 @@
 
 .helpText {
   font-size: 12px;
-  color: var(--muted-color, @muted-color);
+  color: var(--muted-color, var(--muted-color));
   margin-top: 5px;
 }
 
@@ -1551,7 +1573,7 @@
   &-empty {
     text-align: center;
     padding: 40px 20px;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
   }
 
   &-list {
@@ -1563,16 +1585,16 @@
 
 .RecalculationJob {
   padding: 15px;
-  background: var(--control-bg, @control-bg);
+  background: var(--control-bg, var(--control-bg));
   border-radius: 8px;
-  border-left: 4px solid var(--muted-color, @muted-color);
+  border-left: 4px solid var(--muted-color, var(--muted-color));
 
   &--pending {
-    border-left-color: var(--muted-color, @muted-color);
+    border-left-color: var(--muted-color, var(--muted-color));
   }
 
   &--running {
-    border-left-color: var(--primary-color, @primary-color);
+    border-left-color: var(--primary-color, var(--primary-color));
   }
 
   &--completed {
@@ -1580,11 +1602,11 @@
   }
 
   &--failed {
-    border-left-color: @error-color;
+    border-left-color: var(--error-color);
   }
 
   &--cancelled {
-    border-left-color: var(--muted-color, @muted-color);
+    border-left-color: var(--muted-color, var(--muted-color));
   }
 
   &--stuck {
@@ -1600,7 +1622,7 @@
 
   &-id {
     font-weight: bold;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
   }
 
   &-status {
@@ -1614,17 +1636,17 @@
       font-size: 12px;
     }
 
-    &--pending { color: var(--muted-color, @muted-color); }
-    &--running { color: var(--primary-color, @primary-color); }
+    &--pending { color: var(--muted-color, var(--muted-color)); }
+    &--running { color: var(--primary-color, var(--primary-color)); }
     &--completed { color: @success-color; }
-    &--failed { color: @error-color; }
-    &--cancelled { color: var(--muted-color, @muted-color); }
+    &--failed { color: var(--error-color); }
+    &--cancelled { color: var(--muted-color, var(--muted-color)); }
   }
 
   &-stuckBadge {
     margin-left: 6px;
     padding: 2px 6px;
-    background: @error-color;
+    background: var(--error-color);
     color: #fff;
     border-radius: 4px;
     font-size: 10px;
@@ -1635,7 +1657,7 @@
   &-date {
     margin-left: auto;
     font-size: 12px;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
   }
 
   &-progress {
@@ -1648,14 +1670,14 @@
   &-progressBar {
     flex: 1;
     height: 6px;
-    background: darken(@control-bg, 5%);
+    background: var(--control-bg-darken-5);
     border-radius: 3px;
     overflow: hidden;
   }
 
   &-progressFill {
     height: 100%;
-    background: var(--primary-color, @primary-color);
+    background: var(--primary-color, var(--primary-color));
     border-radius: 3px;
     transition: width 0.3s ease;
   }
@@ -1665,7 +1687,7 @@
   }
 
   &--failed &-progressFill {
-    background: @error-color;
+    background: var(--error-color);
   }
 
   &-progressText {
@@ -1679,7 +1701,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 12px;
-    color: var(--muted-color, @muted-color);
+    color: var(--muted-color, var(--muted-color));
     margin-bottom: 8px;
   }
 
@@ -1687,7 +1709,7 @@
     padding: 8px;
     background: fade(@error-color, 15%);
     border-radius: 4px;
-    color: @error-color;
+    color: var(--error-color);
     font-size: 12px;
     margin-bottom: 8px;
   }
@@ -1696,6 +1718,15 @@
     display: flex;
     justify-content: flex-end;
     padding-top: 8px;
-    border-top: 1px solid darken(@control-bg, 5%);
+    border-top: 1px solid var(--control-bg-darken-5);
   }
+}
+
+
+:root {
+  --control-bg-darken-3: color-mix(in srgb, var(--control-bg) 97%, black);
+  --control-bg-darken-5: color-mix(in srgb, var(--control-bg) 95%, black);
+  --primary-color-fade-10: color-mix(in srgb, var(--primary-color) 10%, transparent);
+  --primary-color-lighten-10: color-mix(in srgb, var(--primary-color) 90%, white);
+  --muted-color-fade-10: color-mix(in srgb, var(--muted-color) 10%, transparent);
 }

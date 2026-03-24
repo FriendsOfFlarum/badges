@@ -29,11 +29,8 @@ class MetricManager
      */
     protected ?array $eventCache = null;
 
-    protected ExtensionManager $extensions;
-
-    public function __construct(ExtensionManager $extensions)
+    public function __construct(protected ExtensionManager $extensions)
     {
-        $this->extensions = $extensions;
     }
 
     /**

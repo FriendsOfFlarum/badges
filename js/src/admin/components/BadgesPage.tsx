@@ -1,3 +1,4 @@
+import Form from 'flarum/common/components/Form';
 import app from 'flarum/admin/app';
 import ExtensionPage from 'flarum/admin/components/ExtensionPage';
 import Button from 'flarum/common/components/Button';
@@ -309,7 +310,6 @@ export default class BadgesPage extends ExtensionPage {
       <div className="RecalculationTab">
         {/* Current Progress */}
         {this.recalculationProgress && this.recalculationProgressBar()}
-
         {/* Start New Recalculation Form */}
         <div className="RecalculationTab-form">
           <h3>{app.translator.trans('fof-badges.admin.recalculate_tab.title')}</h3>
@@ -319,66 +319,70 @@ export default class BadgesPage extends ExtensionPage {
             <span>{app.translator.trans('fof-badges.admin.recalculate_tab.info')}</span>
           </div>
 
-          <div className="Form">
-            {/* Badge Selection */}
+          <Form>
+            {}
             <div className="Form-group">
               <label>{app.translator.trans('fof-badges.admin.recalculate_tab.badge_label')}</label>
               {Select.component({
                 options: badgeOptions,
                 value: this.selectedBadgeId,
+
                 onchange: (value: string) => {
                   this.selectedBadgeId = value;
                 },
+
                 disabled: isActive,
               })}
               <p className="helpText">{app.translator.trans('fof-badges.admin.recalculate_tab.badge_help')}</p>
             </div>
-
-            {/* Chunk Size */}
+            {}
             <div className="Form-group">
               <label>{app.translator.trans('fof-badges.admin.recalculate_tab.chunk_size_label')}</label>
               {Select.component({
                 options: chunkSizeOptions,
                 value: String(this.chunkSize),
+
                 onchange: (value: string) => {
                   this.chunkSize = parseInt(value, 10);
                 },
+
                 disabled: isActive,
               })}
               <p className="helpText">{app.translator.trans('fof-badges.admin.recalculate_tab.chunk_size_help')}</p>
             </div>
-
-            {/* No Revoke Option */}
+            {}
             <div className="Form-group">
               {Switch.component(
                 {
                   state: this.noRevoke,
+
                   onchange: (value: boolean) => {
                     this.noRevoke = value;
                   },
+
                   disabled: isActive,
                 },
                 app.translator.trans('fof-badges.admin.recalculate_tab.no_revoke_label')
               )}
               <p className="helpText">{app.translator.trans('fof-badges.admin.recalculate_tab.no_revoke_help')}</p>
             </div>
-
-            {/* Re-apply Actions Option */}
+            {}
             <div className="Form-group">
               {Switch.component(
                 {
                   state: this.reapplyActions,
+
                   onchange: (value: boolean) => {
                     this.reapplyActions = value;
                   },
+
                   disabled: isActive,
                 },
                 app.translator.trans('fof-badges.admin.recalculate_tab.reapply_actions_label')
               )}
               <p className="helpText">{app.translator.trans('fof-badges.admin.recalculate_tab.reapply_actions_help')}</p>
             </div>
-
-            {/* Statistics */}
+            {}
             <div className="Form-group">
               <div className="RecalculationTab-stats">
                 <div className="RecalculationTab-stat">
@@ -395,8 +399,7 @@ export default class BadgesPage extends ExtensionPage {
                 </div>
               </div>
             </div>
-
-            {/* Start Button */}
+            {}
             <div className="Form-group">
               <Button
                 className="Button Button--primary"
@@ -411,9 +414,8 @@ export default class BadgesPage extends ExtensionPage {
                 <p className="helpText RecalculationTab-warning">{app.translator.trans('fof-badges.admin.recalculate_tab.no_automatic_badges')}</p>
               )}
             </div>
-          </div>
+          </Form>
         </div>
-
         {/* Sync Badge Counts */}
         <div className="RecalculationTab-sync">
           <h3>{app.translator.trans('fof-badges.admin.recalculate_tab.sync_counts_title')}</h3>
@@ -425,7 +427,6 @@ export default class BadgesPage extends ExtensionPage {
             {app.translator.trans('fof-badges.admin.recalculate_tab.sync_counts')}
           </Button>
         </div>
-
         {/* Jobs History */}
         <div className="RecalculationTab-jobs">
           <h3>{app.translator.trans('fof-badges.admin.recalculate_tab.jobs_title')}</h3>

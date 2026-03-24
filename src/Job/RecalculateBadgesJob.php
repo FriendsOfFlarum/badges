@@ -39,11 +39,8 @@ class RecalculateBadgesJob extends AbstractJob
      */
     public int $timeout = 300;
 
-    protected int $progressId;
-
-    public function __construct(int $progressId)
+    public function __construct(protected int $progressId)
     {
-        $this->progressId = $progressId;
     }
 
     public function handle(
@@ -91,7 +88,9 @@ class RecalculateBadgesJob extends AbstractJob
 
         // Single badge: use simple per-badge optimization
         if (count($badges) === 1) {
-            $this->dispatchSingleBadgeChunks($progress, $badges->first(), $optimizer, $queue, $chunkSize, $noRevoke, $reapplyActions);
+            /** @var \FoF\Badges\Badge $badge */
+            $badge = $badges->first();
+            $this->dispatchSingleBadgeChunks($progress, $badge, $optimizer, $queue, $chunkSize, $noRevoke, $reapplyActions);
 
             return;
         }

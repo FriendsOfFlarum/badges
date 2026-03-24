@@ -12,28 +12,24 @@
 namespace FoF\Badges\Api\Controller;
 
 use Carbon\Carbon;
-use Flarum\Api\Controller\AbstractListController;
 use Flarum\Http\RequestUtil;
-use FoF\Badges\Api\Serializer\BadgeSerializer;
 use FoF\Badges\Badge;
 use FoF\Badges\BadgeCategory;
+use Laminas\Diactoros\Response\JsonResponse;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tobscure\JsonApi\Document;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class InstallDefaultBadgesController extends AbstractListController
+class InstallDefaultBadgesController implements RequestHandlerInterface
 {
-    public $serializer = BadgeSerializer::class;
-
-    public $include = ['category'];
-
-    protected function data(ServerRequestInterface $request, Document $document): iterable
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $actor = RequestUtil::getActor($request);
         $actor->assertAdmin();
 
         // Only allow if no badges exist yet
         if (Badge::count() > 0) {
-            return [];
+            return new JsonResponse(['data' => []]);
         }
 
         $now = Carbon::now();
@@ -41,10 +37,19 @@ class InstallDefaultBadgesController extends AbstractListController
         $categories = $this->createCategories($now);
         $this->createBadges($categories, $now);
 
-        return Badge::query()
+        $badges = Badge::query()
             ->with('category')
             ->orderBy('order')
-            ->get();
+            ->get()
+            ->map(fn (Badge $badge) => [
+                'id' => $badge->id,
+                'name' => $badge->name,
+                'slug' => $badge->slug,
+                'category_id' => $badge->category_id,
+            ])
+            ->toArray();
+
+        return new JsonResponse(['data' => $badges]);
     }
 
     protected function createCategories(Carbon $now): array

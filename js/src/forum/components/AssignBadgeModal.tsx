@@ -1,3 +1,4 @@
+import Form from 'flarum/common/components/Form';
 import app from 'flarum/forum/app';
 import Modal, { IInternalModalAttrs } from 'flarum/common/components/Modal';
 import Button from 'flarum/common/components/Button';
@@ -140,8 +141,8 @@ export default class AssignBadgeModal extends Modal<AssignBadgeModalAttrs> {
 
     return (
       <div className="Modal-body">
-        <div className="Form">
-          {/* Badge Selection */}
+        <Form>
+          {}
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.forum.user.select_badge_label')}</label>
             <Select
@@ -153,8 +154,7 @@ export default class AssignBadgeModal extends Modal<AssignBadgeModalAttrs> {
               className="FormControl"
             />
           </div>
-
-          {/* Reason */}
+          {}
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.forum.user.assign_reason')}</label>
             <textarea
@@ -168,8 +168,7 @@ export default class AssignBadgeModal extends Modal<AssignBadgeModalAttrs> {
             />
             <p className="helpText">{app.translator.trans('fof-badges.forum.user.assign_reason_help')}</p>
           </div>
-
-          {/* Submit Button */}
+          {}
           <div className="Form-group AssignBadgeModal-buttons">
             <Button className="Button Button--primary" loading={this.saving} disabled={!this.selectedBadgeId} onclick={() => this.assign()}>
               {app.translator.trans('fof-badges.forum.user.assign_button')}
@@ -178,7 +177,7 @@ export default class AssignBadgeModal extends Modal<AssignBadgeModalAttrs> {
               {app.translator.trans('fof-badges.forum.user.cancel')}
             </Button>
           </div>
-        </div>
+        </Form>
       </div>
     );
   }

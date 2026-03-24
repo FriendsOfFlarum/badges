@@ -1,9 +1,9 @@
+import IndexSidebar from 'flarum/forum/components/IndexSidebar';
 import app from 'flarum/forum/app';
 import Page from 'flarum/common/components/Page';
-import IndexPage from 'flarum/forum/components/IndexPage';
+import PageStructure from 'flarum/forum/components/PageStructure';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import Link from 'flarum/common/components/Link';
-import listItems from 'flarum/common/helpers/listItems';
 import type Mithril from 'mithril';
 import type { Badge, BadgeCategory } from '../../common';
 import BadgeCard from './BadgeCard';
@@ -60,26 +60,23 @@ export default class BadgesPage extends Page {
 
   view(): Mithril.Children {
     return (
-      <div className="IndexPage BadgesPage">
-        <header className="Hero BadgesHero">
-          <div className="container">
-            <div className="containerNarrow">
-              <h1 className="Hero-title">
-                <i aria-hidden="true" className="icon fas fa-award"></i> {app.translator.trans('fof-badges.forum.badges_title')}
-              </h1>
+      <PageStructure
+        className="BadgesPage"
+        hero={() => (
+          <header className="Hero BadgesHero">
+            <div className="container">
+              <div className="containerNarrow">
+                <h1 className="Hero-title">
+                  <i aria-hidden="true" className="icon fas fa-award"></i> {app.translator.trans('fof-badges.forum.badges_title')}
+                </h1>
+              </div>
             </div>
-          </div>
-        </header>
-
-        <div className="container">
-          <div className="sideNavContainer">
-            <nav className="IndexPage-nav sideNav">
-              <ul>{listItems(IndexPage.prototype.sidebarItems().toArray())}</ul>
-            </nav>
-            <div className="IndexPage-results sideNavOffset">{this.loading ? <LoadingIndicator /> : this.renderContent()}</div>
-          </div>
-        </div>
-      </div>
+          </header>
+        )}
+        sidebar={() => <IndexSidebar />}
+      >
+        {this.loading ? <LoadingIndicator /> : this.renderContent()}
+      </PageStructure>
     );
   }
 

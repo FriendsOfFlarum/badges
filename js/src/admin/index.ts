@@ -4,7 +4,7 @@ import BadgesPage from './components/BadgesPage';
 export { default as extend } from './extend';
 
 app.initializers.add('fof-badges', () => {
-  app.extensionData
+  app.registry
     .for('fof-badges')
     .registerPage(BadgesPage)
     .registerPermission(

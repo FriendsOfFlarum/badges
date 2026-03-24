@@ -74,6 +74,6 @@ class ListRecalculationJobsController implements RequestHandlerInterface
             return false;
         }
 
-        return $job->updated_at->diffInMinutes(Carbon::now()) >= $this->stuckThresholdMinutes;
+        return $job->updated_at->diffInMinutes(Carbon::now(), true) >= $this->stuckThresholdMinutes;
     }
 }

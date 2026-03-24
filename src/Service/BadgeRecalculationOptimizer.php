@@ -24,11 +24,8 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class BadgeRecalculationOptimizer
 {
-    protected MetricManager $metricManager;
-
-    public function __construct(MetricManager $metricManager)
+    public function __construct(protected MetricManager $metricManager)
     {
-        $this->metricManager = $metricManager;
     }
     /**
      * Metrics that only increase over time (monotonic).

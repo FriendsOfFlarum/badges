@@ -1,10 +1,10 @@
+import IndexSidebar from 'flarum/forum/components/IndexSidebar';
 import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
-import IndexPage from 'flarum/forum/components/IndexPage';
 import LinkButton from 'flarum/common/components/LinkButton';
 
 export default function addBadgesNavItem() {
-  extend(IndexPage.prototype, 'navItems', function (items) {
+  extend(IndexSidebar.prototype, 'navItems', function (items) {
     if (!app.forum.attribute('canViewBadges')) {
       return;
     }

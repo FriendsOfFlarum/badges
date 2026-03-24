@@ -11,23 +11,21 @@
 
 namespace FoF\Badges\Notification;
 
+use Flarum\Notification\AlertableInterface;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\User\User;
 use FoF\Badges\UserBadge;
 
-class BadgeEarnedBlueprint implements BlueprintInterface
+class BadgeEarnedBlueprint implements BlueprintInterface, AlertableInterface
 {
-    protected UserBadge $userBadge;
-
-    public function __construct(UserBadge $userBadge)
+    public function __construct(protected UserBadge $userBadge)
     {
-        $this->userBadge = $userBadge;
     }
 
     /**
      * Get the subject of the notification (the user badge).
      */
-    public function getSubject(): UserBadge
+    public function getSubject(): ?\Flarum\Database\AbstractModel
     {
         return $this->userBadge;
     }
@@ -36,7 +34,7 @@ class BadgeEarnedBlueprint implements BlueprintInterface
      * Get the user who triggered the notification.
      * Returns grantedByUser for manual grants, null for system triggers.
      */
-    public function getFromUser(): ?User
+    public function getFromUser(): ?\Flarum\User\User
     {
         return $this->userBadge->grantedByUser;
     }
@@ -44,9 +42,19 @@ class BadgeEarnedBlueprint implements BlueprintInterface
     /**
      * Get additional data for the notification.
      */
-    public function getData(): array
+    public function getData(): mixed
     {
         $badge = $this->userBadge->badge;
+
+        if (! $badge) {
+            return [
+                'badgeId' => null,
+                'badgeName' => 'Unknown Badge',
+                'badgeIcon' => 'fas fa-award',
+                'badgeIconColor' => '#ffffff',
+                'badgeBackgroundColor' => '#667eea',
+            ];
+        }
 
         return [
             'badgeId' => $badge->id,

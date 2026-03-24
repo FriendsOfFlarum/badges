@@ -22,13 +22,8 @@ use Illuminate\Database\QueryException;
 
 class BadgeAwarder
 {
-    protected NotificationSyncer $notifications;
-    protected Dispatcher $events;
-
-    public function __construct(NotificationSyncer $notifications, Dispatcher $events)
+    public function __construct(protected NotificationSyncer $notifications, protected Dispatcher $events)
     {
-        $this->notifications = $notifications;
-        $this->events = $events;
     }
 
     /**

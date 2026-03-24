@@ -18,11 +18,8 @@ use Illuminate\Database\ConnectionInterface;
 
 class PrivateDiscussionsMetric implements MetricInterface
 {
-    protected ConnectionInterface $db;
-
-    public function __construct(ConnectionInterface $db)
+    public function __construct(protected ConnectionInterface $db)
     {
-        $this->db = $db;
     }
 
     public function getType(): string

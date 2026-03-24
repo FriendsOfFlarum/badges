@@ -20,13 +20,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 class BadgeRecalculationService
 {
-    protected TriggerEvaluator $evaluator;
-    protected BadgeAwarder $awarder;
-
-    public function __construct(TriggerEvaluator $evaluator, BadgeAwarder $awarder)
+    public function __construct(protected TriggerEvaluator $evaluator, protected BadgeAwarder $awarder)
     {
-        $this->evaluator = $evaluator;
-        $this->awarder = $awarder;
     }
 
     /**

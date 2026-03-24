@@ -22,13 +22,8 @@ use FoF\Badges\Trigger\TriggerEvaluator;
 
 class EvaluateBadges
 {
-    protected TriggerEvaluator $evaluator;
-    protected BadgeAwarder $awarder;
-
-    public function __construct(TriggerEvaluator $evaluator, BadgeAwarder $awarder)
+    public function __construct(protected TriggerEvaluator $evaluator, protected BadgeAwarder $awarder)
     {
-        $this->evaluator = $evaluator;
-        $this->awarder = $awarder;
     }
 
     /**

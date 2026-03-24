@@ -11,17 +11,21 @@
 
 .BadgesPage {
   &-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
     padding: 60px 20px;
 
     &-icon {
+      display: block;
       font-size: 64px;
-      color: @muted-more-color;
+      color: var(--muted-more-color);
       margin-bottom: 20px;
     }
 
     p {
-      color: @muted-color;
+      color: var(--muted-color);
       font-size: 16px;
       margin: 0;
     }
@@ -53,7 +57,7 @@
     &--uncategorized {
       margin-top: 40px;
       padding-top: 40px;
-      border-top: 1px solid @control-bg;
+      border-top: 1px solid var(--control-bg);
     }
   }
 
@@ -64,7 +68,7 @@
   }
 
   &-categoryDescription {
-    color: @muted-color;
+    color: var(--muted-color);
     margin: 0 0 20px;
   }
 
@@ -84,7 +88,7 @@
   display: flex;
   align-items: stretch;
   padding: 20px;
-  background: @control-bg;
+  background: var(--control-bg);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
@@ -97,7 +101,7 @@
   }
 
   &:focus {
-    outline: 2px solid @primary-color;
+    outline: 2px solid var(--primary-color);
     outline-offset: 2px;
   }
 
@@ -173,7 +177,7 @@
 
   &-description {
     font-size: 13px;
-    color: @muted-color;
+    color: var(--muted-color);
     margin-bottom: 10px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -187,7 +191,7 @@
     align-items: flex-start;
     gap: 4px;
     font-size: 12px;
-    color: @muted-color;
+    color: var(--muted-color);
     margin-top: auto;
 
     i {
@@ -217,7 +221,7 @@
 .BadgeModal {
   .Modal-header {
     padding: 20px;
-    border-bottom: 1px solid @control-bg;
+    border-bottom: 1px solid var(--control-bg);
   }
 
   &-header {
@@ -249,7 +253,7 @@
   }
 
   &-description {
-    color: @muted-color;
+    color: var(--muted-color);
     margin: 0 0 10px;
     line-height: 1.5;
   }
@@ -259,9 +263,9 @@
     align-items: center;
     gap: 6px;
     font-size: 13px;
-    color: @muted-color;
+    color: var(--muted-color);
     padding: 4px 12px;
-    background: @control-bg;
+    background: var(--control-bg);
     border-radius: 20px;
 
     i {
@@ -295,7 +299,7 @@
 
     &Explain {
       font-size: 13px;
-      color: @muted-color;
+      color: var(--muted-color);
       margin: 0;
     }
   }
@@ -304,12 +308,12 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    color: @muted-color;
+    color: var(--muted-color);
     font-size: 14px;
   }
 
   &-users {
-    border-top: 1px solid @control-bg;
+    border-top: 1px solid var(--control-bg);
     padding-top: 20px;
   }
 
@@ -322,7 +326,7 @@
     gap: 8px;
 
     i {
-      color: @primary-color;
+      color: var(--primary-color);
     }
   }
 
@@ -334,7 +338,7 @@
   &-noUsers {
     text-align: center;
     padding: 30px;
-    color: @muted-color;
+    color: var(--muted-color);
 
     i {
       font-size: 32px;
@@ -359,7 +363,7 @@
     border-radius: 6px;
 
     &:hover {
-      background: @control-bg;
+      background: var(--control-bg);
     }
   }
 
@@ -386,15 +390,15 @@
 
   &-earnedDate {
     font-size: 12px;
-    color: @muted-color;
+    color: var(--muted-color);
   }
 
   &-moreUsers {
     text-align: center;
     padding: 15px;
-    color: @muted-color;
+    color: var(--muted-color);
     font-size: 13px;
-    border-top: 1px solid @control-bg;
+    border-top: 1px solid var(--control-bg);
     margin-top: 10px;
   }
 }
@@ -412,7 +416,7 @@
   &-emptyState {
     text-align: center;
     padding: 60px 20px;
-    color: @muted-color;
+    color: var(--muted-color);
 
     p {
       margin: 0;
@@ -423,7 +427,7 @@
   &-emptyIcon {
     font-size: 48px;
     margin-bottom: 15px;
-    color: @muted-more-color;
+    color: var(--muted-more-color);
   }
 
   &-header {
@@ -459,7 +463,7 @@
 
   &-meta {
     font-size: 12px;
-    color: @muted-color;
+    color: var(--muted-color);
     padding: 0 5px;
   }
 
@@ -477,7 +481,7 @@
     font-style: italic;
     margin-top: 8px;
     padding-top: 8px;
-    border-top: 1px solid @control-bg;
+    border-top: 1px solid var(--control-bg);
 
     i {
       margin-top: 2px;
@@ -533,7 +537,7 @@
     justify-content: center;
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid @control-bg;
+    border-top: 1px solid var(--control-bg);
   }
 }
 
@@ -548,15 +552,17 @@
   }
 
   &-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    padding: 40px 20px;
-    color: @muted-color;
+    padding: 30px 20px;
+    color: var(--muted-color);
 
     i {
       font-size: 48px;
       margin-bottom: 15px;
-      display: block;
-      color: @muted-more-color;
+      color: var(--muted-more-color);
     }
   }
 
@@ -567,7 +573,7 @@
 
   .helpText {
     font-size: 12px;
-    color: @muted-color;
+    color: var(--muted-color);
     margin-top: 5px;
   }
 }

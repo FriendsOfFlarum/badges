@@ -23,8 +23,8 @@
         "forum": "https://discuss.flarum.org/d/38762-fof-badges"
     },
     "require": {
-        "php": "^8.1",
-        "flarum/core": "^1.8.0"
+        "php": "^8.2",
+        "flarum/core": "^2.0.0-beta"
     },
     "replace": {
         "huseyinfiliz/badges": "*"
@@ -124,15 +124,14 @@
         "analyse:phpstan": "Run PHPStan static analysis."
     },
     "require-dev": {
-        "flarum/testing": "^1.0.0",
-        "flarum/phpstan": "^1.8",
+        "flarum/testing": "^2.0.0-beta",
+        "flarum/phpstan": "^2.0.0-beta",
         "flarum/likes": "*",
         "flarum/tags": "*",
         "flarum/nicknames": "*",
         "fof/user-bio": "*",
         "fof/best-answer": "*",
         "fof/upload": "*",
-        "fof/polls": "*",
         "fof/byobu": "*",
         "fof/reactions": "*",
         "fof/gamification": "*"

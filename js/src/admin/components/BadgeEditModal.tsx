@@ -1,5 +1,7 @@
+import Form from 'flarum/common/components/Form';
 import app from 'flarum/admin/app';
-import Modal, { IInternalModalAttrs } from 'flarum/common/components/Modal';
+import { IFormModalAttrs } from 'flarum/common/components/FormModal';
+import FormModal from 'flarum/common/components/FormModal';
 import Button from 'flarum/common/components/Button';
 import Switch from 'flarum/common/components/Switch';
 import Select from 'flarum/common/components/Select';
@@ -10,13 +12,13 @@ import type { Badge, BadgeCategory, TriggerConfig, BadgeActions } from '../../co
 import TriggerBuilder from './TriggerBuilder';
 import IconPicker from './IconPicker';
 
-interface BadgeEditModalAttrs extends IInternalModalAttrs {
+interface BadgeEditModalAttrs extends IFormModalAttrs {
   badge?: Badge;
   categories: BadgeCategory[];
   onSave?: () => void;
 }
 
-export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
+export default class BadgeEditModal extends FormModal<BadgeEditModalAttrs> {
   badge: Badge | null = null;
   isNew: boolean = true;
 
@@ -70,8 +72,8 @@ export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
 
     return (
       <div className="Modal-body">
-        <div className="Form">
-          {/* Basic Info Section */}
+        <Form>
+          {}
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.admin.badge_name')}</label>
             <input
@@ -87,7 +89,6 @@ export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
               placeholder={app.translator.trans('fof-badges.admin.badge_name_placeholder')}
             />
           </div>
-
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.admin.badge_slug')}</label>
             <input
@@ -101,7 +102,6 @@ export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
             />
             <p className="helpText">{app.translator.trans('fof-badges.admin.badge_slug_help')}</p>
           </div>
-
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.admin.badge_description')}</label>
             <textarea
@@ -114,7 +114,6 @@ export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
               placeholder={app.translator.trans('fof-badges.admin.badge_description_placeholder')}
             />
           </div>
-
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.admin.badge_category')}</label>
             <Select
@@ -128,8 +127,7 @@ export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
               }}
             />
           </div>
-
-          {/* Appearance Section */}
+          {}
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.admin.appearance')}</label>
             <div className="BadgeEditModal-appearance">
@@ -145,7 +143,6 @@ export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
                   <span>{this.name || 'Badge'}</span>
                 </span>
               </div>
-
               <div className="BadgeEditModal-colors">
                 <div className="BadgeEditModal-colorInput">
                   <label>{app.translator.trans('fof-badges.admin.icon_color')}</label>
@@ -168,14 +165,12 @@ export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
                   />
                 </div>
               </div>
-
               <div className="BadgeEditModal-iconPicker">
                 <IconPicker value={this.icon} onchange={(icon: string) => (this.icon = icon)} />
               </div>
             </div>
           </div>
-
-          {/* Trigger Configuration Section */}
+          {}
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.admin.trigger_config')}</label>
             <p className="helpText">{app.translator.trans('fof-badges.admin.trigger_config_help')}</p>
@@ -186,20 +181,21 @@ export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
               }}
             />
           </div>
-
-          {/* Actions Section */}
+          {}
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.admin.actions')}</label>
             <div className="BadgeEditModal-actions">
               <Switch
                 state={this.actions.send_notification !== false}
                 onchange={(val: boolean) => {
-                  this.actions = { ...this.actions, send_notification: val };
+                  this.actions = {
+                    ...this.actions,
+                    send_notification: val,
+                  };
                 }}
               >
                 {app.translator.trans('fof-badges.admin.send_notification')}
               </Switch>
-
               <div className="BadgeEditModal-groupSelect">
                 <label>{app.translator.trans('fof-badges.admin.add_to_group')}</label>
                 <Select
@@ -219,8 +215,7 @@ export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
               </div>
             </div>
           </div>
-
-          {/* Status Section */}
+          {}
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.admin.status')}</label>
             <div className="BadgeEditModal-status">
@@ -233,7 +228,6 @@ export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
                 {app.translator.trans('fof-badges.admin.is_active')}
               </Switch>
               <p className="helpText">{app.translator.trans('fof-badges.admin.is_active_help')}</p>
-
               <Switch
                 state={this.isVisible}
                 onchange={(val: boolean) => {
@@ -245,8 +239,7 @@ export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
               <p className="helpText">{app.translator.trans('fof-badges.admin.is_visible_help')}</p>
             </div>
           </div>
-
-          {/* Validation Errors */}
+          {}
           {this.getValidationError() && (
             <div className="Form-group">
               <div className="Alert Alert--error">
@@ -254,8 +247,7 @@ export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
               </div>
             </div>
           )}
-
-          {/* Submit Buttons */}
+          {}
           <div className="Form-group">
             <Button className="Button Button--primary" loading={this.loading} disabled={!this.canSave()} onclick={() => this.save()}>
               {app.translator.trans('fof-badges.admin.save')}
@@ -264,7 +256,7 @@ export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
               {app.translator.trans('fof-badges.admin.cancel')}
             </Button>
           </div>
-        </div>
+        </Form>
       </div>
     );
   }

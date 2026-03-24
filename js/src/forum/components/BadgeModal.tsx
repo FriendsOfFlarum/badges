@@ -2,7 +2,7 @@ import app from 'flarum/forum/app';
 import Modal, { IInternalModalAttrs } from 'flarum/common/components/Modal';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import Link from 'flarum/common/components/Link';
-import avatar from 'flarum/common/helpers/avatar';
+import Avatar from 'flarum/common/components/Avatar';
 import username from 'flarum/common/helpers/username';
 import humanTime from 'flarum/common/helpers/humanTime';
 import type Mithril from 'mithril';
@@ -83,7 +83,6 @@ export default class BadgeModal extends Modal<BadgeModalAttrs> {
             )}
           </div>
         </div>
-
         {/* Rarity Stats */}
         <div className="BadgeModal-stats">
           <div className="BadgeModal-rarity">
@@ -106,7 +105,6 @@ export default class BadgeModal extends Modal<BadgeModalAttrs> {
             </p>
           </div>
         </div>
-
         {/* Earned Users List */}
         <div className="BadgeModal-users">
           <h3 className="BadgeModal-usersTitle">
@@ -132,7 +130,7 @@ export default class BadgeModal extends Modal<BadgeModalAttrs> {
                 return (
                   <li className="BadgeModal-userItem" key={ub.id()}>
                     <Link href={app.route('user', { username: user.username() })} className="BadgeModal-userLink">
-                      {avatar(user)}
+                      <Avatar user={user} />
                       <span className="BadgeModal-userName">{username(user)}</span>
                     </Link>
                     <span className="BadgeModal-earnedDate">{humanTime(ub.earnedAt())}</span>

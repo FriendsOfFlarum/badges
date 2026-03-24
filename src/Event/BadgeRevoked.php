@@ -16,14 +16,7 @@ use FoF\Badges\Badge;
 
 class BadgeRevoked
 {
-    public User $user;
-    public Badge $badge;
-    public string $reason;
-
-    public function __construct(User $user, Badge $badge, string $reason = 'manual')
+    public function __construct(public User $user, public Badge $badge, public string $reason = 'manual')
     {
-        $this->user = $user;
-        $this->badge = $badge;
-        $this->reason = $reason;
     }
 }

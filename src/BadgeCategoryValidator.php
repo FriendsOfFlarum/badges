@@ -30,8 +30,9 @@ class BadgeCategoryValidator extends AbstractValidator
         $idExcept = $this->category ? $this->category->id : null;
 
         return [
-            'name' => ['required', 'string', 'max:100'],
+            'name' => ['sometimes', 'required', 'string', 'max:100'],
             'slug' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:100',

@@ -1,19 +1,21 @@
+import Form from 'flarum/common/components/Form';
 import app from 'flarum/admin/app';
-import Modal, { IInternalModalAttrs } from 'flarum/common/components/Modal';
+import { IFormModalAttrs } from 'flarum/common/components/FormModal';
+import FormModal from 'flarum/common/components/FormModal';
 import Button from 'flarum/common/components/Button';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
-import avatar from 'flarum/common/helpers/avatar';
+import Avatar from 'flarum/common/components/Avatar';
 import extractText from 'flarum/common/utils/extractText';
 import type Mithril from 'mithril';
 import type User from 'flarum/common/models/User';
 import type { Badge, UserBadge } from '../../common';
 
-interface ManualAssignModalAttrs extends IInternalModalAttrs {
+interface ManualAssignModalAttrs extends IFormModalAttrs {
   badge: Badge;
   onAssign?: () => void;
 }
 
-export default class ManualAssignModal extends Modal<ManualAssignModalAttrs> {
+export default class ManualAssignModal extends FormModal<ManualAssignModalAttrs> {
   badge!: Badge;
 
   // Current tab: 'assign' or 'holders'
@@ -81,14 +83,13 @@ export default class ManualAssignModal extends Modal<ManualAssignModalAttrs> {
 
   renderAssignTab(): Mithril.Children {
     return (
-      <div className="Form">
-        {/* User Search */}
+      <Form>
+        {}
         <div className="Form-group">
           <label>{app.translator.trans('fof-badges.admin.select_user')}</label>
-
           {this.selectedUser ? (
             <div className="ManualAssignModal-selectedUser">
-              {avatar(this.selectedUser)}
+              <Avatar user={this.selectedUser} />
               <div className="ManualAssignModal-selectedUser-info">
                 <span className="displayName">{this.selectedUser.displayName()}</span>
                 <span className="username">@{this.selectedUser.username()}</span>
@@ -120,12 +121,11 @@ export default class ManualAssignModal extends Modal<ManualAssignModalAttrs> {
                   </span>
                 )}
               </div>
-
               {this.searchResults.length > 0 && (
                 <ul className="ManualAssignModal-results">
                   {this.searchResults.map((user) => (
                     <li key={user.id()} className="ManualAssignModal-resultItem" onclick={() => this.selectUser(user)}>
-                      {avatar(user)}
+                      <Avatar user={user} />
                       <div className="ManualAssignModal-resultItem-info">
                         <span className="displayName">{user.displayName()}</span>
                         <span className="username">@{user.username()}</span>
@@ -134,15 +134,13 @@ export default class ManualAssignModal extends Modal<ManualAssignModalAttrs> {
                   ))}
                 </ul>
               )}
-
               {this.searchQuery.length >= 2 && !this.searching && this.searchResults.length === 0 && (
                 <div className="ManualAssignModal-noResults">{app.translator.trans('fof-badges.admin.no_users_found')}</div>
               )}
             </div>
           )}
         </div>
-
-        {/* Reason */}
+        {}
         <div className="Form-group">
           <label>{app.translator.trans('fof-badges.admin.assign_reason')}</label>
           <textarea
@@ -156,14 +154,13 @@ export default class ManualAssignModal extends Modal<ManualAssignModalAttrs> {
           />
           <p className="helpText">{app.translator.trans('fof-badges.admin.assign_reason_help')}</p>
         </div>
-
-        {/* Submit Button */}
+        {}
         <div className="Form-group">
           <Button className="Button Button--primary" loading={this.loading} disabled={!this.selectedUser} onclick={() => this.assign()}>
             {app.translator.trans('fof-badges.admin.assign')}
           </Button>
         </div>
-      </div>
+      </Form>
     );
   }
 
@@ -185,7 +182,6 @@ export default class ManualAssignModal extends Modal<ManualAssignModalAttrs> {
             />
           </div>
         </div>
-
         {/* Holders List */}
         {this.holdersLoading ? (
           <div className="ManualAssignModal-holdersLoading">
@@ -210,7 +206,7 @@ export default class ManualAssignModal extends Modal<ManualAssignModalAttrs> {
                   return (
                     <li key={userBadge.id()} className="ManualAssignModal-holderItem">
                       <div className="ManualAssignModal-holderItem-user">
-                        {avatar(user)}
+                        <Avatar user={user} />
                         <div className="ManualAssignModal-holderItem-info">
                           <span className="displayName">{user.displayName()}</span>
                           <span className="username">@{user.username()}</span>
@@ -429,10 +425,11 @@ export default class ManualAssignModal extends Modal<ManualAssignModalAttrs> {
           limit: this.holdersLimit,
         },
         include: 'user,grantedByUser',
+        filter: { badge: this.badge.id() },
       };
 
       if (this.holdersSearch) {
-        params.filter = { q: this.holdersSearch };
+        params.filter.q = this.holdersSearch;
       }
 
       const response = await app.request<{
@@ -442,7 +439,7 @@ export default class ManualAssignModal extends Modal<ManualAssignModalAttrs> {
         links?: { next?: string };
       }>({
         method: 'GET',
-        url: app.forum.attribute('apiUrl') + '/badges/' + this.badge.id() + '/holders',
+        url: app.forum.attribute('apiUrl') + '/user-badges',
         params,
       });
 

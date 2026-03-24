@@ -25,12 +25,9 @@ class RecalculateBadgesCommand extends Command
 
     protected $description = 'Recalculate and award badges based on current trigger conditions';
 
-    protected BadgeRecalculationService $service;
-
-    public function __construct(BadgeRecalculationService $service)
+    public function __construct(protected BadgeRecalculationService $service)
     {
         parent::__construct();
-        $this->service = $service;
     }
 
     public function handle(): int

@@ -18,11 +18,8 @@ use FoF\Badges\UserBadge;
 
 class TriggerEvaluator
 {
-    protected MetricManager $metricManager;
-
-    public function __construct(MetricManager $metricManager)
+    public function __construct(protected MetricManager $metricManager)
     {
-        $this->metricManager = $metricManager;
     }
 
     /**
@@ -74,14 +71,15 @@ class TriggerEvaluator
             ->pluck('badge_id')
             ->toArray();
 
-        $badges = $badges->filter(function (Badge $badge) use ($userBadgeIds) {
+        $candidates = $badges->filter(function (Badge $badge) use ($userBadgeIds) {
             return ! in_array($badge->id, $userBadgeIds);
         });
 
         // Evaluate each badge
         $qualifiedBadges = [];
 
-        foreach ($badges as $badge) {
+        /** @var Badge $badge */
+        foreach ($candidates as $badge) {
             if ($this->evaluate($user, $badge)) {
                 $qualifiedBadges[] = $badge;
             }
@@ -212,24 +210,26 @@ class TriggerEvaluator
      * Get active badges that use any of the given metric types.
      *
      * @param array<string> $metricTypes
-     * @return \Illuminate\Database\Eloquent\Collection<Badge>
+     * @return \Illuminate\Support\Collection<int, Badge>
      */
-    protected function getBadgesUsingMetrics(array $metricTypes): \Illuminate\Database\Eloquent\Collection
+    protected function getBadgesUsingMetrics(array $metricTypes): \Illuminate\Support\Collection
     {
-        return Badge::where('is_active', true)
+        /** @var \Illuminate\Database\Eloquent\Collection<int, Badge> $badges */
+        $badges = Badge::where('is_active', true)
             ->whereNotNull('trigger_config')
-            ->get()
-            ->filter(function (Badge $badge) use ($metricTypes) {
-                $config = $badge->trigger_config;
-                $conditions = $config['conditions'] ?? [];
+            ->get();
 
-                foreach ($conditions as $condition) {
-                    if (in_array($condition['metric'] ?? null, $metricTypes)) {
-                        return true;
-                    }
+        return $badges->filter(function (Badge $badge) use ($metricTypes) {
+            $config = $badge->trigger_config;
+            $conditions = $config['conditions'] ?? [];
+
+            foreach ($conditions as $condition) {
+                if (in_array($condition['metric'] ?? null, $metricTypes)) {
+                    return true;
                 }
+            }
 
-                return false;
-            });
+            return false;
+        });
     }
 }

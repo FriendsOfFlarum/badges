@@ -30,8 +30,9 @@ class BadgeValidator extends AbstractValidator
         $idExcept = $this->badge ? $this->badge->id : null;
 
         return [
-            'name' => ['required', 'string', 'max:200'],
+            'name' => ['sometimes', 'required', 'string', 'max:200'],
             'slug' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:200',

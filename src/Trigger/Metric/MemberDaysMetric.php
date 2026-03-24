@@ -57,7 +57,7 @@ class MemberDaysMetric implements MetricInterface
         $joinedAt = Carbon::parse($user->joined_at);
         $now = Carbon::now();
 
-        return (int) $joinedAt->diffInDays($now);
+        return (int) $joinedAt->diffInDays($now, true);
     }
 
     public function isBoolean(): bool

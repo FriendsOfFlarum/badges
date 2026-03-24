@@ -25,13 +25,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class RecalculateBadgesController implements RequestHandlerInterface
 {
-    protected Queue $queue;
-    protected BadgeRecalculationService $service;
-
-    public function __construct(Queue $queue, BadgeRecalculationService $service)
+    public function __construct(protected Queue $queue, protected BadgeRecalculationService $service)
     {
-        $this->queue = $queue;
-        $this->service = $service;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface

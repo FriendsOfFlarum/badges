@@ -55,13 +55,10 @@ class BadgeRecalculationProgress extends AbstractModel
         'total_chunks' => 'integer',
         'processed_chunks' => 'integer',
         'chunk_size' => 'integer',
-    ];
-
-    protected $dates = [
-        'started_at',
-        'completed_at',
-        'created_at',
-        'updated_at',
+        'started_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public const STATUS_PENDING = 'pending';

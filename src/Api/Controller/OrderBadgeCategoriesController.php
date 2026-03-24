@@ -11,19 +11,17 @@
 
 namespace FoF\Badges\Api\Controller;
 
-use Flarum\Api\Controller\AbstractListController;
 use Flarum\Http\RequestUtil;
-use FoF\Badges\Api\Serializer\BadgeCategorySerializer;
 use FoF\Badges\BadgeCategory;
 use Illuminate\Support\Arr;
+use Laminas\Diactoros\Response\JsonResponse;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tobscure\JsonApi\Document;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class OrderBadgeCategoriesController extends AbstractListController
+class OrderBadgeCategoriesController implements RequestHandlerInterface
 {
-    public $serializer = BadgeCategorySerializer::class;
-
-    protected function data(ServerRequestInterface $request, Document $document): iterable
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $actor = RequestUtil::getActor($request);
         $actor->assertCan('badges.moderate');
@@ -41,8 +39,6 @@ class OrderBadgeCategoriesController extends AbstractListController
             }
         });
 
-        return BadgeCategory::query()
-            ->orderBy('order', 'asc')
-            ->get();
+        return new JsonResponse(['success' => true]);
     }
 }

@@ -1,3 +1,4 @@
+import Form from 'flarum/common/components/Form';
 import app from 'flarum/forum/app';
 import Modal, { IInternalModalAttrs } from 'flarum/common/components/Modal';
 import Button from 'flarum/common/components/Button';
@@ -67,9 +68,9 @@ export default class UserRecalculateModal extends Modal<UserRecalculateModalAttr
     if (this.loading) {
       return (
         <div className="Modal-body">
-          <div className="Form">
+          <Form>
             <p>{app.translator.trans('fof-badges.forum.loading')}</p>
-          </div>
+          </Form>
         </div>
       );
     }
@@ -92,51 +93,54 @@ export default class UserRecalculateModal extends Modal<UserRecalculateModalAttr
 
     return (
       <div className="Modal-body">
-        <div className="Form">
-          {/* Badge Selection */}
+        <Form>
+          {}
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.forum.user.recalculate_modal.badge_label')}</label>
             {Select.component({
               options: badgeOptions,
               value: this.selectedBadgeId,
+
               onchange: (value: string) => {
                 this.selectedBadgeId = value;
               },
+
               disabled: this.recalculating,
             })}
           </div>
-
-          {/* No Revoke Option */}
+          {}
           <div className="Form-group">
             {Switch.component(
               {
                 state: this.noRevoke,
+
                 onchange: (value: boolean) => {
                   this.noRevoke = value;
                 },
+
                 disabled: this.recalculating,
               },
               app.translator.trans('fof-badges.forum.user.recalculate_modal.no_revoke_label')
             )}
             <p className="helpText">{app.translator.trans('fof-badges.forum.user.recalculate_modal.no_revoke_help')}</p>
           </div>
-
-          {/* Re-apply Actions Option */}
+          {}
           <div className="Form-group">
             {Switch.component(
               {
                 state: this.reapplyActions,
+
                 onchange: (value: boolean) => {
                   this.reapplyActions = value;
                 },
+
                 disabled: this.recalculating,
               },
               app.translator.trans('fof-badges.forum.user.recalculate_modal.reapply_actions_label')
             )}
             <p className="helpText">{app.translator.trans('fof-badges.forum.user.recalculate_modal.reapply_actions_help')}</p>
           </div>
-
-          {/* Submit Button */}
+          {}
           <div className="Form-group">
             <Button
               className="Button Button--primary Button--block"
@@ -147,7 +151,7 @@ export default class UserRecalculateModal extends Modal<UserRecalculateModalAttr
               {app.translator.trans('fof-badges.forum.user.recalculate_modal.submit')}
             </Button>
           </div>
-        </div>
+        </Form>
       </div>
     );
   }

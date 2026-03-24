@@ -1,17 +1,19 @@
+import Form from 'flarum/common/components/Form';
 import app from 'flarum/admin/app';
-import Modal, { IInternalModalAttrs } from 'flarum/common/components/Modal';
+import { IFormModalAttrs } from 'flarum/common/components/FormModal';
+import FormModal from 'flarum/common/components/FormModal';
 import Button from 'flarum/common/components/Button';
 import Switch from 'flarum/common/components/Switch';
 import type Mithril from 'mithril';
 import { slugify } from '../../common';
 import type { BadgeCategory } from '../../common';
 
-interface CategoryEditModalAttrs extends IInternalModalAttrs {
+interface CategoryEditModalAttrs extends IFormModalAttrs {
   category?: BadgeCategory;
   onSave?: () => void;
 }
 
-export default class CategoryEditModal extends Modal<CategoryEditModalAttrs> {
+export default class CategoryEditModal extends FormModal<CategoryEditModalAttrs> {
   category: BadgeCategory | null = null;
   isNew: boolean = true;
 
@@ -47,7 +49,7 @@ export default class CategoryEditModal extends Modal<CategoryEditModalAttrs> {
   content(): Mithril.Children {
     return (
       <div className="Modal-body">
-        <div className="Form">
+        <Form>
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.admin.category_name')}</label>
             <input
@@ -63,7 +65,6 @@ export default class CategoryEditModal extends Modal<CategoryEditModalAttrs> {
               placeholder={app.translator.trans('fof-badges.admin.category_name_placeholder')}
             />
           </div>
-
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.admin.category_slug')}</label>
             <input
@@ -77,7 +78,6 @@ export default class CategoryEditModal extends Modal<CategoryEditModalAttrs> {
             />
             <p className="helpText">{app.translator.trans('fof-badges.admin.category_slug_help')}</p>
           </div>
-
           <div className="Form-group">
             <label>{app.translator.trans('fof-badges.admin.category_description')}</label>
             <textarea
@@ -90,7 +90,6 @@ export default class CategoryEditModal extends Modal<CategoryEditModalAttrs> {
               placeholder={app.translator.trans('fof-badges.admin.category_description_placeholder')}
             />
           </div>
-
           <div className="Form-group">
             <Switch
               state={this.isEnabled}
@@ -102,8 +101,7 @@ export default class CategoryEditModal extends Modal<CategoryEditModalAttrs> {
             </Switch>
             <p className="helpText">{app.translator.trans('fof-badges.admin.category_enabled_help')}</p>
           </div>
-
-          {/* Submit Buttons */}
+          {}
           <div className="Form-group">
             <Button className="Button Button--primary" loading={this.loading} disabled={!this.name.trim()} onclick={() => this.save()}>
               {app.translator.trans('fof-badges.admin.save')}
@@ -112,7 +110,7 @@ export default class CategoryEditModal extends Modal<CategoryEditModalAttrs> {
               {app.translator.trans('fof-badges.admin.cancel')}
             </Button>
           </div>
-        </div>
+        </Form>
       </div>
     );
   }

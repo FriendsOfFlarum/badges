@@ -1,0 +1,63 @@
+<?php
+
+/*
+ * This file is part of fof/badges
+ *
+ * Copyright (c) 2026 FriendsOfFlarum.
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
+namespace FoF\Badges\Tests\Integration\Api;
+
+use Flarum\Testing\integration\RetrievesAuthorizedUsers;
+use Flarum\Testing\integration\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Flarum\User\User;
+
+class DeleteCategoryTest extends TestCase
+{
+    use RetrievesAuthorizedUsers;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->extension('fof-badges');
+
+        $this->prepareDatabase([
+            'fof_badge_cat' => [
+                ['id' => 100, 'name' => 'Achievement', 'slug' => 'achievement', 'description' => 'Achievement badges', 'is_enabled' => true, 'order' => 0],
+            ],
+            User::class => [
+                $this->normalUser(),
+            ],
+            'group_permission' => [
+                ['group_id' => 1, 'permission' => 'badges.moderate'],
+            ],
+        ]);
+    }
+
+    #[Test]
+    public function guest_cannot_delete_category(): void
+    {
+        $response = $this->send(
+            $this->request('DELETE', '/api/badge-categories/100')
+        );
+
+        $this->assertContains($response->getStatusCode(), [400, 401]);
+    }
+
+    #[Test]
+    public function admin_can_delete_category(): void
+    {
+        $response = $this->send(
+            $this->request('DELETE', '/api/badge-categories/100', [
+                'authenticatedAs' => 1,
+            ])
+        );
+
+        $this->assertEquals(204, $response->getStatusCode());
+    }
+}

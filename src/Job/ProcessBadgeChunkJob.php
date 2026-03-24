@@ -39,27 +39,8 @@ class ProcessBadgeChunkJob extends AbstractJob
      */
     public int $backoff = 10;
 
-    protected int $progressId;
-    protected array $userIds;
-    protected array $badgeIds;
-    protected bool $noRevoke;
-    protected bool $reapplyActions;
-    protected int $chunkIndex;
-
-    public function __construct(
-        int $progressId,
-        array $userIds,
-        array $badgeIds,
-        bool $noRevoke,
-        int $chunkIndex,
-        bool $reapplyActions = false
-    ) {
-        $this->progressId = $progressId;
-        $this->userIds = $userIds;
-        $this->badgeIds = $badgeIds;
-        $this->noRevoke = $noRevoke;
-        $this->reapplyActions = $reapplyActions;
-        $this->chunkIndex = $chunkIndex;
+    public function __construct(protected int $progressId, protected array $userIds, protected array $badgeIds, protected bool $noRevoke, protected int $chunkIndex, protected bool $reapplyActions = false)
+    {
     }
 
     public function handle(BadgeRecalculationService $service): void

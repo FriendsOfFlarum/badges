@@ -17,23 +17,7 @@ use FoF\Badges\UserBadge;
 
 class BadgeAwarded
 {
-    public User $user;
-    public Badge $badge;
-    public UserBadge $userBadge;
-    public string $grantedBy;
-    public ?User $grantedByUser;
-
-    public function __construct(
-        User $user,
-        Badge $badge,
-        UserBadge $userBadge,
-        string $grantedBy,
-        ?User $grantedByUser = null
-    ) {
-        $this->user = $user;
-        $this->badge = $badge;
-        $this->userBadge = $userBadge;
-        $this->grantedBy = $grantedBy;
-        $this->grantedByUser = $grantedByUser;
+    public function __construct(public User $user, public Badge $badge, public UserBadge $userBadge, public string $grantedBy, public ?User $grantedByUser = null)
+    {
     }
 }

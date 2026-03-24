@@ -65,13 +65,8 @@ class ListBadgesTest extends TestCase
         $response = $this->send(
             $this->request('GET', '/api/badges', [
                 'authenticatedAs' => 1,
-            ])->withQueryParams([
-                'filter' => ['includeHidden' => true],
             ])
         );
-
-        fwrite(STDERR, 'LIST RESPONSE: '.$response->getStatusCode().' '.$response->getBody()->getContents()."\n");
-        $response->getBody()->rewind();
 
         $this->assertEquals(200, $response->getStatusCode());
 

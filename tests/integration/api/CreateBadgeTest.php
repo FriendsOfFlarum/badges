@@ -103,19 +103,12 @@ class CreateBadgeTest extends TestCase
                             'backgroundColor' => '#667eea',
                             'isActive' => true,
                             'isVisible' => true,
-                        ],
-                        'relationships' => [
-                            'category' => [
-                                'data' => ['type' => 'badge-categories', 'id' => '100'],
-                            ],
+                            'categoryId' => 100,
                         ],
                     ],
                 ],
             ])
         );
-
-        fwrite(STDERR, 'CREATE RESPONSE: '.$response->getStatusCode().' '.$response->getBody()->getContents()."\n");
-        $response->getBody()->rewind();
 
         $this->assertEquals(201, $response->getStatusCode());
 
@@ -173,9 +166,6 @@ class CreateBadgeTest extends TestCase
                 ],
             ])
         );
-
-        fwrite(STDERR, 'CREATE RESPONSE: '.$response->getStatusCode().' '.$response->getBody()->getContents()."\n");
-        $response->getBody()->rewind();
 
         $this->assertEquals(201, $response->getStatusCode());
 

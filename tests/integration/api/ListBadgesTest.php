@@ -70,6 +70,9 @@ class ListBadgesTest extends TestCase
             ])
         );
 
+        fwrite(STDERR, "LIST RESPONSE: " . $response->getStatusCode() . " " . $response->getBody()->getContents() . "\n");
+        $response->getBody()->rewind();
+
         $this->assertEquals(200, $response->getStatusCode());
 
         $body = json_decode($response->getBody()->getContents(), true);

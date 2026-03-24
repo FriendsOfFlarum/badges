@@ -1,12 +1,13 @@
-import Modal, { IInternalModalAttrs } from 'flarum/common/components/Modal';
+import { IFormModalAttrs } from 'flarum/common/components/FormModal';
+import FormModal from 'flarum/common/components/FormModal';
 import type Mithril from 'mithril';
 import type User from 'flarum/common/models/User';
 import type { Badge, UserBadge } from '../../common';
-interface ManualAssignModalAttrs extends IInternalModalAttrs {
+interface ManualAssignModalAttrs extends IFormModalAttrs {
     badge: Badge;
     onAssign?: () => void;
 }
-export default class ManualAssignModal extends Modal<ManualAssignModalAttrs> {
+export default class ManualAssignModal extends FormModal<ManualAssignModalAttrs> {
     badge: Badge;
     activeTab: 'assign' | 'holders';
     searchQuery: string;

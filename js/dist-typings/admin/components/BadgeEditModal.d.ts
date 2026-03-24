@@ -1,12 +1,13 @@
-import Modal, { IInternalModalAttrs } from 'flarum/common/components/Modal';
+import { IFormModalAttrs } from 'flarum/common/components/FormModal';
+import FormModal from 'flarum/common/components/FormModal';
 import type Mithril from 'mithril';
 import type { Badge, BadgeCategory, TriggerConfig, BadgeActions } from '../../common';
-interface BadgeEditModalAttrs extends IInternalModalAttrs {
+interface BadgeEditModalAttrs extends IFormModalAttrs {
     badge?: Badge;
     categories: BadgeCategory[];
     onSave?: () => void;
 }
-export default class BadgeEditModal extends Modal<BadgeEditModalAttrs> {
+export default class BadgeEditModal extends FormModal<BadgeEditModalAttrs> {
     badge: Badge | null;
     isNew: boolean;
     name: string;

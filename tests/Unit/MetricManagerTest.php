@@ -15,8 +15,8 @@ use Flarum\Extension\ExtensionManager;
 use FoF\Badges\Trigger\MetricInterface;
 use FoF\Badges\Trigger\MetricManager;
 use Mockery as m;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 class MetricManagerTest extends TestCase
 {

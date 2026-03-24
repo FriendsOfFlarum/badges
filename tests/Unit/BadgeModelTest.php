@@ -12,8 +12,8 @@
 namespace FoF\Badges\Tests\Unit;
 
 use FoF\Badges\Badge;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 class BadgeModelTest extends TestCase
 {

@@ -18,8 +18,8 @@ use FoF\Badges\Trigger\MetricInterface;
 use FoF\Badges\Trigger\MetricManager;
 use FoF\Badges\Trigger\TriggerEvaluator;
 use Mockery as m;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 class TriggerEvaluatorTest extends TestCase
 {

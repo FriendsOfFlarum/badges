@@ -13,8 +13,8 @@ namespace FoF\Badges\Tests\Integration\Api;
 
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
-use PHPUnit\Framework\Attributes\Test;
 use Flarum\User\User;
+use PHPUnit\Framework\Attributes\Test;
 
 class ListCategoriesTest extends TestCase
 {

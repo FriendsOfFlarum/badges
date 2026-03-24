@@ -13,8 +13,8 @@ namespace FoF\Badges\Tests\Unit;
 
 use FoF\Badges\Notification\BadgeEarnedBlueprint;
 use FoF\Badges\UserBadge;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 class NotificationBlueprintTest extends TestCase
 {

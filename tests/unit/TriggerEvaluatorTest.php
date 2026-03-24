@@ -9,7 +9,7 @@
  * LICENSE file that was distributed with this source code.
  */
 
-namespace FoF\Badges\Tests\Unit;
+namespace FoF\Badges\Tests\unit;
 
 use Flarum\Extension\ExtensionManager;
 use Flarum\User\User;

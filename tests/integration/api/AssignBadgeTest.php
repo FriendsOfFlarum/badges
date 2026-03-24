@@ -9,7 +9,7 @@
  * LICENSE file that was distributed with this source code.
  */
 
-namespace FoF\Badges\Tests\Integration\Api;
+namespace FoF\Badges\Tests\integration\api;
 
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;

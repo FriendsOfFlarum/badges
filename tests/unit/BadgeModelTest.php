@@ -9,7 +9,7 @@
  * LICENSE file that was distributed with this source code.
  */
 
-namespace FoF\Badges\Tests\Unit;
+namespace FoF\Badges\Tests\unit;
 
 use FoF\Badges\Badge;
 use PHPUnit\Framework\Attributes\Test;

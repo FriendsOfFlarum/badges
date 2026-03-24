@@ -13,8 +13,8 @@
     </source>
     <testsuites>
         <testsuite name="Flarum Integration Tests">
-            <directory suffix="Test.php">./Integration</directory>
-            <exclude>./Integration/tmp</exclude>
+            <directory suffix="Test.php">./integration</directory>
+            <exclude>./integration/tmp</exclude>
         </testsuite>
     </testsuites>
 </phpunit>

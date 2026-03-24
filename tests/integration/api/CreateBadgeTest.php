@@ -161,9 +161,9 @@ class CreateBadgeTest extends TestCase
                             'backgroundColor' => '#f1c40f',
                             'triggerConfig' => [
                                 'conditions' => [
-                                    ['metric' => 'post_count', 'operator' => 'gte', 'value' => 50],
+                                    ['metric' => 'post_count', 'operator' => '>=', 'value' => 50],
                                 ],
-                                'logic' => 'and',
+                                'logic' => 'AND',
                             ],
                         ],
                     ],

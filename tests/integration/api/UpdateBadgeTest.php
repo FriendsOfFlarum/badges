@@ -138,9 +138,9 @@ class UpdateBadgeTest extends TestCase
     {
         $triggerConfig = [
             'conditions' => [
-                ['metric' => 'post_count', 'operator' => 'gte', 'value' => 50],
+                ['metric' => 'post_count', 'operator' => '>=', 'value' => 50],
             ],
-            'logic' => 'and',
+            'logic' => 'AND',
         ];
 
         $response = $this->send(

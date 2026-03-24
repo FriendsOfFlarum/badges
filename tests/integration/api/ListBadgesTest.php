@@ -32,7 +32,7 @@ class ListBadgesTest extends TestCase
             ],
             'fof_badges' => [
                 ['id' => 100, 'name' => 'Test First Post', 'slug' => 'test-first-post', 'description' => 'Created your first post', 'icon' => 'fas fa-pen', 'icon_color' => '#ffffff', 'background_color' => '#667eea', 'category_id' => 100, 'is_active' => true, 'is_visible' => true, 'order' => 0, 'trigger_config' => null, 'actions' => null],
-                ['id' => 101, 'name' => 'Test 100 Posts', 'slug' => 'test-100-posts', 'description' => 'Created 100 posts', 'icon' => 'fas fa-fire', 'icon_color' => '#ffffff', 'background_color' => '#e74c3c', 'category_id' => 100, 'is_active' => true, 'is_visible' => true, 'order' => 1, 'trigger_config' => '{"conditions":[{"metric":"post_count","operator":"gte","value":100}],"logic":"and"}', 'actions' => null],
+                ['id' => 101, 'name' => 'Test 100 Posts', 'slug' => 'test-100-posts', 'description' => 'Created 100 posts', 'icon' => 'fas fa-fire', 'icon_color' => '#ffffff', 'background_color' => '#e74c3c', 'category_id' => 100, 'is_active' => true, 'is_visible' => true, 'order' => 1, 'trigger_config' => '{"conditions":[{"metric":"post_count","operator":">=","value":100}],"logic":"AND"}', 'actions' => null],
                 ['id' => 102, 'name' => 'Hidden Badge', 'slug' => 'test-hidden', 'description' => 'A hidden badge', 'icon' => 'fas fa-eye-slash', 'icon_color' => '#ffffff', 'background_color' => '#333333', 'category_id' => null, 'is_active' => true, 'is_visible' => false, 'order' => 2, 'trigger_config' => null, 'actions' => null],
             ],
             User::class => [

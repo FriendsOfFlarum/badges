@@ -71,8 +71,11 @@ export default class UserBadgesPage extends UserPage {
         this.userBadges = newBadges;
       }
 
-      // Get total from meta
-      if (response.meta?.total !== undefined) {
+      // Get total from meta — backend returns meta.page.total (JSON:API pagination envelope)
+      if (response.meta?.page?.total !== undefined) {
+        this.totalBadgeCount = response.meta.page.total;
+      } else if (response.meta?.total !== undefined) {
+        // Fallback: flat meta.total format
         this.totalBadgeCount = response.meta.total;
       }
 

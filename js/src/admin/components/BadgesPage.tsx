@@ -505,13 +505,12 @@ export default class BadgesPage extends ExtensionPage {
             />
             <p className="helpText">{app.translator.trans('fof-badges.admin.settings.post_badge_display_limit_help')}</p>
           </div>
-        </div>
-
-        {/* Save Button */}
-        <div className="Form-group">
-          <Button className="Button Button--primary" loading={this.savingSettings} onclick={() => this.saveSettings()}>
-            {app.translator.trans('fof-badges.admin.settings.save')}
-          </Button>
+          {/* Save Button */}
+          <div className="Form-group">
+            <Button className="Button Button--primary" loading={this.savingSettings} onclick={() => this.saveSettings()}>
+              {app.translator.trans('fof-badges.admin.settings.save')}
+            </Button>
+          </div>
         </div>
 
         {/* Extension Integrations */}

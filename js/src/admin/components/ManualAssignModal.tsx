@@ -435,7 +435,11 @@ export default class ManualAssignModal extends FormModal<ManualAssignModalAttrs>
       const response = await app.request<{
         data: any[];
         included?: any[];
-        meta?: { total?: number };
+        // Flarum 2.x wraps pagination info under meta.page
+        meta?: {
+          page?: { total?: number; offset?: number; limit?: number };
+          total?: number;
+        };
         links?: { next?: string };
       }>({
         method: 'GET',
@@ -449,7 +453,9 @@ export default class ManualAssignModal extends FormModal<ManualAssignModalAttrs>
         const holders = app.store.pushPayload<UserBadge[]>(response as any);
 
         this.holders = Array.isArray(holders) ? holders : [holders];
-        this.holdersTotal = response.meta?.total ?? this.holders.length;
+
+        // Flarum 2.x returns meta.page.total; fallback to meta.total for compatibility
+        this.holdersTotal = response.meta?.page?.total ?? response.meta?.total ?? this.holders.length;
       }
     } catch (error) {
       console.error('Failed to load badge holders:', error);

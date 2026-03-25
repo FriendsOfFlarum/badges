@@ -750,11 +750,21 @@
     border-radius: 8px;
     border-left: 4px solid var(--muted-color, var(--muted-color));
 
-    &--pending { border-left-color: var(--muted-color, var(--muted-color)); }
-    &--running { border-left-color: var(--primary-color, var(--primary-color)); }
-    &--completed { border-left-color: @success-color; }
-    &--failed { border-left-color: var(--error-color); }
-    &--cancelled { border-left-color: var(--muted-color, var(--muted-color)); }
+    &--pending {
+      border-left-color: var(--muted-color, var(--muted-color));
+    }
+    &--running {
+      border-left-color: var(--primary-color, var(--primary-color));
+    }
+    &--completed {
+      border-left-color: @success-color;
+    }
+    &--failed {
+      border-left-color: var(--error-color);
+    }
+    &--cancelled {
+      border-left-color: var(--muted-color, var(--muted-color));
+    }
   }
 
   &-jobHeader {
@@ -963,17 +973,29 @@
 
   &-barFill {
     height: 100%;
-    background: linear-gradient(90deg, var(--primary-color), var(--primary-color-lighten-10));
+    background: linear-gradient(
+      90deg,
+      var(--primary-color),
+      var(--primary-color-lighten-10)
+    );
     border-radius: 4px;
     transition: width 0.3s ease;
   }
 
   &--completed &-barFill {
-    background: linear-gradient(90deg, @success-color, lighten(@success-color, 10%));
+    background: linear-gradient(
+      90deg,
+      @success-color,
+      lighten(@success-color, 10%)
+    );
   }
 
   &--failed &-barFill {
-    background: linear-gradient(90deg, @error-color, lighten(@error-color, 10%));
+    background: linear-gradient(
+      90deg,
+      @error-color,
+      lighten(@error-color, 10%)
+    );
   }
 
   &-stats {
@@ -1012,6 +1034,7 @@
   &-appearance {
     display: flex;
     flex-direction: column;
+    width: inherit;
     gap: 15px;
     padding: 15px;
     background: var(--control-bg, var(--control-bg));
@@ -1061,6 +1084,9 @@
     flex-direction: column;
     gap: 10px;
   }
+  .Form-group:last-child {
+    flex-direction: row;
+  }
 }
 
 .BadgeEditModal .BadgePreview {
@@ -1083,6 +1109,7 @@
 
 .TriggerBuilder {
   padding: 15px;
+  width: inherit;
   background: var(--control-bg, var(--control-bg));
   border-radius: 8px;
 
@@ -1104,6 +1131,7 @@
   &-conditions {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     gap: @condition-gap;
     margin-bottom: 15px;
   }
@@ -1300,6 +1328,7 @@
 
   &-search {
     position: relative;
+    width: 100%;
   }
 
   &-searchInput {
@@ -1312,10 +1341,6 @@
       transform: translateY(-50%);
       color: var(--muted-color, var(--muted-color));
       font-size: 14px;
-    }
-
-    input {
-      padding-left: 36px;
     }
   }
 
@@ -1553,6 +1578,9 @@
   .Modal-body {
     padding: 20px;
   }
+  .Form-group:last-child {
+    flex-direction: row;
+  }
 }
 
 // ==========================================
@@ -1636,11 +1664,21 @@
       font-size: 12px;
     }
 
-    &--pending { color: var(--muted-color, var(--muted-color)); }
-    &--running { color: var(--primary-color, var(--primary-color)); }
-    &--completed { color: @success-color; }
-    &--failed { color: var(--error-color); }
-    &--cancelled { color: var(--muted-color, var(--muted-color)); }
+    &--pending {
+      color: var(--muted-color, var(--muted-color));
+    }
+    &--running {
+      color: var(--primary-color, var(--primary-color));
+    }
+    &--completed {
+      color: @success-color;
+    }
+    &--failed {
+      color: var(--error-color);
+    }
+    &--cancelled {
+      color: var(--muted-color, var(--muted-color));
+    }
   }
 
   &-stuckBadge {
@@ -1699,6 +1737,7 @@
 
   &-stats {
     display: flex;
+    width: inherit;
     justify-content: space-between;
     font-size: 12px;
     color: var(--muted-color, var(--muted-color));
@@ -1722,11 +1761,22 @@
   }
 }
 
-
 :root {
   --control-bg-darken-3: color-mix(in srgb, var(--control-bg) 97%, black);
   --control-bg-darken-5: color-mix(in srgb, var(--control-bg) 95%, black);
-  --primary-color-fade-10: color-mix(in srgb, var(--primary-color) 10%, transparent);
-  --primary-color-lighten-10: color-mix(in srgb, var(--primary-color) 90%, white);
-  --muted-color-fade-10: color-mix(in srgb, var(--muted-color) 10%, transparent);
+  --primary-color-fade-10: color-mix(
+    in srgb,
+    var(--primary-color) 10%,
+    transparent
+  );
+  --primary-color-lighten-10: color-mix(
+    in srgb,
+    var(--primary-color) 90%,
+    white
+  );
+  --muted-color-fade-10: color-mix(
+    in srgb,
+    var(--muted-color) 10%,
+    transparent
+  );
 }

@@ -442,6 +442,11 @@ export default class BadgesPage extends ExtensionPage {
       icon_name: app.translator.trans('fof-badges.admin.settings.primary_badge_icon_name') as string,
     };
 
+    const styleDisplayOptions: Record<string, string> = {
+      cards: app.translator.trans('fof-badges.admin.settings.badge_style_cards') as string,
+      tags: app.translator.trans('fof-badges.admin.settings.badge_style_tags') as string,
+    };
+
     return (
       <div className="SettingsTab">
         <div className="SettingsTab-section">
@@ -459,6 +464,19 @@ export default class BadgesPage extends ExtensionPage {
               app.translator.trans('fof-badges.admin.settings.new_badge_highlight')
             )}
             <p className="helpText">{app.translator.trans('fof-badges.admin.settings.new_badge_highlight_help')}</p>
+          </div>
+
+          {/* Badge Layout Style */}
+          <div className="Form-group">
+            <label>{app.translator.trans('fof-badges.admin.settings.badge_style')}</label>
+            {Select.component({
+              options: styleDisplayOptions,
+              value: this.setting('fof-badges.badge_style')() || 'cards',
+              onchange: (value: string) => {
+                this.setting('fof-badges.badge_style')(value);
+              },
+            })}
+            <p className="helpText">{app.translator.trans('fof-badges.admin.settings.badge_style_help')}</p>
           </div>
 
           {/* Primary Badge Display */}
@@ -585,6 +603,7 @@ export default class BadgesPage extends ExtensionPage {
       'fof-badges.primary_badge_display': this.setting('fof-badges.primary_badge_display')(),
       'fof-badges.show_badges_on_user_card': this.setting('fof-badges.show_badges_on_user_card')(),
       'fof-badges.badge_display_limit': this.setting('fof-badges.badge_display_limit')(),
+      'fof-badges.badge_style': this.setting('fof-badges.badge_style')(),
     };
 
     await app.request({

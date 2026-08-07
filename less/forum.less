@@ -156,6 +156,8 @@
     flex-shrink: 0;
     align-self: flex-start;
     margin-right: 15px;
+    background-color: var(--badge-bg);
+    color: var(--badge-color);
   }
 
   &-content {
@@ -749,3 +751,105 @@
     grid-template-columns: 1fr;
   }
 }
+
+// ==========================================
+// Tag Style
+// ==========================================
+
+.Badges--style-tags {
+  // Grid layout changes for the container
+  &.BadgesList-grid,
+  &.UserBadgesPage-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  // Ensure items shrink to fit tags
+  .UserBadgesPage-item {
+    width: auto;
+    position: relative;
+  }
+
+  // Reposition the 3-dots menu to float on the top-right corner
+  .UserBadgesPage-actions {
+    top: -8px;
+    right: -8px;
+
+    // Give it a circular background so the floating dots are legible
+    .Button {
+      background: var(--control-bg, @control-bg);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      
+      i { font-size: 10px; margin: 0; }
+    }
+  }
+}
+
+// When Tag style is active on the BadgeCard
+.BadgeCard--tag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  height: 28px;
+  background: transparent;
+  color: var(--badge-color);
+  border-radius: 4px;
+  box-shadow: none;
+  overflow: hidden;
+  width: auto;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  // The colored background fills the tag
+  .BadgeCard-icon {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    margin: 0;
+    justify-content: flex-start;
+    padding-left: 8px;
+    font-size: 13px;
+    z-index: 1;
+  }
+
+  // Content sits above
+  .BadgeCard-content {
+    position: relative;
+    z-index: 2;
+    margin-left: 26px; // space for the icon
+    padding-right: 10px;
+    pointer-events: none;
+  }
+
+  // Hide the extra card fluff
+  .BadgeCard-description,
+  .BadgeCard-stats,
+  .BadgeCard-indicators {
+    display: none;
+  }
+
+  // Style the tag text
+  .BadgeCard-name {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 28px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+}
+

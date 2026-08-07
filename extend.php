@@ -142,6 +142,7 @@ return [
                 'primaryBadgeDisplay' => $settings->get('fof-badges.primary_badge_display', 'icon'),
                 'showBadgesOnUserCard' => (bool) $settings->get('fof-badges.show_badges_on_user_card', true),
                 'badgeDisplayLimit' => (int) $settings->get('fof-badges.badge_display_limit', 3),
+                'badgeStyle' => $settings->get('fof-badges.badge_style', 'cards'),
             ];
         }),
 
@@ -279,7 +280,8 @@ return [
         ->default('fof-badges.show_badges_on_user_card', true)
         ->default('fof-badges.new_badge_highlight', true)
         ->default('fof-badges.primary_badge_display', 'icon')
-        ->default('fof-badges.badge_display_limit', 3),
+        ->default('fof-badges.badge_display_limit', 3)
+        ->default('fof-badges.badge_style', 'cards'),
 
     // Console command
     (new Extend\Console())

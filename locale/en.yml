@@ -17,6 +17,13 @@ fof-badges:
       primary_badge_hidden: Hidden
       primary_badge_icon: Icon only
       primary_badge_icon_name: Icon and name
+      user_card_badge_layout_inline: Inline (Flows with other profile info)
+      user_card_badge_layout_newline: New Line (Placed below profile info)
+      user_card_badge_layout_help: Choose whether badges are displayed inline or forced onto a dedicated new line.
+      badge_style: Badge Layout Style
+      badge_style_cards: Cards
+      badge_style_tags: Tags
+      badge_style_help: Choose how badges are displayed on the main list and user profile pages.
       show_badges_on_user_card: Show badges on user card
       show_badges_on_user_card_help: Display the user's favorite or rarest badge on user cards and profile pages.
       post_badge_display_limit: Post badge display limit

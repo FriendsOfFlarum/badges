@@ -24,6 +24,7 @@ export default class BadgeCard extends Component<BadgeCardAttrs> {
     const totalUsers = (app.forum.attribute('userCount') as number) || 1;
     const rarityInfo = getRarityInfo(badge.earnedCount(), totalUsers);
     const { earnedAt, isFavorite, isHidden, isNew, isManual, isOwner, isOwned, reason } = this.attrs;
+    const isTagStyle = app.forum.attribute('badgeStyle') === 'tags';
 
     // Collect all indicators to show (order: owned, new, favorite, hidden, manual)
     const indicators: Mithril.Children[] = [];
@@ -85,7 +86,13 @@ export default class BadgeCard extends Component<BadgeCardAttrs> {
 
     return (
       <div
-        className="BadgeCard"
+        className={`BadgeCard ${isTagStyle ? 'BadgeCard--tag' : ''}`}
+        style={
+          {
+            '--badge-bg': badge.backgroundColor(),
+            '--badge-color': badge.iconColor(),
+          } as any
+        }
         onclick={(e: MouseEvent) => {
           e.preventDefault();
           this.attrs.onclick?.();
@@ -100,13 +107,7 @@ export default class BadgeCard extends Component<BadgeCardAttrs> {
         }}
       >
         {indicators.length > 0 && <div className="BadgeCard-indicators">{indicators}</div>}
-        <div
-          className="BadgeCard-icon"
-          style={{
-            backgroundColor: badge.backgroundColor(),
-            color: badge.iconColor(),
-          }}
-        >
+        <div className="BadgeCard-icon">
           <i className={badge.icon()}></i>
         </div>
         <div className="BadgeCard-content">

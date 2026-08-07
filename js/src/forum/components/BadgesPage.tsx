@@ -125,7 +125,7 @@ export default class BadgesPage extends Page {
           <section className="BadgesList-category" key={group.category.id()}>
             <h2 className="BadgesList-categoryTitle">{group.category.name()}</h2>
             {group.category.description() && <p className="BadgesList-categoryDescription">{group.category.description()}</p>}
-            <div className="BadgesList-grid">
+            <div className={`BadgesList-grid ${app.forum.attribute('badgeStyle') === 'tags' ? 'Badges--style-tags' : ''}`}>
               {group.badges.map((badge) => (
                 <BadgeCard key={badge.id()} badge={badge} onclick={() => this.showBadgeModal(badge)} isOwned={badge.isEarned()} />
               ))}
@@ -136,7 +136,7 @@ export default class BadgesPage extends Page {
         {uncategorized.length > 0 && (
           <section className="BadgesList-category BadgesList-category--uncategorized">
             <h2 className="BadgesList-categoryTitle">{app.translator.trans('fof-badges.forum.other_badges')}</h2>
-            <div className="BadgesList-grid">
+            <div className={`BadgesList-grid ${app.forum.attribute('badgeStyle') === 'tags' ? 'Badges--style-tags' : ''}`}>
               {uncategorized.map((badge) => (
                 <BadgeCard key={badge.id()} badge={badge} onclick={() => this.showBadgeModal(badge)} isOwned={badge.isEarned()} />
               ))}

@@ -129,7 +129,7 @@ export default class UserBadgesPage extends UserPage {
           </h2>
           {canModerate && this.user && this.renderRecalculateButton()}
         </div>
-        <div className="UserBadgesPage-grid">
+        <div className={`UserBadgesPage-grid ${app.forum.attribute('badgeStyle') === 'tags' ? 'Badges--style-tags' : ''}`}>
           {this.userBadges.map((ub) => {
             const badge = ub.badge();
             if (!badge) return null;

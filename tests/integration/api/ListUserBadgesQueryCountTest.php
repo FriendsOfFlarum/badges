@@ -64,7 +64,6 @@ class ListUserBadgesQueryCountTest extends TestCase
     {
         UserBadgeHelper::resetQueue();
 
-
         parent::tearDown();
     }
 

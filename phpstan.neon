@@ -2,6 +2,12 @@ includes:
     - vendor/flarum/phpstan/extension.neon
 
 parameters:
+    # One process: flarum/phpstan's bootstrap installs a test forum the first
+    # time it runs, and parallel workers each start that install at once on a
+    # fresh checkout (CI), failing with Install\StepFailed or a half-written
+    # config.php.
+    parallel:
+        maximumNumberOfProcesses: 1
     level: 6
     paths:
         - extend.php

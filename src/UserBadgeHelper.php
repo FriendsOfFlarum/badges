@@ -40,7 +40,10 @@ class UserBadgeHelper
     }
 
     /**
-     * Forget every queued user. For long-running processes and tests.
+     * Forget every queued user, for tests. A page whose serialization fails
+     * part-way leaves its users queued; the next read loads them along with
+     * its own and they are discarded with the request, so nothing is wrong,
+     * only a few rows wasted.
      */
     public static function resetQueue(): void
     {

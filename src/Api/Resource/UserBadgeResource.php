@@ -69,7 +69,8 @@ class UserBadgeResource extends AbstractDatabaseResource
                 // The users' own badges: their badge fields (badgeCount, the
                 // primary badge, visibleBadges) read them, one query per user
                 // otherwise.
-                ->eagerLoad(['badge', 'user', 'badge.category', 'user.userBadges.badge']),
+                ->eagerLoad(['badge', 'user', 'badge.category'])
+                ->eagerLoadWhenIncluded(['user' => ['user.userBadges.badge']]),
             Endpoint\Create::make()
                 ->authenticated()
                 ->can('create')

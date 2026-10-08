@@ -146,4 +146,27 @@ class ListUserBadgesQueryCountTest extends TestCase
             $counts
         );
     }
+
+    #[Test]
+    public function the_holders_badges_are_not_loaded_when_the_holders_are_not_included()
+    {
+        $this->app();
+        $db = $this->database();
+        $db->enableQueryLog();
+        $db->flushQueryLog();
+
+        $response = $this->send(
+            $this->request('GET', '/api/user-badges', ['authenticatedAs' => 2])
+                ->withQueryParams(['filter' => ['badge' => 100], 'include' => 'badge'])
+        );
+
+        $sql = array_map(fn ($q) => str_replace(['`', '"'], '', $q), array_column($db->getQueryLog(), 'query'));
+        $db->flushQueryLog();
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertCount(self::HOLDERS, json_decode($response->getBody()->getContents(), true)['data']);
+
+        $perUser = array_filter($sql, fn ($q) => preg_match('/select \* from fof_badge_user where (fof_badge_user\.)?user_id (=|in)/', $q));
+        $this->assertCount(0, $perUser, 'Nothing loads badges for users the response does not include');
+    }
 }

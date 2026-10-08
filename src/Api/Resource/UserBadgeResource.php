@@ -66,7 +66,11 @@ class UserBadgeResource extends AbstractDatabaseResource
                 ->paginate(20, 100)
                 ->defaultInclude(['badge', 'user'])
                 ->defaultSort('-earnedAt')
-                ->eagerLoad(['badge', 'user', 'badge.category']),
+                // The users' own badges: their badge fields (badgeCount, the
+                // primary badge, visibleBadges) read them, one query per user
+                // otherwise.
+                ->eagerLoad(['badge', 'user', 'badge.category'])
+                ->eagerLoadWhenIncluded(['user' => ['user.userBadges.badge']]),
             Endpoint\Create::make()
                 ->authenticated()
                 ->can('create')

@@ -14,6 +14,7 @@ namespace FoF\Badges\Tests\integration\api;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
 use Flarum\User\User;
+use FoF\Badges\UserBadgeHelper;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
@@ -37,7 +38,7 @@ class ListUserBadgesQueryCountTest extends TestCase
 
         for ($i = 1; $i <= self::HOLDERS; $i++) {
             $users[] = ['id' => $i + 2, 'username' => "holder$i", 'email' => "holder$i@machine.local", 'is_email_confirmed' => 1];
-            $userBadges[] = ['id' => $i, 'user_id' => $i + 2, 'badge_id' => 100, 'granted_by' => 'manual', 'granted_by_user_id' => 1, 'reason' => null, 'is_seen' => false, 'show_on_card' => true, 'is_primary' => false, 'earned_at' => '2026-01-01 00:00:00'];
+            $userBadges[] = ['id' => $i, 'user_id' => $i + 2, 'badge_id' => 100, 'granted_by' => 'manual', 'granted_by_user_id' => ($i % self::HOLDERS) + 3, 'reason' => null, 'is_seen' => false, 'show_on_card' => true, 'is_primary' => false, 'earned_at' => '2026-01-01 00:00:00'];
 
             // Every other holder has a second badge, so the counts tell them apart.
             if ($i % 2) {
@@ -57,6 +58,14 @@ class ListUserBadgesQueryCountTest extends TestCase
                 ['group_id' => 3, 'permission' => 'badges.viewList'],
             ],
         ]);
+    }
+
+    protected function tearDown(): void
+    {
+        UserBadgeHelper::resetQueue();
+
+
+        parent::tearDown();
     }
 
     #[Test]
@@ -81,6 +90,49 @@ class ListUserBadgesQueryCountTest extends TestCase
 
         $perUser = array_filter($sql, fn ($q) => preg_match('/select \* from fof_badge_user where (fof_badge_user\.)?user_id (=|in)/', $q));
         $this->assertLessThanOrEqual(1, count($perUser), "The holders' badges load in one query");
+
+        $counts = [];
+        foreach ($body['included'] as $resource) {
+            if ($resource['type'] === 'users') {
+                $counts[$resource['attributes']['username']] = $resource['attributes']['badgeCount'];
+            }
+        }
+
+        ksort($counts);
+        $this->assertSame(
+            ['holder1' => 2, 'holder2' => 1, 'holder3' => 2, 'holder4' => 1, 'holder5' => 2, 'holder6' => 1, 'holder7' => 2, 'holder8' => 1],
+            $counts
+        );
+    }
+
+    /**
+     * Users reached through a relationship with no eager load of ours (here,
+     * who granted each badge; on a forum, the author of a moderator note or
+     * the uploader of a file) still share one query.
+     */
+    #[Test]
+    public function badges_of_users_reached_through_other_relationships_load_once()
+    {
+        $this->app();
+        $db = $this->database();
+        $db->enableQueryLog();
+        $db->flushQueryLog();
+
+        $response = $this->send(
+            $this->request('GET', '/api/user-badges', ['authenticatedAs' => 2])
+                ->withQueryParams(['filter' => ['badge' => 100], 'include' => 'grantedByUser'])
+        );
+
+        $sql = array_map(fn ($q) => str_replace(['`', '"'], '', $q), array_column($db->getQueryLog(), 'query'));
+        $db->flushQueryLog();
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $body = json_decode($response->getBody()->getContents(), true);
+        $this->assertCount(self::HOLDERS, $body['data']);
+
+        $perUser = array_filter($sql, fn ($q) => preg_match('/select \* from fof_badge_user where (fof_badge_user\.)?user_id (=|in)/', $q));
+        // One for the holders (the endpoint's eager load), one for the granters.
+        $this->assertLessThanOrEqual(2, count($perUser), "The granters' badges load in one query, not one each");
 
         $counts = [];
         foreach ($body['included'] as $resource) {

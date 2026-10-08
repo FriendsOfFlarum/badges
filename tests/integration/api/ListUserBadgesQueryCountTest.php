@@ -50,8 +50,8 @@ class ListUserBadgesQueryCountTest extends TestCase
                 ['id' => 100, 'name' => 'Starter', 'slug' => 'starter', 'description' => 'Starter', 'icon' => 'fas fa-star', 'icon_color' => '#ffffff', 'background_color' => '#667eea', 'category_id' => null, 'is_active' => true, 'is_visible' => true, 'order' => 0, 'trigger_config' => null, 'actions' => null],
                 ['id' => 101, 'name' => 'Veteran', 'slug' => 'veteran', 'description' => 'Veteran', 'icon' => 'fas fa-trophy', 'icon_color' => '#ffffff', 'background_color' => '#e74c3c', 'category_id' => null, 'is_active' => true, 'is_visible' => true, 'order' => 1, 'trigger_config' => null, 'actions' => null],
             ],
-            User::class        => array_merge([$this->normalUser()], $users),
-            'fof_badge_user'   => $userBadges,
+            User::class => array_merge([$this->normalUser()], $users),
+            'fof_badge_user' => $userBadges,
             'group_permission' => [
                 ['group_id' => 3, 'permission' => 'badges.viewUserBadges'],
                 ['group_id' => 3, 'permission' => 'badges.viewList'],

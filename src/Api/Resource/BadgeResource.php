@@ -73,7 +73,7 @@ class BadgeResource extends AbstractDatabaseResource
                 ->eagerLoad(['category']),
             Endpoint\Create::make()
                 ->authenticated()
-                ->can('create'),
+                ->visible(fn (Context $context) => $context->getActor()->can('create', Badge::class)),
             Endpoint\Update::make()
                 ->authenticated()
                 ->can('edit'),
@@ -160,6 +160,10 @@ class BadgeResource extends AbstractDatabaseResource
                 ->nullable()
                 ->visible(fn (Badge $badge, Context $context) => $context->getActor()->hasPermission('badges.moderate')),
             Schema\Arr::make('actions')
+                ->set(function (Badge $badge, $value) {
+                    BadgeValidator::actionGroupId($value);
+                    $badge->actions = $value;
+                })
                 ->writable()
                 ->nullable()
                 ->visible(fn (Badge $badge, Context $context) => $context->getActor()->hasPermission('badges.moderate')),
@@ -206,6 +210,17 @@ class BadgeResource extends AbstractDatabaseResource
         $dirty = $model->getDirty();
 
         $validationData = [];
+
+        BadgeValidator::assertCanChangeActions(
+            $context->getActor(),
+            $model->actions,
+            $model->exists ? $model->getOriginal('actions') : null,
+            $model->isDirty('trigger_config') || $model->isDirty('is_active')
+        );
+
+        if (array_key_exists('actions', $dirty)) {
+            $validationData['actions'] = $model->actions;
+        }
 
         foreach (['name', 'slug', 'description', 'icon', 'icon_color', 'background_color'] as $field) {
             if (array_key_exists($field, $dirty)) {

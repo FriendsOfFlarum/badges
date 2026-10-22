@@ -11,6 +11,7 @@
 
 namespace FoF\Badges\Api\Resource;
 
+use Flarum\Api\Context;
 use Flarum\Api\Endpoint;
 use Flarum\Api\Resource\AbstractDatabaseResource;
 use Flarum\Api\Schema;
@@ -59,7 +60,7 @@ class BadgeCategoryResource extends AbstractDatabaseResource
                 ->defaultSort('order'),
             Endpoint\Create::make()
                 ->authenticated()
-                ->can('create'),
+                ->visible(fn (Context $context) => $context->getActor()->can('create', BadgeCategory::class)),
             Endpoint\Update::make()
                 ->authenticated()
                 ->can('edit'),

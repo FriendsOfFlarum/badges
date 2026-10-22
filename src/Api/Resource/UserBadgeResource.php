@@ -69,7 +69,7 @@ class UserBadgeResource extends AbstractDatabaseResource
                 ->eagerLoad(['badge', 'user', 'badge.category']),
             Endpoint\Create::make()
                 ->authenticated()
-                ->can('create')
+                ->visible(fn (Context $context) => $context->getActor()->can('create', UserBadge::class))
                 ->action(function (Context $context) {
                     $actor = $context->getActor();
                     $data = $context->body();

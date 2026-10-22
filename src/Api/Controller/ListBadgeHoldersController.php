@@ -77,7 +77,7 @@ class ListBadgeHoldersController extends AbstractListController
         if (! empty($search)) {
             // Escape special LIKE characters and trim
             $search = trim($search);
-            $escapedSearch = str_replace(['%', '_', '\\'], ['\\%', '\\_', '\\\\'], $search);
+            $escapedSearch = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search);
             $query->whereHas('user', function ($q) use ($escapedSearch) {
                 $q->where('username', 'LIKE', "%{$escapedSearch}%")
                     ->orWhere('display_name', 'LIKE', "%{$escapedSearch}%");

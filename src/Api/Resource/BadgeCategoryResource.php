@@ -46,7 +46,7 @@ class BadgeCategoryResource extends AbstractDatabaseResource
     {
         $actor = $context->getActor();
 
-        $query->withCount('badges');
+        $query->withCount(['badges' => fn ($query) => \FoF\Badges\BadgeVisibility::catalog($query, $actor)]);
 
         if (! $actor->hasPermission('badges.moderate')) {
             $query->where('is_enabled', true);
@@ -57,6 +57,8 @@ class BadgeCategoryResource extends AbstractDatabaseResource
     {
         return [
             Endpoint\Index::make()
+                ->visible(fn (Context $context) => $context->getActor()->can('viewAny', BadgeCategory::class))
+                ->eagerLoadWhenIncluded(['badges' => ['badges']])
                 ->defaultSort('order'),
             Endpoint\Create::make()
                 ->authenticated()
@@ -91,12 +93,25 @@ class BadgeCategoryResource extends AbstractDatabaseResource
             Schema\DateTime::make('createdAt')
                 ->property('created_at'),
             Schema\Integer::make('badgeCount')
-                ->get(function (BadgeCategory $category) {
+                ->get(function (BadgeCategory $category, Context $context) {
                     $count = $category->badges_count ?? $category->getAttribute('badges_count');
 
-                    return (int) ($count ?? $category->badges()->count());
+                    if ($count === null) {
+                        $query = $category->badges();
+                        \FoF\Badges\BadgeVisibility::catalog($query, $context->getActor());
+                        $count = $query->count();
+                    }
+
+                    return (int) $count;
                 }),
             Schema\Relationship\ToMany::make('badges')
+                ->get(function (BadgeCategory $category, Context $context) {
+                    if (! $context->getActor()->can('viewAny', \FoF\Badges\Badge::class)) {
+                        return [];
+                    }
+
+                    return $category->badges->filter(fn ($badge) => $context->getActor()->hasPermission('badges.moderate') || ($badge->is_active && $badge->is_visible))->values()->all();
+                })
                 ->type('badges')
                 ->includable(),
         ];

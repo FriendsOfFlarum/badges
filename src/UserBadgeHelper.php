@@ -21,7 +21,7 @@ class UserBadgeHelper
      *
      * @return Collection<int, UserBadge>
      */
-    public static function getUserBadges(User $user): Collection
+    public static function getUserBadges(User $user, User $actor): Collection
     {
         if ($user->relationLoaded('userBadges')) {
             /** @var Collection<int, UserBadge> $userBadges */
@@ -38,15 +38,15 @@ class UserBadgeHelper
             $user->setRelation('userBadges', $userBadges);
         }
 
-        return $userBadges;
+        return $userBadges->filter(fn (UserBadge $badge) => BadgeVisibility::decoration($actor, $badge));
     }
 
     /**
      * Get the primary badge for a user.
      */
-    public static function getPrimaryBadge(User $user): ?UserBadge
+    public static function getPrimaryBadge(User $user, User $actor): ?UserBadge
     {
-        $userBadges = static::getUserBadges($user);
+        $userBadges = static::getUserBadges($user, $actor);
 
         if ($userBadges->isEmpty()) {
             return null;

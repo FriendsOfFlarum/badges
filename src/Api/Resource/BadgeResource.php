@@ -51,24 +51,20 @@ class BadgeResource extends AbstractDatabaseResource
     {
         $actor = $context->getActor();
 
-        if (! $actor->hasPermission('badges.moderate')) {
-            $query->where('is_active', true);
-        }
-
-        if ($actor->isGuest()) {
-            $query->where('is_visible', true);
-        }
+        \FoF\Badges\BadgeVisibility::catalog($query, $actor);
     }
 
     public function endpoints(): array
     {
         return [
             Endpoint\Index::make()
+                ->visible(fn (Context $context) => $context->getActor()->can('viewAny', Badge::class))
                 ->paginate(1000, 1000)
                 ->defaultInclude(['category'])
                 ->defaultSort('order')
                 ->eagerLoad(['category']),
             Endpoint\Show::make()
+                ->can('view')
                 ->defaultInclude(['category'])
                 ->eagerLoad(['category']),
             Endpoint\Create::make()
@@ -168,6 +164,7 @@ class BadgeResource extends AbstractDatabaseResource
                 ->nullable()
                 ->visible(fn (Badge $badge, Context $context) => $context->getActor()->hasPermission('badges.moderate')),
             Schema\Relationship\ToOne::make('category')
+                ->get(fn (Badge $badge, Context $context) => $badge->category && ($badge->category->is_enabled || $context->getActor()->hasPermission('badges.moderate')) ? $badge->category : null)
                 ->type('badge-categories')
                 ->includable(),
         ];

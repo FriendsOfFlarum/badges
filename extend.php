@@ -148,18 +148,18 @@ return [
         ->fields(fn () => [
             Schema\Integer::make('badgeCount')
                 ->get(function ($user, Context $context) {
-                    return UserBadgeHelper::getUserBadges($user)->count();
+                    return UserBadgeHelper::getUserBadges($user, $context->getActor())->count();
                 }),
             Schema\Str::make('primaryBadgeName')
                 ->get(function ($user, Context $context) {
-                    $primary = UserBadgeHelper::getPrimaryBadge($user);
+                    $primary = UserBadgeHelper::getPrimaryBadge($user, $context->getActor());
 
                     return $primary && $primary->badge ? $primary->badge->name : null;
                 })
                 ->nullable(),
             Schema\Str::make('primaryBadgeIcon')
                 ->get(function ($user, Context $context) {
-                    $primary = UserBadgeHelper::getPrimaryBadge($user);
+                    $primary = UserBadgeHelper::getPrimaryBadge($user, $context->getActor());
 
                     return $primary && $primary->badge ? $primary->badge->icon : null;
                 })
@@ -173,7 +173,7 @@ return [
                         return null;
                     }
 
-                    $userBadges = UserBadgeHelper::getUserBadges($user);
+                    $userBadges = UserBadgeHelper::getUserBadges($user, $context->getActor());
 
                     if ($userBadges->isEmpty()) {
                         return null;

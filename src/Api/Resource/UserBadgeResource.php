@@ -49,20 +49,14 @@ class UserBadgeResource extends AbstractDatabaseResource
     {
         $actor = $context->getActor();
 
-        // Basic visibility: non-moderators can't see hidden badges of other users
-        // More specific filtering (by user, badge, search) is handled by the Searcher/Filters
-        if (! $actor->hasPermission('badges.moderate') && ! $actor->hasPermission('badges.giveManually')) {
-            $query->where(function ($q) use ($actor) {
-                $q->where('user_id', $actor->id)
-                    ->orWhere('show_on_card', true);
-            });
-        }
+        \FoF\Badges\BadgeVisibility::userBadges($query, $actor);
     }
 
     public function endpoints(): array
     {
         return [
             Endpoint\Index::make()
+                ->visible(fn (Context $context) => ! $context->getActor()->isGuest() || $context->getActor()->can('viewAny', UserBadge::class))
                 ->paginate(20, 100)
                 ->defaultInclude(['badge', 'user'])
                 ->defaultSort('-earnedAt')
@@ -133,6 +127,8 @@ class UserBadgeResource extends AbstractDatabaseResource
             Schema\Boolean::make('isPrimary')
                 ->property('is_primary'),
             Schema\Relationship\ToOne::make('badge')
+                // Catalog visibility does not hide an earned badge.
+                ->get(fn (UserBadge $userBadge) => $userBadge->badge)
                 ->type('badges')
                 ->includable(),
             Schema\Relationship\ToOne::make('user')

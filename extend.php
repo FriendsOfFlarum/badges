@@ -144,24 +144,42 @@ return [
         ]),
 
     // User resource fields (replaces UserSerializer attributes)
+    // Each queues the user and answers once the page has been seen, so users
+    // reached without an eager load share a request-scoped batch.
     (new Extend\ApiResource(Resource\UserResource::class))
         ->fields(fn () => [
             Schema\Integer::make('badgeCount')
                 ->get(function ($user, Context $context) {
-                    return UserBadgeHelper::getUserBadges($user, $context->getActor())->count();
+                    $actor = $context->getActor();
+                    $batch = UserBadgeHelper::forRequest($context->request);
+                    $batch->queue($user);
+
+                    return fn () => UserBadgeHelper::getUserBadges($user, $actor, $batch)->count();
                 }),
             Schema\Str::make('primaryBadgeName')
                 ->get(function ($user, Context $context) {
-                    $primary = UserBadgeHelper::getPrimaryBadge($user, $context->getActor());
+                    $actor = $context->getActor();
+                    $batch = UserBadgeHelper::forRequest($context->request);
+                    $batch->queue($user);
 
-                    return $primary && $primary->badge ? $primary->badge->name : null;
+                    return function () use ($user, $actor, $batch) {
+                        $primary = UserBadgeHelper::getPrimaryBadge($user, $actor, $batch);
+
+                        return $primary && $primary->badge ? $primary->badge->name : null;
+                    };
                 })
                 ->nullable(),
             Schema\Str::make('primaryBadgeIcon')
                 ->get(function ($user, Context $context) {
-                    $primary = UserBadgeHelper::getPrimaryBadge($user, $context->getActor());
+                    $actor = $context->getActor();
+                    $batch = UserBadgeHelper::forRequest($context->request);
+                    $batch->queue($user);
 
-                    return $primary && $primary->badge ? $primary->badge->icon : null;
+                    return function () use ($user, $actor, $batch) {
+                        $primary = UserBadgeHelper::getPrimaryBadge($user, $actor, $batch);
+
+                        return $primary && $primary->badge ? $primary->badge->icon : null;
+                    };
                 })
                 ->nullable(),
             Schema\Arr::make('visibleBadges')
@@ -173,28 +191,34 @@ return [
                         return null;
                     }
 
-                    $userBadges = UserBadgeHelper::getUserBadges($user, $context->getActor());
+                    $actor = $context->getActor();
+                    $batch = UserBadgeHelper::forRequest($context->request);
+                    $batch->queue($user);
 
-                    if ($userBadges->isEmpty()) {
-                        return null;
-                    }
+                    return function () use ($user, $actor, $batch, $displayLimit) {
+                        $userBadges = UserBadgeHelper::getUserBadges($user, $actor, $batch);
 
-                    return $userBadges
-                        ->filter(fn (UserBadge $ub) => $ub->show_on_card && $ub->badge !== null)
-                        ->sort(function (UserBadge $a, UserBadge $b) {
-                            if ($a->is_primary && ! $b->is_primary) {
-                                return -1;
-                            }
-                            if (! $a->is_primary && $b->is_primary) {
-                                return 1;
-                            }
+                        if ($userBadges->isEmpty()) {
+                            return null;
+                        }
 
-                            return ($a->badge->earned_count ?? PHP_INT_MAX) <=> ($b->badge->earned_count ?? PHP_INT_MAX);
-                        })
-                        ->take($displayLimit)
-                        ->map(fn (UserBadge $ub) => ['name' => $ub->badge->name, 'icon' => $ub->badge->icon])
-                        ->values()
-                        ->toArray();
+                        return $userBadges
+                            ->filter(fn (UserBadge $ub) => $ub->show_on_card && $ub->badge !== null)
+                            ->sort(function (UserBadge $a, UserBadge $b) {
+                                if ($a->is_primary && ! $b->is_primary) {
+                                    return -1;
+                                }
+                                if (! $a->is_primary && $b->is_primary) {
+                                    return 1;
+                                }
+
+                                return ($a->badge->earned_count ?? PHP_INT_MAX) <=> ($b->badge->earned_count ?? PHP_INT_MAX);
+                            })
+                            ->take($displayLimit)
+                            ->map(fn (UserBadge $ub) => ['name' => $ub->badge->name, 'icon' => $ub->badge->icon])
+                            ->values()
+                            ->toArray();
+                    };
                 })
                 ->nullable(),
         ]),

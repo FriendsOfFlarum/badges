@@ -71,5 +71,32 @@ Fixture details verified against source:
 - Core `DiscussionResource` exposes `posts` linkage but does not make it
   includable. Nested response tests use `firstPost.user` and `lastPost.user`.
 
-Verification: 84 integration tests / 303 assertions passed; the existing unit
-suite passed 91 tests / 148 assertions. No production changes were needed.
+## PR #15 batch-loading verification
+
+The batch is scoped to the request through a weak-key map. Raw relationships are
+shared within that batch; decoration visibility is evaluated separately for each
+actor. Partially loaded nested relationships and deliberately constrained award
+collections are preserved.
+
+`unit/UserBadgeBatchTest.php` covers request isolation, abandoned request cleanup,
+actor changes, partial preloads and duplicate user instances.
+`integration/api/ListUserBadgesQueryCountTest.php` checks all four decoration
+fields and query counts for `user`, `grantedByUser` and `badge` includes with page
+sizes 2 and 8. Query matching uses the actual connection's prefix and quoting,
+with positive controls so an unmatched query cannot silently pass.
+
+The same integration suite can use a separate prefixed SQLite fixture:
+
+```sh
+BADGES_ISOLATED_PREFIX=pr15_ vendor/bin/phpunit \
+  -c tests/phpunit.integration-isolated.xml --do-not-cache-result
+```
+
+This fixture lives in `integration/tmp/isolated-api-pr15-prefix`; it does not
+change the default isolated database or CI's database matrix.
+
+Verification: 96 unit tests / 211 assertions, and 93 integration tests / 546
+assertions passed. The complete integration suite passed both without a prefix
+and with `pr15_`. PHPStan level 6 passed with no errors.
+
+Browser smoke checks are listed in [MANUAL.md](MANUAL.md).

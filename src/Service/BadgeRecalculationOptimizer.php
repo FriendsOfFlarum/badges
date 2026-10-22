@@ -36,22 +36,7 @@ class BadgeRecalculationOptimizer
      * cannot lose them, so they can be skipped during recalculation.
      */
     protected const MONOTONIC_METRICS = [
-        'post_count',
-        'discussion_count',
-        'likes_received',
-        'likes_given',
         'member_days',
-        'best_answers_received',
-        'files_uploaded',
-        'polls_created',
-        'polls_voted',
-        'private_discussions_created',
-        'reactions_received',
-        'reactions_given',
-        'upvotes_received',
-        'upvotes_given',
-        'downvotes_received',
-        'downvotes_given',
     ];
 
     /**
@@ -143,34 +128,16 @@ class BadgeRecalculationOptimizer
      */
     public function getUserIdsToSkip(Badge $badge, bool $noRevoke, bool $reapplyActions = false): array
     {
-        // If reapplyActions is true, we need to process users who already have the badge
-        // so we can re-apply actions to them - don't skip anyone
-        if ($reapplyActions) {
+        // Re-evaluate holders for revocation (metrics/rules may have changed)
+        // or to re-apply actions. Avoid loading a skip list in either case.
+        if ($reapplyActions || ! $noRevoke) {
             return [];
         }
 
         // Get users who already have this badge
-        $usersWithBadge = UserBadge::where('badge_id', $badge->id)
+        return UserBadge::where('badge_id', $badge->id)
             ->pluck('user_id')
             ->toArray();
-
-        if (empty($usersWithBadge)) {
-            return [];
-        }
-
-        // If noRevoke is true, skip ALL users who already have the badge
-        // (we won't award again, and we won't revoke)
-        if ($noRevoke) {
-            return $usersWithBadge;
-        }
-
-        // If badge is monotonic-safe, users who have it can't lose it
-        if ($this->isMonotonicSafe($badge)) {
-            return $usersWithBadge;
-        }
-
-        // Otherwise, we can't skip anyone - they might need revocation
-        return [];
     }
 
     /**
@@ -255,7 +222,29 @@ class BadgeRecalculationOptimizer
             });
         }
 
-        return $query;
+        return $this->includeExistingHolders($query, [$badge->id], $excludeUserIds);
+    }
+
+    /**
+     * Holders must be evaluated even after their metrics or badge rules change.
+     * Keep exclusions outside the OR so noRevoke skips remain effective.
+     */
+    protected function includeExistingHolders(Builder $candidates, array $badgeIds, array $excludeUserIds): Builder
+    {
+        if (empty($candidates->getQuery()->wheres)) {
+            return $candidates;
+        }
+
+        $query = User::query();
+
+        if (! empty($excludeUserIds)) {
+            $query->whereNotIn('id', $excludeUserIds);
+        }
+
+        return $query->where(function (Builder $query) use ($candidates, $badgeIds) {
+            $query->getQuery()->addNestedWhereQuery($candidates->getQuery());
+            $query->orWhereIn('id', UserBadge::query()->select('user_id')->whereIn('badge_id', $badgeIds));
+        });
     }
 
     /**
@@ -489,7 +478,8 @@ class BadgeRecalculationOptimizer
             $userIds = $this->buildGroupOptimizedQuery(
                 $strategy,
                 $group['minThresholds'],
-                $skipUserIds
+                $skipUserIds,
+                array_map(fn ($badge) => $badge->id, $groupBadges)
             )->pluck('id')->toArray();
 
             $result[] = [
@@ -589,7 +579,7 @@ class BadgeRecalculationOptimizer
      * Get user IDs to skip for a group of badges.
      *
      * For noRevoke mode, we can only skip users who have ALL badges in the group.
-     * For monotonic-safe badges, we skip users who have those specific badges.
+     * With revocation or action reapplication enabled, every holder is evaluated.
      */
     protected function getGroupSkipUserIds(array $badges, bool $noRevoke, bool $reapplyActions = false): array
     {
@@ -622,9 +612,8 @@ class BadgeRecalculationOptimizer
             return array_values($intersection);
         }
 
-        // Without noRevoke, we can only skip users for monotonic-safe badges
-        // But since different badges might have different skip requirements,
-        // we can't safely skip anyone in a mixed group
+        // Holders may need revocation, even if their metrics only increase:
+        // the badge conditions may have changed since it was awarded.
         return [];
     }
 
@@ -634,7 +623,8 @@ class BadgeRecalculationOptimizer
     protected function buildGroupOptimizedQuery(
         array $strategy,
         array $minThresholds,
-        array $excludeUserIds
+        array $excludeUserIds,
+        array $badgeIds = []
     ): Builder {
         $query = User::query();
 
@@ -671,7 +661,7 @@ class BadgeRecalculationOptimizer
             });
         }
 
-        return $query;
+        return $this->includeExistingHolders($query, $badgeIds, $excludeUserIds);
     }
 
     /**

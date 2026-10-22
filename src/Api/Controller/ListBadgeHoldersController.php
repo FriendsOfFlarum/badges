@@ -14,7 +14,6 @@ namespace FoF\Badges\Api\Controller;
 use Flarum\Api\Controller\AbstractListController;
 use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;
-use Flarum\User\Exception\PermissionDeniedException;
 use FoF\Badges\Api\Serializer\UserBadgeSerializer;
 use FoF\Badges\Badge;
 use FoF\Badges\UserBadge;
@@ -49,10 +48,8 @@ class ListBadgeHoldersController extends AbstractListController
     {
         $actor = RequestUtil::getActor($request);
 
-        // Allow access for users with viewList or moderate permission
-        // This is consistent with ListUserBadgesController which also allows viewList
-        if (! $actor->can('badges.viewList') && ! $actor->can('badges.moderate')) {
-            throw new PermissionDeniedException();
+        if ($actor->isGuest()) {
+            $actor->assertCan('viewAny', UserBadge::class);
         }
 
         $badgeId = Arr::get($request->getQueryParams(), 'id');
@@ -72,6 +69,8 @@ class ListBadgeHoldersController extends AbstractListController
         $query = UserBadge::query()
             ->where('badge_id', $badgeId)
             ->with(['user', 'badge', 'grantedByUser']);
+
+        \FoF\Badges\BadgeVisibility::userBadges($query, $actor);
 
         // Search by username or display name
         if (! empty($search)) {

@@ -35,7 +35,9 @@ class BadgeCategorySerializer extends AbstractSerializer
         // Use preloaded badges_count if available (via withCount), otherwise fallback to count()
         $badgeCount = $category->badges_count ?? $category->getAttribute('badges_count');
         if ($badgeCount === null) {
-            $badgeCount = $category->badges()->count();
+            $query = $category->badges();
+            \FoF\Badges\BadgeVisibility::catalog($query, $this->getActor());
+            $badgeCount = $query->count();
         }
 
         return [
@@ -52,8 +54,16 @@ class BadgeCategorySerializer extends AbstractSerializer
     /**
      * @param BadgeCategory $category
      */
-    protected function badges($category): Relationship
+    protected function badges($category): ?Relationship
     {
-        return $this->hasMany($category, BadgeSerializer::class);
+        $actor = $this->getActor();
+        $badges = $actor->can('viewAny', \FoF\Badges\Badge::class)
+            ? $category->badges->filter(fn ($badge) => $actor->hasPermission('badges.moderate') || ($badge->is_active && $badge->is_visible))
+            : [];
+
+        $visibleCategory = clone $category;
+        $visibleCategory->setRelation('badges', $badges);
+
+        return $this->hasMany($visibleCategory, BadgeSerializer::class, 'badges');
     }
 }

@@ -46,12 +46,14 @@ class ListBadgesController extends AbstractListController
     protected function data(ServerRequestInterface $request, Document $document): iterable
     {
         $actor = RequestUtil::getActor($request);
+        $actor->assertCan('viewAny', Badge::class);
 
         $limit = $this->extractLimit($request);
         $offset = $this->extractOffset($request);
         $filter = Arr::get($request->getQueryParams(), 'filter', []);
 
         $query = Badge::query();
+        \FoF\Badges\BadgeVisibility::catalog($query, $actor);
 
         // Filter by category
         if ($categoryId = Arr::get($filter, 'category')) {
@@ -61,14 +63,6 @@ class ListBadgesController extends AbstractListController
         // Filter by active status
         if (Arr::has($filter, 'active')) {
             $query->where('is_active', (bool) Arr::get($filter, 'active'));
-        } elseif (! $actor->hasPermission('badges.moderate')) {
-            // Non-admins only see active badges by default
-            $query->where('is_active', true);
-        }
-
-        // Guests only see visible badges
-        if ($actor->isGuest()) {
-            $query->where('is_visible', true);
         }
 
         $totalCount = $query->count();

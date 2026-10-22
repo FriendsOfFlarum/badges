@@ -19,9 +19,14 @@ use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class InstallDefaultBadgesController implements RequestHandlerInterface
 {
+    public function __construct(protected TranslatorInterface $translator)
+    {
+    }
+
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $actor = RequestUtil::getActor($request);
@@ -56,21 +61,15 @@ class InstallDefaultBadgesController implements RequestHandlerInterface
     {
         $definitions = [
             [
-                'name' => 'Getting Started',
                 'slug' => 'getting-started',
-                'description' => 'Badges for new members taking their first steps',
                 'order' => 1,
             ],
             [
-                'name' => 'Milestones',
                 'slug' => 'milestones',
-                'description' => 'Badges for reaching important milestones',
                 'order' => 2,
             ],
             [
-                'name' => 'Posting',
                 'slug' => 'posting',
-                'description' => 'Badges for posting milestones and contributions',
                 'order' => 3,
             ],
         ];
@@ -78,7 +77,11 @@ class InstallDefaultBadgesController implements RequestHandlerInterface
         $ids = [];
 
         foreach ($definitions as $def) {
-            $category = BadgeCategory::build($def['name'], $def['slug'], $def['description']);
+            $category = BadgeCategory::build(
+                $this->translator->trans('fof-badges.defaults.categories.'.$def['slug'].'.name'),
+                $def['slug'],
+                $this->translator->trans('fof-badges.defaults.categories.'.$def['slug'].'.description')
+            );
             $category->order = $def['order'];
             $category->save();
             $ids[$def['slug']] = $category->id;
@@ -101,9 +104,7 @@ class InstallDefaultBadgesController implements RequestHandlerInterface
         $badges = [
             // Getting Started
             [
-                'name' => 'First Post',
                 'slug' => 'first-post',
-                'description' => 'Write your first reply',
                 'icon' => 'fas fa-pencil-alt',
                 'icon_color' => '#ffffff',
                 'background_color' => '#3498db',
@@ -112,9 +113,7 @@ class InstallDefaultBadgesController implements RequestHandlerInterface
                 'trigger_config' => $trigger('post_count', '>=', 1),
             ],
             [
-                'name' => 'Conversation Starter',
                 'slug' => 'conversation-starter',
-                'description' => 'Start your first discussion',
                 'icon' => 'fas fa-comments',
                 'icon_color' => '#ffffff',
                 'background_color' => '#9b59b6',
@@ -123,9 +122,7 @@ class InstallDefaultBadgesController implements RequestHandlerInterface
                 'trigger_config' => $trigger('discussion_count', '>=', 1),
             ],
             [
-                'name' => 'Profile Picture',
                 'slug' => 'profile-picture',
-                'description' => 'Upload a profile picture',
                 'icon' => 'fas fa-camera',
                 'icon_color' => '#ffffff',
                 'background_color' => '#f39c12',
@@ -136,9 +133,7 @@ class InstallDefaultBadgesController implements RequestHandlerInterface
 
             // Milestones
             [
-                'name' => 'First Week',
                 'slug' => 'first-week',
-                'description' => 'Be a member for 7 days',
                 'icon' => 'fas fa-calendar-check',
                 'icon_color' => '#ffffff',
                 'background_color' => '#4caf50',
@@ -147,9 +142,7 @@ class InstallDefaultBadgesController implements RequestHandlerInterface
                 'trigger_config' => $trigger('member_days', '>=', 7),
             ],
             [
-                'name' => 'Regular',
                 'slug' => 'regular',
-                'description' => 'Be a member for 30 days',
                 'icon' => 'fas fa-calendar-alt',
                 'icon_color' => '#ffffff',
                 'background_color' => '#2196f3',
@@ -158,9 +151,7 @@ class InstallDefaultBadgesController implements RequestHandlerInterface
                 'trigger_config' => $trigger('member_days', '>=', 30),
             ],
             [
-                'name' => 'Anniversary',
                 'slug' => 'anniversary',
-                'description' => 'Be a member for one year',
                 'icon' => 'fas fa-birthday-cake',
                 'icon_color' => '#ffffff',
                 'background_color' => '#00bcd4',
@@ -171,9 +162,7 @@ class InstallDefaultBadgesController implements RequestHandlerInterface
 
             // Posting
             [
-                'name' => 'Active Member',
                 'slug' => 'active-member',
-                'description' => 'Post 50 replies',
                 'icon' => 'fas fa-fire',
                 'icon_color' => '#ffffff',
                 'background_color' => '#ff5722',
@@ -182,9 +171,7 @@ class InstallDefaultBadgesController implements RequestHandlerInterface
                 'trigger_config' => $trigger('post_count', '>=', 50),
             ],
             [
-                'name' => 'Prolific',
                 'slug' => 'prolific',
-                'description' => 'Post 200 replies',
                 'icon' => 'fas fa-medal',
                 'icon_color' => '#ffffff',
                 'background_color' => '#795548',
@@ -193,9 +180,7 @@ class InstallDefaultBadgesController implements RequestHandlerInterface
                 'trigger_config' => $trigger('post_count', '>=', 200),
             ],
             [
-                'name' => 'Topic Starter',
                 'slug' => 'topic-starter',
-                'description' => 'Start 10 discussions',
                 'icon' => 'fas fa-lightbulb',
                 'icon_color' => '#ffffff',
                 'background_color' => '#8bc34a',
@@ -204,9 +189,7 @@ class InstallDefaultBadgesController implements RequestHandlerInterface
                 'trigger_config' => $trigger('discussion_count', '>=', 10),
             ],
             [
-                'name' => 'Editor',
                 'slug' => 'editor',
-                'description' => 'Edit 10 posts to improve them',
                 'icon' => 'fas fa-edit',
                 'icon_color' => '#ffffff',
                 'background_color' => '#607d8b',
@@ -218,9 +201,9 @@ class InstallDefaultBadgesController implements RequestHandlerInterface
 
         foreach ($badges as $def) {
             $badge = Badge::build(
-                $def['name'],
+                $this->translator->trans('fof-badges.defaults.badges.'.$def['slug'].'.name'),
                 $def['slug'],
-                $def['description'],
+                $this->translator->trans('fof-badges.defaults.badges.'.$def['slug'].'.description'),
                 $def['category_id']
             );
             $badge->icon = $def['icon'];

@@ -52,7 +52,10 @@ class CreateBadgeController extends AbstractCreateController
             'icon' => Arr::get($data, 'icon'),
             'icon_color' => Arr::get($data, 'iconColor'),
             'background_color' => Arr::get($data, 'backgroundColor'),
+            'actions' => Arr::get($data, 'actions'),
         ];
+
+        BadgeValidator::assertCanChangeActions($actor, $validationData['actions']);
 
         // Add trigger_config validation if provided
         if (Arr::has($data, 'triggerConfig') && Arr::get($data, 'triggerConfig') !== null) {

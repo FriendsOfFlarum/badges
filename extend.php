@@ -79,8 +79,10 @@ return [
             ]);
         })
         ->endpoint(Endpoint\Show::class, function (Endpoint\Show $endpoint) {
-            return $endpoint->eagerLoad([
-                'posts.user.userBadges', 'posts.user.userBadges.badge',
+            return $endpoint->eagerLoadWhenIncluded([
+                'posts' => ['posts.user.userBadges', 'posts.user.userBadges.badge'],
+                'user' => ['user.userBadges.badge'],
+                'lastPostedUser' => ['lastPostedUser.userBadges.badge'],
             ]);
         }),
 

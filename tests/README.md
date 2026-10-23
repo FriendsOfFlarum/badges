@@ -42,7 +42,7 @@ vendor/bin/phpunit -c tests/phpunit.integration-isolated.xml --do-not-cache-resu
 This optional configuration loads `integration/isolated-bootstrap.php`.
 The regular `phpunit.integration.xml` retains the CI database matrix configuration.
 It explicitly overrides the database and test-directory environment variables,
-uses SQLite at `tests/integration/tmp/isolated-api/api-verification.sqlite`, and keeps the
+uses SQLite at `tests/integration/tmp/isolated-api-2.0.2/api-verification.sqlite`, and keeps the
 generated Flarum config, public assets and storage under that same ignored
 directory. It validates an existing test config before tests boot Flarum.
 Application config is never loaded. No external database is used.
@@ -92,11 +92,21 @@ BADGES_ISOLATED_PREFIX=pr15_ vendor/bin/phpunit \
   -c tests/phpunit.integration-isolated.xml --do-not-cache-result
 ```
 
-This fixture lives in `integration/tmp/isolated-api-pr15-prefix`; it does not
+This fixture lives in `integration/tmp/isolated-api-2.0.2-pr15-prefix`; it does not
 change the default isolated database or CI's database matrix.
 
-Verification: 96 unit tests / 211 assertions, and 93 integration tests / 546
-assertions passed. The complete integration suite passed both without a prefix
-and with `pr15_`. PHPStan level 6 passed with no errors.
+Verification with core 2.0.2, testing/phpstan 2.0.1 and PHPUnit 12.5:
+96 unit tests / 212 assertions and 141 integration tests / 2767 assertions
+passed without warnings, notices or deprecations. The two Turkish-only locale
+cases also passed with `pr15_` (344 assertions). PHPStan level 6 passed with no
+errors.
+
+`InstallDefaultBadgesLocaleTest` enables only badges and registers only Turkish
+as a selectable locale, with no `flarum/lang-english` package installed. It
+verifies all 26 default names/descriptions against independent expectations,
+both with no Turkish badge keys and with two translated fields. The extension's
+own English resource supplies per-field fallback, and a repeated installation
+preserves existing records. Publishing the keys in a language pack is not
+required to exercise this scenario.
 
 Browser smoke checks are listed in [MANUAL.md](MANUAL.md).

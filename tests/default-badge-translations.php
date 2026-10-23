@@ -57,8 +57,6 @@ namespace {
     $controller = new \FoF\Badges\Api\Controller\InstallDefaultBadgesController($translator);
     $categories = new \ReflectionMethod($controller, 'createCategories');
     $badges = new \ReflectionMethod($controller, 'createBadges');
-    $categories->setAccessible(true);
-    $badges->setAccessible(true);
     $install = function () use ($controller, $categories, $badges): array {
         \FoF\Badges\BadgeCategory::$saved = [];
         \FoF\Badges\Badge::$saved = [];

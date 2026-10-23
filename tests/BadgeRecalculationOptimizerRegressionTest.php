@@ -1,6 +1,14 @@
 <?php
 
-// Standalone isolated regression tests: php tests/BadgeRecalculationOptimizerRegressionTest.php
+/*
+ * This file is part of fof/badges
+ *
+ * Copyright (c) 2026 FriendsOfFlarum.
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
 // Uses only an explicitly created SQLite :memory: database; never boots Flarum.
 require __DIR__.'/bootstrap.php';
 
@@ -29,8 +37,14 @@ $connection->table('fof_badge_user')->insert([
     ['user_id' => 4, 'badge_id' => 11],
 ]);
 $manager = new class extends MetricManager {
-    public function __construct() {}
-    public function isAvailable(string $type): bool { return true; }
+    public function __construct()
+    {
+    }
+
+    public function isAvailable(string $type): bool
+    {
+        return true;
+    }
 };
 $optimizer = new BadgeRecalculationOptimizer($manager);
 $badge = new Badge();
@@ -63,4 +77,4 @@ foreach ([[false, false, [1, 2, 4]], [true, false, [2, 4]], [true, true, [1, 2, 
 }
 $badge->trigger_config = ['conditions' => [['metric' => 'likes_given', 'operator' => '>=', 'value' => 10]]];
 $check([1, 2, 3, 4], $ids($optimizer->buildOptimizedUserQuery($badge)), 'Unfilterable candidates remain unrestricted');
-print "Optimizer regression checks passed: {$checks}\n";
+echo "Optimizer regression checks passed: {$checks}\n";

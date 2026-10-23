@@ -1,6 +1,14 @@
 <?php
 
-// Standalone: php tests/VisibilityRegressionTest.php (no Flarum boot or live DB).
+/*
+ * This file is part of fof/badges
+ *
+ * Copyright (c) 2026 FriendsOfFlarum.
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
 require __DIR__.'/bootstrap.php';
 
 use Flarum\User\User;
@@ -25,14 +33,22 @@ foreach ([[1, 1, 1], [2, 1, 0], [3, 0, 1]] as [$id, $active, $visible]) {
 }
 $actor = new class extends User {
     public $permissions = [];
-    public function hasPermission($permission): bool { return in_array($permission, $this->permissions); }
-    public function can($ability, $arguments = []): bool {
+
+    public function hasPermission($permission): bool
+    {
+        return in_array($permission, $this->permissions);
+    }
+
+    public function can($ability, $arguments = []): bool
+    {
         return $ability === 'viewAny' && $this->hasPermission($arguments === UserBadge::class ? 'badges.viewUserBadges' : 'badges.viewList');
     }
 };
 $checks = 0;
 $check = function ($expected, $actual, $label) use (&$checks) {
-    if ($expected !== $actual) { throw new RuntimeException($label.': '.var_export($actual, true)); }
+    if ($expected !== $actual) {
+        throw new RuntimeException($label.': '.var_export($actual, true));
+    }
     $checks++;
 };
 foreach ([[null, [], []], [null, ['badges.viewUserBadges'], [1, 3]], [1, [], [1, 2]], [1, ['badges.viewList'], [1, 2]], [1, ['badges.viewUserBadges'], [1, 2, 3]], [1, ['badges.moderate'], [1, 2, 3, 4]], [1, ['badges.giveManually'], [1, 2, 3, 4]]] as [$id, $permissions, $expected]) {
@@ -62,7 +78,10 @@ $check([1], $query->pluck('id')->all(), 'Catalog hides secret and inactive badge
 $container = new \Illuminate\Container\Container();
 \Illuminate\Container\Container::setInstance($container);
 $container->instance('flarum.settings', new class {
-    public function get($key, $default = null) { return $default; }
+    public function get($key, $default = null)
+    {
+        return $default;
+    }
 });
 $serializer = (new ReflectionClass(\Flarum\Api\Serializer\UserSerializer::class))->newInstanceWithoutConstructor();
 $serializer->setRequest(\Flarum\Http\RequestUtil::withActor(new \Laminas\Diactoros\ServerRequest(), $actor));
@@ -74,9 +93,13 @@ $hidden->is_primary = true;
 $user = new User();
 $user->setRelation('userBadges', new \Illuminate\Database\Eloquent\Collection([$hidden, $earned]));
 foreach (require dirname(__DIR__).'/extend.php' as $extender) {
-    if (! $extender instanceof \Flarum\Extend\ApiSerializer) { continue; }
+    if (! $extender instanceof \Flarum\Extend\ApiSerializer) {
+        continue;
+    }
     $reflection = new ReflectionObject($extender);
-    if ($reflection->getProperty('serializerClass')->getValue($extender) !== \Flarum\Api\Serializer\UserSerializer::class) { continue; }
+    if ($reflection->getProperty('serializerClass')->getValue($extender) !== \Flarum\Api\Serializer\UserSerializer::class) {
+        continue;
+    }
     foreach ($reflection->getProperty('attributes')->getValue($extender) as $callback) {
         $attributes = $callback($serializer, $user);
         $check(1, $attributes['badgeCount'], 'Serialized count excludes hidden badges');
@@ -86,4 +109,4 @@ foreach (require dirname(__DIR__).'/extend.php' as $extender) {
         $check(['badgeCount' => 0, 'primaryBadgeName' => null, 'primaryBadgeIcon' => null, 'visibleBadges' => null], $callback($serializer, $user), 'Preloaded attributes respect actor permission');
     }
 }
-print "Visibility regression checks passed: {$checks}\n";
+echo "Visibility regression checks passed: {$checks}\n";

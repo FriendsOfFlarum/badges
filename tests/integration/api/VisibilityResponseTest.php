@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of fof/badges
+ *
+ * Copyright (c) 2026 FriendsOfFlarum.
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
 namespace FoF\Badges\Tests\Integration\Api;
 
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
@@ -44,6 +53,7 @@ class VisibilityResponseTest extends TestCase
                 $cases[($preloaded ? 'preloaded' : 'unloaded').'-'.($actor ?? 'guest')] = [$preloaded, $actor];
             }
         }
+
         return $cases;
     }
 
@@ -120,6 +130,7 @@ class VisibilityResponseTest extends TestCase
         $response = $this->send($this->request('GET', $url, $actor === null ? [] : ['authenticatedAs' => $actor])->withQueryParams($query));
         $body = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $this->assertSame(200, $response->getStatusCode(), json_encode($body));
+
         return $body;
     }
 }

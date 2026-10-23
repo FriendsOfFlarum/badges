@@ -193,7 +193,6 @@ class TriggerEvaluatorTest extends TestCase
     {
         $reflection = new \ReflectionClass($this->evaluator);
         $method = $reflection->getMethod('compare');
-        $method->setAccessible(true);
 
         return $method->invoke($this->evaluator, $value, $operator, $target);
     }

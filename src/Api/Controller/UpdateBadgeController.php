@@ -46,6 +46,17 @@ class UpdateBadgeController extends AbstractShowController
 
         // Build validation data from what's being updated
         $validationData = [];
+        $actions = array_key_exists('actions', $data) ? $data['actions'] : $badge->actions;
+        BadgeValidator::assertCanChangeActions(
+            $actor,
+            $actions,
+            $badge->actions,
+            (array_key_exists('triggerConfig', $data) && $data['triggerConfig'] !== $badge->trigger_config)
+                || (array_key_exists('isActive', $data) && (bool) $data['isActive'] !== $badge->is_active)
+        );
+        if (array_key_exists('actions', $data)) {
+            $validationData['actions'] = $actions;
+        }
         if (Arr::has($data, 'name')) {
             $validationData['name'] = Arr::get($data, 'name');
         }

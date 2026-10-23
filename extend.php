@@ -175,6 +175,7 @@ return [
                 $user->setRelation('userBadges', $userBadges);
             }
 
+            $userBadges = $userBadges->filter(fn (UserBadge $badge) => BadgeVisibility::decoration($serializer->getActor(), $badge));
             $badgeCount = $userBadges->count();
             $attributes['badgeCount'] = $badgeCount;
 

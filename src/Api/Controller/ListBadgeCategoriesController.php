@@ -34,18 +34,20 @@ class ListBadgeCategoriesController extends AbstractListController
     protected function data(ServerRequestInterface $request, Document $document): iterable
     {
         $actor = RequestUtil::getActor($request);
+        $actor->assertCan('viewAny', BadgeCategory::class);
         $filter = Arr::get($request->getQueryParams(), 'filter', []);
 
         $query = BadgeCategory::query()
-            ->withCount('badges')
+            ->withCount(['badges' => fn ($query) => \FoF\Badges\BadgeVisibility::catalog($query, $actor)])
             ->orderBy('order', 'asc');
 
-        // Explicit filter takes priority (for API consumers)
+        if (! $actor->hasPermission('badges.moderate')) {
+            $query->where('is_enabled', true);
+        }
+
+        // Explicit filters must not widen actor visibility.
         if (Arr::has($filter, 'enabled')) {
             $query->where('is_enabled', (bool) Arr::get($filter, 'enabled'));
-        } elseif (! $actor->hasPermission('badges.moderate')) {
-            // Non-moderators only see enabled categories by default
-            $query->where('is_enabled', true);
         }
 
         return $query->get();

@@ -32,7 +32,9 @@ class ShowBadgeController extends AbstractShowController
         $actor = RequestUtil::getActor($request);
         $id = Arr::get($request->getQueryParams(), 'id');
 
-        $badge = Badge::findOrFail($id);
+        $query = Badge::query();
+        \FoF\Badges\BadgeVisibility::catalog($query, $actor);
+        $badge = $query->findOrFail($id);
 
         $actor->assertCan('view', $badge);
 

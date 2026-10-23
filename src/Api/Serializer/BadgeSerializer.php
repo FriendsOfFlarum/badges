@@ -128,6 +128,10 @@ class BadgeSerializer extends AbstractSerializer
      */
     protected function category($badge): ?Relationship
     {
+        if ($badge->category && ! $badge->category->is_enabled && ! $this->getActor()->hasPermission('badges.moderate')) {
+            return null;
+        }
+
         return $this->hasOne($badge, BadgeCategorySerializer::class, 'category');
     }
 }

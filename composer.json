@@ -24,7 +24,7 @@
     },
     "require": {
         "php": "^8.2",
-        "flarum/core": "^2.0.0-beta"
+        "flarum/core": "^2.0.0"
     },
     "replace": {
         "huseyinfiliz/badges": "*"
@@ -124,8 +124,8 @@
         "analyse:phpstan": "Run PHPStan static analysis."
     },
     "require-dev": {
-        "flarum/testing": "^2.0.0-beta",
-        "flarum/phpstan": "^2.0.0-beta",
+        "flarum/testing": "*",
+        "flarum/phpstan": "*",
         "flarum/likes": "*",
         "flarum/tags": "*",
         "flarum/nicknames": "*",

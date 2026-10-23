@@ -126,13 +126,13 @@ class GroupActionPrivilegeSecurityTest extends TestCase
     {
         $actor = $this->createMock(User::class);
         $calls = [];
-        $actor->method('assertCan')->willReturnCallback(function ($ability) use (&$calls) {
+        $actor->expects(self::exactly(2))->method('assertCan')->willReturnCallback(function ($ability) use (&$calls) {
             $calls[] = $ability;
             if ($ability === 'badges.moderate') {
                 throw new PermissionDeniedException();
             }
         });
-        $controller = new RecalculateBadgesController($this->createMock(Queue::class), $this->createMock(BadgeRecalculationService::class));
+        $controller = new RecalculateBadgesController($this->createStub(Queue::class), $this->createStub(BadgeRecalculationService::class));
         try {
             $controller->handle(RequestUtil::withActor(new ServerRequest(), $actor)->withParsedBody(['userId' => 7]));
             self::fail('Revocation must require moderation permission.');
@@ -145,7 +145,7 @@ class GroupActionPrivilegeSecurityTest extends TestCase
     {
         $actor = $this->createMock(User::class);
         $actor->expects(self::once())->method('assertCan')->with('badges.giveManually');
-        $controller = new class($this->createMock(Queue::class), $this->createMock(BadgeRecalculationService::class)) extends RecalculateBadgesController {
+        $controller = new class($this->createStub(Queue::class), $this->createStub(BadgeRecalculationService::class)) extends RecalculateBadgesController {
             protected function recalculateSingleUser(User $actor, int $userId, ?int $badgeId, bool $noRevoke, bool $reapplyActions = false): JsonResponse
             {
                 return new JsonResponse(['noRevoke' => $noRevoke]);
@@ -157,7 +157,7 @@ class GroupActionPrivilegeSecurityTest extends TestCase
 
     private function awarder(): BadgeAwarder
     {
-        return new BadgeAwarder($this->createMock(NotificationSyncer::class), $this->createMock(Dispatcher::class));
+        return new BadgeAwarder($this->createStub(NotificationSyncer::class), $this->createStub(Dispatcher::class));
     }
 
     public function test_trusted_automatic_action_attaches_non_protected_group(): void
@@ -204,7 +204,7 @@ class GroupActionPrivilegeSecurityTest extends TestCase
                     ->willReturn(new \Illuminate\Database\Eloquent\Collection([$plain, $group]));
                 $service->expects(self::never())->method('preloadUserBadges');
                 $service->expects(self::never())->method('processBadgeForUser');
-                $controller = new RecalculateBadgesController($this->createMock(Queue::class), $service);
+                $controller = new RecalculateBadgesController($this->createStub(Queue::class), $service);
                 try {
                     $controller->handle(RequestUtil::withActor(new ServerRequest(), $actor)->withParsedBody([
                         'userId' => 7, 'noRevoke' => true, 'reapplyActions' => $reapply,

@@ -55,9 +55,13 @@ class ListUserBadgesQueryCountTest extends TestCase
     public static function includesAndPages(): array
     {
         $cases = [];
-        foreach (['user', 'grantedByUser', 'badge'] as $include) {
+        foreach ([null, 'user', 'grantedByUser', 'badge', 'user,grantedByUser'] as $include) {
             foreach ([2, 8] as $size) {
-                $cases["$include/$size"] = [$include, $size];
+                foreach ([false, true] as $defaults) {
+                    foreach ([false, true] as $repeated) {
+                        $cases[($include ?? 'no include')."/$size/defaults=".(int) $defaults.'/repeated='.(int) $repeated] = [$include, $size, $defaults, $repeated];
+                    }
+                }
             }
         }
         return $cases;
@@ -65,14 +69,28 @@ class ListUserBadgesQueryCountTest extends TestCase
 
     #[Test]
     #[DataProvider('includesAndPages')]
-    public function decoration_queries_are_fixed_for_each_include_and_page_size(string $include, int $size): void
+    public function decoration_queries_are_fixed_for_each_include_and_page_size(?string $include, int $size, bool $defaults, bool $repeated): void
     {
         $this->app();
         $db = $this->database();
+        if ($repeated) {
+            // Every granter is also a holder, but is hydrated via another relation.
+            $db->table('fof_badge_user')->update(['granted_by_user_id' => $db->raw('user_id')]);
+        }
+        $query = ['filter' => ['badge' => 100], 'page' => ['limit' => $size], 'withDefaultIncludes' => $defaults ? 'true' : 'false'];
+        if ($include !== null) {
+            $query['include'] = $include;
+        }
+        $includes = $include === null ? ['badge', 'user'] : explode(',', $include);
+        if ($defaults) {
+            $includes = array_unique([...$includes, 'badge', 'user']);
+        }
+        $hasBadges = in_array('badge', $includes, true);
+        $decorationReads = (int) in_array('user', $includes, true) + (int) in_array('grantedByUser', $includes, true);
         $db->enableQueryLog();
         $db->flushQueryLog();
         $response = $this->send($this->request('GET', '/api/user-badges', ['authenticatedAs' => 2])
-            ->withQueryParams(['filter' => ['badge' => 100], 'include' => $include, 'page' => ['limit' => $size]]));
+            ->withQueryParams($query));
         $queries = array_column($db->getQueryLog(), 'query');
         $this->assertSame(200, $response->getStatusCode());
         $body = json_decode((string) $response->getBody(), true);
@@ -85,17 +103,31 @@ class ListUserBadgesQueryCountTest extends TestCase
         $column = preg_quote($grammar->wrap('user_id'), '/');
         $decorations = array_filter($queries, fn ($sql) => preg_match('/^select \* from '.$table.' where (?:'.$table.'\.)?'.$column.' (?:=\s|in\b)/i', $sql));
         $allAwardReads = array_filter($queries, fn ($sql) => preg_match('/^select .* from '.$table.'(?:\s|$)/i', $sql));
-        $this->assertCount($include === 'badge' ? 0 : 1, $decorations, implode("\n", $queries));
+        $this->assertCount($decorationReads, $decorations, implode("\n", $queries));
         // Positive control even in badge-only mode; a broken matcher cannot pass.
-        // Badge serialization reads the actor's earned IDs once; user
-        // serialization instead adds the single decoration batch read.
-        $this->assertCount(3, $allAwardReads, implode("\n", $queries));
+        // Two endpoint reads (page and count), one earned-ID read when badges
+        // are serialized, and one decoration batch per included user relation.
+        // Holder eager-loading and granter batching remain separate even when
+        // both relations hydrate the same users. Neither scales with page size.
+        $this->assertCount(2 + $decorationReads + (int) $hasBadges, $allAwardReads, implode("\n", $queries));
+        $badgeTable = preg_quote($grammar->wrapTable('fof_badges'), '/');
+        $badgeReads = array_filter($queries, fn ($sql) => preg_match('/^select .* from '.$badgeTable.'(?:\s|$)/i', $sql));
+        $this->assertCount(1 + $decorationReads, $badgeReads, implode("\n", $queries));
 
         $included = $body['included'] ?? [];
-        $this->assertCount($include === 'badge' ? 1 : $size, $included);
+        $expectedUsers = [];
+        foreach ($body['data'] as $award) {
+            foreach (['user', 'grantedByUser'] as $relation) {
+                if (in_array($relation, $includes, true)) {
+                    $expectedUsers[] = $award['relationships'][$relation]['data']['id'];
+                }
+            }
+        }
+        $this->assertCount(count(array_unique($expectedUsers)) + (int) $hasBadges, $included);
+        $this->assertEqualsCanonicalizing(array_values(array_unique($expectedUsers)), array_column(array_filter($included, fn ($resource) => $resource['type'] === 'users'), 'id'));
         foreach ($included as $resource) {
-            $this->assertSame($include === 'badge' ? 'badges' : 'users', $resource['type']);
-            if ($include !== 'badge') {
+            $this->assertContains($resource['type'], ['badges', 'users']);
+            if ($resource['type'] === 'users') {
                 $this->assertDecoration($resource['attributes'], (int) substr($resource['attributes']['username'], 6));
             }
         }

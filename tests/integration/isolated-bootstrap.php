@@ -10,7 +10,7 @@ $prefix = getenv('BADGES_ISOLATED_PREFIX') ?: '';
 if (! in_array($prefix, ['', 'pr15_'], true)) {
     throw new RuntimeException('Only the explicit pr15_ isolated verification prefix is supported.');
 }
-$testDirectory = $prefix === '' ? 'isolated-api' : 'isolated-api-pr15-prefix';
+$testDirectory = $prefix === '' ? 'isolated-api-2.0.2' : 'isolated-api-2.0.2-pr15-prefix';
 $tmp = __DIR__.'/tmp/'.$testDirectory;
 $database = $tmp.'/api-verification.sqlite';
 if (realpath(__DIR__) !== $root.'/tests/integration') {

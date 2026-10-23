@@ -67,9 +67,13 @@ class VisibilityResponseTest extends TestCase
         ]]);
         $this->app();
         $observed = [];
-        BadgeCategory::retrieved(function (BadgeCategory $category) use ($preloaded, &$observed) {
+        $preloadedBadges = [];
+        BadgeCategory::retrieved(function (BadgeCategory $category) use ($preloaded, &$observed, &$preloadedBadges) {
             if ($preloaded) {
-                $category->load('badges');
+                // Repeated category instances must not make this fixture itself
+                // introduce N+1 reads while simulating a preloaded relationship.
+                $preloadedBadges[$category->id] ??= $category->badges()->get();
+                $category->setRelation('badges', $preloadedBadges[$category->id]);
             }
             $observed[] = $category->relationLoaded('badges');
         });
@@ -126,6 +130,61 @@ class VisibilityResponseTest extends TestCase
         $this->assertSame($decoration ? 'Secret' : null, $profile['primaryBadgeName']);
         $this->assertSame($decoration ? 'fas fa-award' : null, $profile['primaryBadgeIcon']);
         $this->assertSame($decoration ? [['name' => 'Secret', 'icon' => 'fas fa-award']] : null, $profile['visibleBadges']);
+    }
+
+    public static function earnedBadgeIncludes(): array
+    {
+        $cases = [];
+        foreach ([null, 3, 2, 1] as $actor) {
+            foreach ([null, 'badge', 'badge.category'] as $include) {
+                $cases[($actor ?? 'guest').'/'.($include ?? 'defaults')] = [$actor, $include];
+            }
+        }
+        return $cases;
+    }
+
+    #[DataProvider('earnedBadgeIncludes')]
+    public function test_earned_catalog_hidden_and_inactive_badges_keep_relationships_without_bypassing_privacy(?int $actor, ?string $include): void
+    {
+        $db = $this->database();
+        $db->table('fof_badges')->whereIn('id', [101, 102])->update([
+            'category_id' => 101,
+            'actions' => json_encode(['send_notification' => true]),
+            'trigger_config' => json_encode(['PRIVATE CONFIGURATION' => true]),
+        ]);
+        $db->table('fof_badge_user')->insert([
+            'id' => 102, 'user_id' => 2, 'badge_id' => 102,
+            'show_on_card' => true, 'earned_at' => '2026-01-03 00:00:00',
+        ]);
+        $query = ['filter' => ['user' => 2]];
+        if ($include !== null) {
+            $query['include'] = $include;
+        }
+        $body = $this->get('/api/user-badges', $actor, $query);
+        $expected = in_array($actor, [1, 2], true) ? ['100', '101', '102'] : ['101', '102'];
+        $this->assertEqualsCanonicalizing($expected, array_column($body['data'], 'id'));
+        $badges = array_column(array_filter($body['included'] ?? [], fn ($item) => $item['type'] === 'badges'), null, 'id');
+        $this->assertEqualsCanonicalizing($expected, array_keys($badges));
+        foreach ($body['data'] as $award) {
+            $this->assertSame(['type' => 'badges', 'id' => $award['id']], $award['relationships']['badge']['data']);
+        }
+        foreach ([101, 102] as $id) {
+            if ($actor !== 1) {
+                $this->assertArrayNotHasKey('actions', $badges[$id]['attributes']);
+                $this->assertArrayNotHasKey('triggerConfig', $badges[$id]['attributes']);
+            }
+            if ($include === 'badge.category') {
+                $this->assertSame($actor === 1 ? ['type' => 'badge-categories', 'id' => '101'] : null, $badges[$id]['relationships']['category']['data']);
+            }
+        }
+        if ($actor !== 1) {
+            $this->assertStringNotContainsString('PRIVATE CONFIGURATION', json_encode($body));
+            $categories = array_filter($body['included'] ?? [], fn ($item) => $item['type'] === 'badge-categories');
+            $this->assertNotContains('101', array_column($categories, 'id'));
+        }
+        if (! in_array($actor, [1, 2], true)) {
+            $this->assertStringNotContainsString('PRIVATE REASON', json_encode($body));
+        }
     }
 
     public static function nestedSurfaces(): array

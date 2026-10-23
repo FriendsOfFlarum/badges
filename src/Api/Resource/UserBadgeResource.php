@@ -16,6 +16,7 @@ use Flarum\Api\Endpoint;
 use Flarum\Api\Resource\AbstractDatabaseResource;
 use Flarum\Api\Schema;
 use Flarum\Api\Sort\SortColumn;
+use Flarum\Foundation\Application;
 use Flarum\Foundation\ValidationException;
 use Flarum\User\User;
 use FoF\Badges\Badge;
@@ -115,6 +116,17 @@ class UserBadgeResource extends AbstractDatabaseResource
 
     public function fields(): array
     {
+        // Earned badges are not limited to the public catalog. Core 2.0.2+
+        // scopes eager-loaded relations; earlier stable versions do not.
+        $badgeRelationship = Schema\Relationship\ToOne::make('badge')
+            ->get(fn (UserBadge $userBadge) => $userBadge->badge)
+            ->type('badges')
+            ->includable();
+
+        if (version_compare(Application::VERSION, '2.0.2', '>=')) {
+            $badgeRelationship->withoutRelatedScope();
+        }
+
         return [
             Schema\DateTime::make('earnedAt')
                 ->property('earned_at'),
@@ -130,11 +142,7 @@ class UserBadgeResource extends AbstractDatabaseResource
                 ->property('show_on_card'),
             Schema\Boolean::make('isPrimary')
                 ->property('is_primary'),
-            Schema\Relationship\ToOne::make('badge')
-                // Catalog visibility does not hide an earned badge.
-                ->get(fn (UserBadge $userBadge) => $userBadge->badge)
-                ->type('badges')
-                ->includable(),
+            $badgeRelationship,
             Schema\Relationship\ToOne::make('user')
                 ->type('users')
                 ->includable(),

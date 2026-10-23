@@ -81,11 +81,27 @@ class UserBadgeBatchTest extends TestCase
 
     private function user(int $id, bool $allowed = false): User
     {
-        $user = $this->getMockBuilder(User::class)->onlyMethods(['can', 'hasPermission', 'isGuest'])->getMock();
+        // Keep real Eloquent relations while stubbing only actor permissions.
+        $user = new class extends User {
+            public bool $allowed = false;
+
+            public function can(string $ability, mixed $arguments = null): bool
+            {
+                return $this->allowed;
+            }
+
+            public function hasPermission(string $permission): bool
+            {
+                return false;
+            }
+
+            public function isGuest(): bool
+            {
+                return $this->id === 0;
+            }
+        };
         $user->id = $id;
-        $user->method('can')->willReturn($allowed);
-        $user->method('hasPermission')->willReturn(false);
-        $user->method('isGuest')->willReturn($id === 0);
+        $user->allowed = $allowed;
         return $user;
     }
 

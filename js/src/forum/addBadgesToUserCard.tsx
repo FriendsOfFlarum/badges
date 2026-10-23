@@ -21,7 +21,7 @@ export default function addBadgesToUserCard() {
 
     items.add(
       'cardBadges',
-      <Link href={app.route('user.badges', { username: user.username() })} className="UserCardBadge">
+      <Link href={app.route('user.badges', { username: user.slug() })} className="UserCardBadge">
         <i className={badgeIcon}></i>
         <span className="UserCardBadge-name">{badgeName}</span>
         {remainingCount > 0 && <span className="UserCardBadge-more">+{remainingCount}</span>}

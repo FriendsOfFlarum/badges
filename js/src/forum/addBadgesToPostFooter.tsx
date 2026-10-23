@@ -26,7 +26,7 @@ export default function addBadgesToPostFooter() {
 
     items.add(
       'badges',
-      <Link href={app.route('user.badges', { username: user.username() })} className="PostBadges">
+      <Link href={app.route('user.badges', { username: user.slug() })} className="PostBadges">
         {visibleBadges.map((badge, index) => (
           <span className="PostBadges-item" title={badge.name} key={index}>
             <i className={badge.icon}></i>

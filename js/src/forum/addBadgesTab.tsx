@@ -16,7 +16,7 @@ export default function addBadgesTab() {
 
     items.add(
       'badges',
-      <LinkButton href={app.route('user.badges', { username: user.username() })} icon="fas fa-award">
+      <LinkButton href={app.route('user.badges', { username: user.slug() })} icon="fas fa-award">
         {app.translator.trans('fof-badges.forum.user.badges_tab')}
         {badgeCount > 0 && <span className="Button-badge">{badgeCount}</span>}
       </LinkButton>,

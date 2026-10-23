@@ -102,6 +102,7 @@ class UserBadgeBatchTest extends TestCase
         };
         $user->id = $id;
         $user->allowed = $allowed;
+
         return $user;
     }
 

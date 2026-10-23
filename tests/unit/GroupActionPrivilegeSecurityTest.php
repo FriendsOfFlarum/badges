@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of fof/badges
+ *
+ * Copyright (c) 2026 FriendsOfFlarum.
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
 namespace FoF\Badges\Tests\Unit;
 
 use Flarum\Foundation\ValidationException;
@@ -133,6 +142,7 @@ class GroupActionPrivilegeSecurityTest extends TestCase
             }
         });
         $controller = new RecalculateBadgesController($this->createStub(Queue::class), $this->createStub(BadgeRecalculationService::class));
+
         try {
             $controller->handle(RequestUtil::withActor(new ServerRequest(), $actor)->withParsedBody(['userId' => 7]));
             self::fail('Revocation must require moderation permission.');
@@ -195,6 +205,7 @@ class GroupActionPrivilegeSecurityTest extends TestCase
                 $actor->expects(self::exactly(2))->method('assertCan')->willReturnCallback(function ($ability, $target = null) {
                     if ($ability === 'editGroups') {
                         self::assertSame(7, (int) $target->id);
+
                         throw new PermissionDeniedException();
                     }
                     self::assertSame('badges.giveManually', $ability);
@@ -205,6 +216,7 @@ class GroupActionPrivilegeSecurityTest extends TestCase
                 $service->expects(self::never())->method('preloadUserBadges');
                 $service->expects(self::never())->method('processBadgeForUser');
                 $controller = new RecalculateBadgesController($this->createStub(Queue::class), $service);
+
                 try {
                     $controller->handle(RequestUtil::withActor(new ServerRequest(), $actor)->withParsedBody([
                         'userId' => 7, 'noRevoke' => true, 'reapplyActions' => $reapply,
@@ -224,6 +236,7 @@ class GroupActionPrivilegeSecurityTest extends TestCase
         $resolver = new \Illuminate\Database\ConnectionResolver(['security' => $connection]);
         $resolver->setDefaultConnection('security');
         \Illuminate\Database\Eloquent\Model::setConnectionResolver($resolver);
+
         try {
             $connection->statement('CREATE TABLE users (id INTEGER PRIMARY KEY)');
             $connection->statement('CREATE TABLE groups (id INTEGER PRIMARY KEY)');

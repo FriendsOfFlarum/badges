@@ -64,6 +64,7 @@ class ListUserBadgesQueryCountTest extends TestCase
                 }
             }
         }
+
         return $cases;
     }
 

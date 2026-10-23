@@ -1,6 +1,14 @@
 <?php
 
-// Deliberately independent of application config and inherited database settings.
+/*
+ * This file is part of fof/badges
+ *
+ * Copyright (c) 2026 FriendsOfFlarum.
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
 require dirname(__DIR__).'/bootstrap.php';
 
 $root = dirname(__DIR__, 2);
@@ -48,6 +56,7 @@ if (! is_file($tmp.'/config.php')) {
     }
     // SetupScript prints connection credentials, even for SQLite. Suppress them.
     ob_start();
+
     try {
         (new Flarum\Testing\integration\Setup\SetupScript())->run();
     } finally {

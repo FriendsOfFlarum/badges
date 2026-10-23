@@ -1,6 +1,14 @@
 <?php
 
-// Run directly with PHP. In-memory model doubles deliberately prevent database access.
+/*
+ * This file is part of fof/badges
+ *
+ * Copyright (c) 2026 FriendsOfFlarum.
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
 namespace FoF\Badges {
     class BadgeCategory extends \stdClass
     {
@@ -100,5 +108,5 @@ namespace {
     }
     $translator->setLocale('de');
     check($install() === $english, 'Entirely untranslated locale falls back to English');
-    print "Default badge translation checks passed (actor locale, 26 fields, partial/full fallback, configuration).\n";
+    echo "Default badge translation checks passed (actor locale, 26 fields, partial/full fallback, configuration).\n";
 }

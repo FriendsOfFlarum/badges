@@ -1,6 +1,14 @@
 <?php
 
-// Standalone isolated regression tests: php tests/BadgeRecalculationOptimizerRegressionTest.php
+/*
+ * This file is part of fof/badges
+ *
+ * Copyright (c) 2026 FriendsOfFlarum.
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
 // Uses only an explicitly created SQLite :memory: database; never boots Flarum.
 require __DIR__.'/bootstrap.php';
 
@@ -29,8 +37,14 @@ $connection->table('fof_badge_user')->insert([
     ['user_id' => 4, 'badge_id' => 11],
 ]);
 $manager = new class extends MetricManager {
-    public function __construct() {}
-    public function isAvailable(string $type): bool { return true; }
+    public function __construct()
+    {
+    }
+
+    public function isAvailable(string $type): bool
+    {
+        return true;
+    }
 };
 $optimizer = new BadgeRecalculationOptimizer($manager);
 $badge = new Badge();
@@ -73,4 +87,4 @@ foreach (['%', '_', '!', '\\'] as $needle) {
     (new \FoF\Badges\Search\Filter\SearchFilter())->filter($state, $needle, false);
     $check([1], $state->getQuery()->distinct()->pluck('user_id')->all(), 'LIKE literal '.$needle);
 }
-print "Optimizer/search regression checks passed: {$checks}\n";
+echo "Optimizer/search regression checks passed: {$checks}\n";

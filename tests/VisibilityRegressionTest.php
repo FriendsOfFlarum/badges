@@ -1,6 +1,14 @@
 <?php
 
-// Standalone: php tests/VisibilityRegressionTest.php (no Flarum boot or live DB).
+/*
+ * This file is part of fof/badges
+ *
+ * Copyright (c) 2026 FriendsOfFlarum.
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
 require __DIR__.'/bootstrap.php';
 
 use Flarum\User\User;
@@ -25,21 +33,34 @@ foreach ([[1, 1, 1], [2, 1, 0], [3, 0, 1]] as [$id, $active, $visible]) {
 }
 $actor = new class extends User {
     public ?array $permissions = [];
-    public function isAdmin(): bool { return false; }
-    public function hasPermission(string $permission): bool { return in_array($permission, $this->permissions); }
-    public function can(string $ability, mixed $arguments = null): bool {
+
+    public function isAdmin(): bool
+    {
+        return false;
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        return in_array($permission, $this->permissions);
+    }
+
+    public function can(string $ability, mixed $arguments = null): bool
+    {
         if ($ability === 'viewAny') {
             return $this->hasPermission($arguments === UserBadge::class ? 'badges.viewUserBadges' : 'badges.viewList');
         }
         if ($ability === 'create') {
             return $this->hasPermission($arguments === UserBadge::class ? 'badges.giveManually' : 'badges.moderate');
         }
+
         return false;
     }
 };
 $checks = 0;
 $check = function ($expected, $actual, $label) use (&$checks) {
-    if ($expected !== $actual) { throw new RuntimeException($label.': '.var_export($actual, true)); }
+    if ($expected !== $actual) {
+        throw new RuntimeException($label.': '.var_export($actual, true));
+    }
     $checks++;
 };
 foreach ([[null, [], []], [null, ['badges.viewUserBadges'], [1, 3]], [1, [], [1, 2]], [1, ['badges.viewList'], [1, 2]], [1, ['badges.viewUserBadges'], [1, 2, 3]], [1, ['badges.moderate'], [1, 2, 3, 4]], [1, ['badges.giveManually'], [1, 2, 3, 4]]] as [$id, $permissions, $expected]) {
@@ -99,7 +120,9 @@ $public->is_active = true;
 $category->setRelation('badges', new \Illuminate\Database\Eloquent\Collection([$public, $secret]));
 $resource = (new ReflectionClass(\FoF\Badges\Api\Resource\BadgeCategoryResource::class))->newInstanceWithoutConstructor();
 foreach ($resource->fields() as $field) {
-    if ($field->name !== 'badges') { continue; }
+    if ($field->name !== 'badges') {
+        continue;
+    }
     $actor->permissions = ['badges.viewList'];
     $check([$public], $field->getValue($context->withModel($category)->withInclude([])), 'Preloaded category include filters secret badges');
     $actor->permissions = [];
@@ -107,9 +130,13 @@ foreach ($resource->fields() as $field) {
 }
 $resource = (new ReflectionClass(\FoF\Badges\Api\Resource\BadgeResource::class))->newInstanceWithoutConstructor();
 foreach ($resource->fields() as $field) {
-    if ($field->name !== 'actions') { continue; }
+    if ($field->name !== 'actions') {
+        continue;
+    }
+
     try {
         $field->setValue(new Badge(), ['add_to_group' => true], $context);
+
         throw new RuntimeException('Actions setter accepted boolean group');
     } catch (\Flarum\Foundation\ValidationException $exception) {
         $checks++;
@@ -118,8 +145,10 @@ foreach ($resource->fields() as $field) {
 $actor->permissions = ['badges.moderate'];
 $badge = new Badge();
 $badge->actions = ['add_to_group' => 4];
+
 try {
     $resource->saving($badge, $context);
+
     throw new RuntimeException('Saving allowed moderator to configure group action');
 } catch (\Flarum\User\Exception\PermissionDeniedException $exception) {
     $checks++;
@@ -127,9 +156,13 @@ try {
 
 $extenders = require dirname(__DIR__).'/extend.php';
 foreach ($extenders as $extender) {
-    if (! $extender instanceof \Flarum\Extend\ApiResource) { continue; }
+    if (! $extender instanceof \Flarum\Extend\ApiResource) {
+        continue;
+    }
     $reflection = new ReflectionObject($extender);
-    if ($reflection->getProperty('resourceClass')->getValue($extender) !== \Flarum\Api\Resource\DiscussionResource::class) { continue; }
+    if ($reflection->getProperty('resourceClass')->getValue($extender) !== \Flarum\Api\Resource\DiscussionResource::class) {
+        continue;
+    }
     $callbacks = $reflection->getProperty('endpoint')->getValue($extender);
     $endpoint = \Flarum\Api\Endpoint\Show::make();
     foreach ($callbacks[\Flarum\Api\Endpoint\Show::class] as $callback) {
@@ -140,4 +173,4 @@ foreach ($extenders as $extender) {
     $check(['user.userBadges.badge'], $compile->invoke($endpoint, $context, ['user']), 'Included author still eager loaded');
     $check(['posts.user.userBadges', 'posts.user.userBadges.badge'], $compile->invoke($endpoint, $context, ['posts']), 'Posts load only when actually included');
 }
-print "Visibility regression checks passed: {$checks}\n";
+echo "Visibility regression checks passed: {$checks}\n";

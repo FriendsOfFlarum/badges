@@ -1,6 +1,14 @@
 <?php
 
-// Prefer a standalone package install, then a containing workbench installation.
+/*
+ * This file is part of fof/badges
+ *
+ * Copyright (c) 2026 FriendsOfFlarum.
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
 // Only Composer is loaded: never boot Flarum or read its database configuration.
 $package = dirname(__DIR__);
 $directory = $package;

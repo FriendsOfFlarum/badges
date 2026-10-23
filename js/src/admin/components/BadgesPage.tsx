@@ -903,7 +903,12 @@ export default class BadgesPage extends ExtensionPage {
             <i className="fas fa-award" />
           </div>
           <p className="EmptyState-text">{app.translator.trans('fof-badges.admin.no_badges')}</p>
-          <Button className="Button Button--primary" icon="fas fa-magic" loading={this.installingDefaults} onclick={() => this.installDefaults()}>
+          <Button
+            className="Button Button--primary"
+            icon="fas fa-wand-magic-sparkles"
+            loading={this.installingDefaults}
+            onclick={() => this.installDefaults()}
+          >
             {app.translator.trans('fof-badges.admin.install_defaults')}
           </Button>
         </div>

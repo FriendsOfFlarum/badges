@@ -16,6 +16,7 @@ use Flarum\Api\Endpoint;
 use Flarum\Api\Resource\AbstractDatabaseResource;
 use Flarum\Api\Schema;
 use Flarum\Api\Sort\SortColumn;
+use Flarum\Foundation\Application;
 use Flarum\Foundation\ValidationException;
 use Flarum\User\User;
 use FoF\Badges\Badge;
@@ -49,27 +50,25 @@ class UserBadgeResource extends AbstractDatabaseResource
     {
         $actor = $context->getActor();
 
-        // Basic visibility: non-moderators can't see hidden badges of other users
-        // More specific filtering (by user, badge, search) is handled by the Searcher/Filters
-        if (! $actor->hasPermission('badges.moderate') && ! $actor->hasPermission('badges.giveManually')) {
-            $query->where(function ($q) use ($actor) {
-                $q->where('user_id', $actor->id)
-                    ->orWhere('show_on_card', true);
-            });
-        }
+        \FoF\Badges\BadgeVisibility::userBadges($query, $actor);
     }
 
     public function endpoints(): array
     {
         return [
             Endpoint\Index::make()
+                ->visible(fn (Context $context) => ! $context->getActor()->isGuest() || $context->getActor()->can('viewAny', UserBadge::class))
                 ->paginate(20, 100)
                 ->defaultInclude(['badge', 'user'])
                 ->defaultSort('-earnedAt')
-                ->eagerLoad(['badge', 'user', 'badge.category']),
+                // The users' own badges: their badge fields (badgeCount, the
+                // primary badge, visibleBadges) read them, one query per user
+                // otherwise.
+                ->eagerLoad(['badge', 'user', 'badge.category'])
+                ->eagerLoadWhenIncluded(['user' => ['user.userBadges.badge']]),
             Endpoint\Create::make()
                 ->authenticated()
-                ->can('create')
+                ->visible(fn (Context $context) => $context->getActor()->can('create', UserBadge::class))
                 ->action(function (Context $context) {
                     $actor = $context->getActor();
                     $data = $context->body();
@@ -117,6 +116,17 @@ class UserBadgeResource extends AbstractDatabaseResource
 
     public function fields(): array
     {
+        // Earned badges are not limited to the public catalog. Core 2.0.2+
+        // scopes eager-loaded relations; earlier stable versions do not.
+        $badgeRelationship = Schema\Relationship\ToOne::make('badge')
+            ->get(fn (UserBadge $userBadge) => $userBadge->badge)
+            ->type('badges')
+            ->includable();
+
+        if (version_compare(Application::VERSION, '2.0.2', '>=')) {
+            $badgeRelationship->withoutRelatedScope();
+        }
+
         return [
             Schema\DateTime::make('earnedAt')
                 ->property('earned_at'),
@@ -132,9 +142,7 @@ class UserBadgeResource extends AbstractDatabaseResource
                 ->property('show_on_card'),
             Schema\Boolean::make('isPrimary')
                 ->property('is_primary'),
-            Schema\Relationship\ToOne::make('badge')
-                ->type('badges')
-                ->includable(),
+            $badgeRelationship,
             Schema\Relationship\ToOne::make('user')
                 ->type('users')
                 ->includable(),

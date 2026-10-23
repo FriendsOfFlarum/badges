@@ -13,40 +13,50 @@ namespace FoF\Badges;
 
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Collection;
+use Psr\Http\Message\ServerRequestInterface;
+use WeakMap;
 
 class UserBadgeHelper
 {
     /**
-     * Get user badges with caching on the model to avoid re-querying.
+     * @var WeakMap<ServerRequestInterface, UserBadgeBatch>|null
+     */
+    private static ?WeakMap $batches = null;
+
+    /**
+     * The batch must not retain its request: aborted serialization should release
+     * queued models when the request is released, including in long-lived workers.
+     */
+    public static function forRequest(ServerRequestInterface $request): UserBadgeBatch
+    {
+        self::$batches ??= new WeakMap();
+
+        return self::$batches[$request] ??= new UserBadgeBatch();
+    }
+
+    /**
+     * Cache raw relations on the model; apply actor visibility on every read.
      *
      * @return Collection<int, UserBadge>
      */
-    public static function getUserBadges(User $user): Collection
+    public static function getUserBadges(User $user, User $actor, ?UserBadgeBatch $batch = null): Collection
     {
-        if ($user->relationLoaded('userBadges')) {
-            /** @var Collection<int, UserBadge> $userBadges */
-            $userBadges = $user->getRelation('userBadges');
+        $batch ??= new UserBadgeBatch();
+        $batch->queue($user);
+        $batch->load();
 
-            if ($userBadges->isNotEmpty() && ! $userBadges->first()->relationLoaded('badge')) {
-                $userBadges->load('badge');
-            }
-        } else {
-            /** @var Collection<int, UserBadge> $userBadges */
-            $userBadges = UserBadge::where('user_id', $user->id)
-                ->with('badge')
-                ->get();
-            $user->setRelation('userBadges', $userBadges);
-        }
+        /** @var Collection<int, UserBadge> $userBadges */
+        $userBadges = $user->getRelation('userBadges');
 
-        return $userBadges;
+        return $userBadges->filter(fn (UserBadge $badge) => BadgeVisibility::decoration($actor, $badge));
     }
 
     /**
      * Get the primary badge for a user.
      */
-    public static function getPrimaryBadge(User $user): ?UserBadge
+    public static function getPrimaryBadge(User $user, User $actor, ?UserBadgeBatch $batch = null): ?UserBadge
     {
-        $userBadges = static::getUserBadges($user);
+        $userBadges = static::getUserBadges($user, $actor, $batch);
 
         if ($userBadges->isEmpty()) {
             return null;

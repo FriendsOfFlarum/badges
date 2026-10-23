@@ -38,14 +38,15 @@ class SearchFilter implements FilterInterface
             return;
         }
 
-        $escapedSearch = str_replace(['%', '_', '\\'], ['\\%', '\\_', '\\\\'], $search);
+        // Explicit ESCAPE works on SQLite/PostgreSQL as well as MySQL.
+        $escapedSearch = str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $search);
 
         /** @var DatabaseSearchState $state */
         $state->getQuery()->whereHas('user', function ($q) use ($escapedSearch, $negate) {
             $method = $negate ? 'whereNot' : 'where';
             $q->$method(function ($inner) use ($escapedSearch) {
-                $inner->where('username', 'LIKE', "%{$escapedSearch}%")
-                    ->orWhere('display_name', 'LIKE', "%{$escapedSearch}%");
+                $inner->whereRaw("username LIKE ? ESCAPE '!'", ["%{$escapedSearch}%"])
+                    ->orWhereRaw("display_name LIKE ? ESCAPE '!'", ["%{$escapedSearch}%"]);
             });
         });
     }

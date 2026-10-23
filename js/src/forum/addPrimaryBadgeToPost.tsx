@@ -20,7 +20,7 @@ export default function addPrimaryBadgeToPost() {
 
     if (vnode && vnode.children && Array.isArray(vnode.children)) {
       const badgeElement = (
-        <Link href={app.route('user.badges', { username: user.username() })} className="PrimaryBadge" title={badgeName}>
+        <Link href={app.route('user.badges', { username: user.slug() })} className="PrimaryBadge" title={badgeName}>
           <i className={badgeIcon}></i>
           {displayMode === 'icon_name' && <span className="PrimaryBadge-name">{badgeName}</span>}
         </Link>

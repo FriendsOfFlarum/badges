@@ -51,29 +51,25 @@ class BadgeResource extends AbstractDatabaseResource
     {
         $actor = $context->getActor();
 
-        if (! $actor->hasPermission('badges.moderate')) {
-            $query->where('is_active', true);
-        }
-
-        if ($actor->isGuest()) {
-            $query->where('is_visible', true);
-        }
+        \FoF\Badges\BadgeVisibility::catalog($query, $actor);
     }
 
     public function endpoints(): array
     {
         return [
             Endpoint\Index::make()
+                ->visible(fn (Context $context) => $context->getActor()->can('viewAny', Badge::class))
                 ->paginate(1000, 1000)
                 ->defaultInclude(['category'])
                 ->defaultSort('order')
                 ->eagerLoad(['category']),
             Endpoint\Show::make()
+                ->can('view')
                 ->defaultInclude(['category'])
                 ->eagerLoad(['category']),
             Endpoint\Create::make()
                 ->authenticated()
-                ->can('create'),
+                ->visible(fn (Context $context) => $context->getActor()->can('create', Badge::class)),
             Endpoint\Update::make()
                 ->authenticated()
                 ->can('edit'),
@@ -160,10 +156,15 @@ class BadgeResource extends AbstractDatabaseResource
                 ->nullable()
                 ->visible(fn (Badge $badge, Context $context) => $context->getActor()->hasPermission('badges.moderate')),
             Schema\Arr::make('actions')
+                ->set(function (Badge $badge, $value) {
+                    BadgeValidator::actionGroupId($value);
+                    $badge->actions = $value;
+                })
                 ->writable()
                 ->nullable()
                 ->visible(fn (Badge $badge, Context $context) => $context->getActor()->hasPermission('badges.moderate')),
             Schema\Relationship\ToOne::make('category')
+                ->get(fn (Badge $badge, Context $context) => $badge->category && ($badge->category->is_enabled || $context->getActor()->hasPermission('badges.moderate')) ? $badge->category : null)
                 ->type('badge-categories')
                 ->includable(),
         ];
@@ -206,6 +207,17 @@ class BadgeResource extends AbstractDatabaseResource
         $dirty = $model->getDirty();
 
         $validationData = [];
+
+        BadgeValidator::assertCanChangeActions(
+            $context->getActor(),
+            $model->actions,
+            $model->exists ? $model->getOriginal('actions') : null,
+            $model->isDirty('trigger_config') || $model->isDirty('is_active')
+        );
+
+        if (array_key_exists('actions', $dirty)) {
+            $validationData['actions'] = $model->actions;
+        }
 
         foreach (['name', 'slug', 'description', 'icon', 'icon_color', 'background_color'] as $field) {
             if (array_key_exists($field, $dirty)) {

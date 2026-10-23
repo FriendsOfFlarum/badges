@@ -20,6 +20,9 @@ class UserBadgeSearcher extends AbstractSearcher
 {
     public function getQuery(User $actor): Builder
     {
-        return UserBadge::query()->select('fof_badge_user.*');
+        $query = UserBadge::query()->select('fof_badge_user.*');
+        \FoF\Badges\BadgeVisibility::userBadges($query, $actor);
+
+        return $query;
     }
 }

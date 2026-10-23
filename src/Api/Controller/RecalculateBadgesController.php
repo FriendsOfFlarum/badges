@@ -13,6 +13,7 @@ namespace FoF\Badges\Api\Controller;
 
 use Flarum\Http\RequestUtil;
 use Flarum\User\User;
+use FoF\Badges\BadgeAwarder;
 use FoF\Badges\BadgeRecalculationProgress;
 use FoF\Badges\Job\RecalculateBadgesJob;
 use FoF\Badges\Service\BadgeRecalculationService;
@@ -43,17 +44,19 @@ class RecalculateBadgesController implements RequestHandlerInterface
         // Validate chunk size (min 100, max 2000)
         $chunkSize = max(100, min(2000, $chunkSize));
 
-        // For single user recalculation, only need giveManually permission
-        // For full recalculation, need admin
+        // Recalculation can revoke as well as grant badges.
         if ($userId) {
             $actor->assertCan('badges.giveManually');
+            if (! $noRevoke) {
+                $actor->assertCan('badges.moderate');
+            }
         } else {
             $actor->assertAdmin();
         }
 
         // For single user, do it synchronously without progress tracking
         if ($userId) {
-            return $this->recalculateSingleUser((int) $userId, $badgeId ? (int) $badgeId : null, $noRevoke, $reapplyActions);
+            return $this->recalculateSingleUser($actor, (int) $userId, $badgeId ? (int) $badgeId : null, $noRevoke, $reapplyActions);
         }
 
         // Check for active jobs only for full recalculation
@@ -87,11 +90,16 @@ class RecalculateBadgesController implements RequestHandlerInterface
         ]);
     }
 
-    protected function recalculateSingleUser(int $userId, ?int $badgeId, bool $noRevoke, bool $reapplyActions = false): JsonResponse
+    protected function recalculateSingleUser(User $actor, int $userId, ?int $badgeId, bool $noRevoke, bool $reapplyActions = false): JsonResponse
     {
         $user = User::findOrFail($userId);
 
         $badges = $this->service->getBadgesToEvaluate($badgeId, $reapplyActions);
+        // Preflight the exact models that will be processed, before any mutation.
+        // New awards execute actions even when reapplyActions is false.
+        foreach ($badges as $badge) {
+            BadgeAwarder::assertCanExecuteActions($user, $badge, $actor, true);
+        }
         $badgeIds = $badges->pluck('id')->toArray();
         $userBadgesMap = $this->service->preloadUserBadges([$userId], $badgeIds);
 

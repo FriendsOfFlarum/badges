@@ -13,6 +13,7 @@ namespace FoF\Badges;
 
 use Flarum\Group\Group;
 use Flarum\Notification\NotificationSyncer;
+use Flarum\User\Exception\PermissionDeniedException;
 use Flarum\User\User;
 use FoF\Badges\Event\BadgeAwarded;
 use FoF\Badges\Event\BadgeRevoked;
@@ -41,6 +42,9 @@ class BadgeAwarder
         string $grantedBy = UserBadge::GRANTED_BY_TRIGGER,
         ?User $grantedByUser = null
     ): array {
+        // Authorize before persisting anything, including when a caller omits the manual actor.
+        self::assertCanExecuteActions($user, $badge, $grantedByUser, $grantedBy === UserBadge::GRANTED_BY_MANUAL);
+
         // Check if user already has this badge
         $existing = UserBadge::where('user_id', $user->id)
             ->where('badge_id', $badge->id)
@@ -122,9 +126,26 @@ class BadgeAwarder
      * @param User $user The user who has the badge
      * @param Badge $badge The badge
      */
-    public function executeActionsOnly(User $user, Badge $badge): void
+    public function executeActionsOnly(User $user, Badge $badge, ?User $actor = null): void
     {
+        // A null actor is reserved for trusted system recalculation jobs.
+        self::assertCanExecuteActions($user, $badge, $actor);
         $this->executeActions($user, $badge);
+    }
+
+    public static function assertCanExecuteActions(User $user, Badge $badge, ?User $actor, bool $manual = false): void
+    {
+        if (BadgeValidator::actionGroupId($badge->actions) === null) {
+            return;
+        }
+
+        if ($manual && $actor === null) {
+            throw new PermissionDeniedException();
+        }
+
+        if ($actor !== null) {
+            $actor->assertCan('editGroups', $user);
+        }
     }
 
     /**
@@ -135,20 +156,17 @@ class BadgeAwarder
      */
     protected function executeActions(User $user, Badge $badge): void
     {
-        $actions = $badge->actions;
-
-        if (empty($actions)) {
+        // Validate stored/legacy configuration too; never cast arbitrary values into IDs.
+        $groupId = BadgeValidator::actionGroupId($badge->actions);
+        if ($groupId === null) {
             return;
         }
 
-        // Add user to group if specified
-        if (isset($actions['add_to_group']) && $actions['add_to_group']) {
-            $groupId = (int) $actions['add_to_group'];
-            $group = Group::find($groupId);
+        $group = Group::find($groupId);
 
-            if ($group && ! $user->groups->contains($groupId)) {
-                $user->groups()->attach($groupId);
-            }
+        if ($group && ! $user->groups->contains($groupId)) {
+            $user->groups()->attach($groupId);
+            $user->unsetRelation('groups');
         }
     }
 

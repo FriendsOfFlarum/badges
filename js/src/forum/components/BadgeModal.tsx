@@ -129,7 +129,7 @@ export default class BadgeModal extends Modal<BadgeModalAttrs> {
 
                 return (
                   <li className="BadgeModal-userItem" key={ub.id()}>
-                    <Link href={app.route('user', { username: user.username() })} className="BadgeModal-userLink">
+                    <Link href={app.route.user(user)} className="BadgeModal-userLink">
                       <Avatar user={user} />
                       <span className="BadgeModal-userName">{username(user)}</span>
                     </Link>

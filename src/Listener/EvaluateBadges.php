@@ -18,11 +18,12 @@ use Flarum\User\Event\AvatarChanged;
 use Flarum\User\Event\LoggedIn;
 use Flarum\User\User;
 use FoF\Badges\BadgeAwarder;
+use FoF\Badges\Trigger\MetricManager;
 use FoF\Badges\Trigger\TriggerEvaluator;
 
 class EvaluateBadges
 {
-    public function __construct(protected TriggerEvaluator $evaluator, protected BadgeAwarder $awarder)
+    public function __construct(protected TriggerEvaluator $evaluator, protected BadgeAwarder $awarder, protected MetricManager $metrics)
     {
     }
 
@@ -154,6 +155,29 @@ class EvaluateBadges
         // FoF Byobu - actor is the user who created the private discussion
         if ($this->isByobuCreatedEvent($event)) {
             return $event->actor;
+        }
+
+        // Any other event: ask the metrics registered for it, so an extension's
+        // own metric only has to listen its own event to this listener.
+        return $this->extractUserFromMetrics($event);
+    }
+
+    /**
+     * Extract the user with the extractors that metrics declare in getEventTriggers().
+     * The first metric whose extractor returns a user wins; the evaluator skips
+     * metrics whose extensions are disabled.
+     */
+    protected function extractUserFromMetrics(object $event): ?User
+    {
+        $eventClass = get_class($event);
+
+        foreach ($this->metrics->getTypesForEvent($eventClass) as $type) {
+            $extractor = $this->metrics->getUserExtractor($type, $eventClass);
+            $user = $extractor ? $extractor($event) : null;
+
+            if ($user instanceof User) {
+                return $user;
+            }
         }
 
         return null;

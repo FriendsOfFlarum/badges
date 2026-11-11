@@ -133,6 +133,10 @@ return [
                 ->get(fn () => (bool) resolve(ExtensionManager::class)->isEnabled('fof-reactions')),
             Schema\Boolean::make('gamificationExtensionEnabled')
                 ->get(fn () => (bool) resolve(ExtensionManager::class)->isEnabled('fof-gamification')),
+            // The metrics the trigger builder offers, including ones other extensions register.
+            Schema\Arr::make('badgeMetrics')
+                ->visible(fn ($model, Context $context) => $context->getActor()->can('administrate'))
+                ->get(fn () => resolve(\FoF\Badges\Trigger\MetricManager::class)->describeAvailable()),
             Schema\Boolean::make('badgeNewHighlightEnabled')
                 ->get(fn () => (bool) resolve('flarum.settings')->get('fof-badges.new_badge_highlight', true)),
             Schema\Str::make('primaryBadgeDisplay')

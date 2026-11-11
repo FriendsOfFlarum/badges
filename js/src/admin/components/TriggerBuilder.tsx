@@ -16,6 +16,13 @@ interface MetricOption {
   label: string;
 }
 
+interface ServerMetric {
+  type: string;
+  translationKey: string;
+  boolean: boolean;
+  configFields: unknown;
+}
+
 interface OperatorOption {
   value: string;
   label: string;
@@ -215,161 +222,17 @@ export default class TriggerBuilder extends Component<TriggerBuilderAttrs> {
     );
   }
 
+  /**
+   * The metrics registered on the server whose extensions are enabled, including
+   * ones other extensions register, in registration order.
+   */
   getAvailableMetrics(): MetricOption[] {
-    const metrics: MetricOption[] = [
-      {
-        value: 'post_count',
-        label: app.translator.trans('fof-badges.admin.metrics.post_count') as string,
-      },
-      {
-        value: 'discussion_count',
-        label: app.translator.trans('fof-badges.admin.metrics.discussion_count') as string,
-      },
-      {
-        value: 'edit_count',
-        label: app.translator.trans('fof-badges.admin.metrics.edit_count') as string,
-      },
-      {
-        value: 'member_days',
-        label: app.translator.trans('fof-badges.admin.metrics.member_days') as string,
-      },
-      {
-        value: 'has_avatar',
-        label: app.translator.trans('fof-badges.admin.metrics.has_avatar') as string,
-      },
-    ];
+    const metrics = app.forum.attribute<ServerMetric[]>('badgeMetrics') || [];
 
-    // Add has_bio metric if fof/user-bio is available
-    const userBioEnabled = app.forum.attribute<boolean>('userBioExtensionEnabled');
-
-    if (userBioEnabled) {
-      metrics.push({
-        value: 'has_bio',
-        label: app.translator.trans('fof-badges.admin.metrics.has_bio') as string,
-      });
-    }
-
-    // Add has_nickname metric if flarum/nicknames is available
-    const nicknamesEnabled = app.forum.attribute<boolean>('nicknamesExtensionEnabled');
-
-    if (nicknamesEnabled) {
-      metrics.push({
-        value: 'has_nickname',
-        label: app.translator.trans('fof-badges.admin.metrics.has_nickname') as string,
-      });
-    }
-
-    // Add likes metrics if flarum/likes is available
-    const likesEnabled = app.forum.attribute<boolean>('likesExtensionEnabled');
-
-    if (likesEnabled) {
-      metrics.push(
-        {
-          value: 'likes_received',
-          label: app.translator.trans('fof-badges.admin.metrics.likes_received') as string,
-        },
-        {
-          value: 'likes_given',
-          label: app.translator.trans('fof-badges.admin.metrics.likes_given') as string,
-        }
-      );
-    }
-
-    // Add tag metric if flarum/tags is available
-    if (app.store.models['tags']) {
-      metrics.push({
-        value: 'tag_posts',
-        label: app.translator.trans('fof-badges.admin.metrics.tag_posts') as string,
-      });
-    }
-
-    // Add best_answers_received metric if fof/best-answer is available
-    const bestAnswerEnabled = app.forum.attribute<boolean>('bestAnswerExtensionEnabled');
-
-    if (bestAnswerEnabled) {
-      metrics.push({
-        value: 'best_answers_received',
-        label: app.translator.trans('fof-badges.admin.metrics.best_answers_received') as string,
-      });
-    }
-
-    // Add files_uploaded metric if fof/upload is available
-    const uploadEnabled = app.forum.attribute<boolean>('uploadExtensionEnabled');
-
-    if (uploadEnabled) {
-      metrics.push({
-        value: 'files_uploaded',
-        label: app.translator.trans('fof-badges.admin.metrics.files_uploaded') as string,
-      });
-    }
-
-    // Add polls metrics if fof/polls is available
-    const pollsEnabled = app.forum.attribute<boolean>('pollsExtensionEnabled');
-
-    if (pollsEnabled) {
-      metrics.push(
-        {
-          value: 'polls_created',
-          label: app.translator.trans('fof-badges.admin.metrics.polls_created') as string,
-        },
-        {
-          value: 'polls_voted',
-          label: app.translator.trans('fof-badges.admin.metrics.polls_voted') as string,
-        }
-      );
-    }
-
-    // Add private discussions metric if fof/byobu is available
-    const byobuEnabled = app.forum.attribute<boolean>('byobuExtensionEnabled');
-
-    if (byobuEnabled) {
-      metrics.push({
-        value: 'private_discussions_created',
-        label: app.translator.trans('fof-badges.admin.metrics.private_discussions_created') as string,
-      });
-    }
-
-    // Add reactions metrics if fof/reactions is available
-    const reactionsEnabled = app.forum.attribute<boolean>('reactionsExtensionEnabled');
-
-    if (reactionsEnabled) {
-      metrics.push(
-        {
-          value: 'reactions_received',
-          label: app.translator.trans('fof-badges.admin.metrics.reactions_received') as string,
-        },
-        {
-          value: 'reactions_given',
-          label: app.translator.trans('fof-badges.admin.metrics.reactions_given') as string,
-        }
-      );
-    }
-
-    // Add gamification metrics if fof/gamification is available
-    const gamificationEnabled = app.forum.attribute<boolean>('gamificationExtensionEnabled');
-
-    if (gamificationEnabled) {
-      metrics.push(
-        {
-          value: 'upvotes_received',
-          label: app.translator.trans('fof-badges.admin.metrics.upvotes_received') as string,
-        },
-        {
-          value: 'upvotes_given',
-          label: app.translator.trans('fof-badges.admin.metrics.upvotes_given') as string,
-        },
-        {
-          value: 'downvotes_received',
-          label: app.translator.trans('fof-badges.admin.metrics.downvotes_received') as string,
-        },
-        {
-          value: 'downvotes_given',
-          label: app.translator.trans('fof-badges.admin.metrics.downvotes_given') as string,
-        }
-      );
-    }
-
-    return metrics;
+    return metrics.map((metric) => ({
+      value: metric.type,
+      label: app.translator.trans(metric.translationKey) as string,
+    }));
   }
 
   hasTagMetric(): boolean {

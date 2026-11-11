@@ -84,6 +84,31 @@ class MetricManager
     }
 
     /**
+     * Describe every available metric, in registration order, for the admin trigger builder.
+     *
+     * @return array<int, array{type: string, translationKey: string, boolean: bool, configFields: array}>
+     */
+    public function describeAvailable(): array
+    {
+        $described = [];
+
+        foreach ($this->metrics as $type => $metric) {
+            if (! $this->isAvailable($type)) {
+                continue;
+            }
+
+            $described[] = [
+                'type' => $type,
+                'translationKey' => $metric->getTranslationKey(),
+                'boolean' => $metric->isBoolean(),
+                'configFields' => $metric->getConfigFields(),
+            ];
+        }
+
+        return $described;
+    }
+
+    /**
      * Get metric types that are triggered by a specific event.
      *
      * @param string $eventClass The fully qualified event class name

@@ -29,12 +29,22 @@ class BadgeServiceProvider extends AbstractServiceProvider
         $this->container->singleton(MetricManager::class, function ($container) {
             $manager = new MetricManager($container->make(ExtensionManager::class));
 
+            // Registration order is the order the admin trigger builder lists them in.
+
             // Core metrics (no dependencies)
             $manager->register(new Metric\PostCountMetric());
             $manager->register(new Metric\DiscussionCountMetric());
+            $manager->register(new Metric\EditCountMetric());
             $manager->register(new Metric\MemberDaysMetric());
             $manager->register(new Metric\HasAvatarMetric());
-            $manager->register(new Metric\EditCountMetric());
+
+            // Bio metric (requires fof/user-bio)
+            // Registered unconditionally, isAvailable() checks if extension is enabled
+            $manager->register(new Metric\HasBioMetric());
+
+            // Nickname metric (requires flarum/nicknames)
+            // Registered unconditionally, isAvailable() checks if extension is enabled
+            $manager->register(new Metric\HasNicknameMetric());
 
             // Likes metrics (requires flarum/likes)
             if (class_exists(\Flarum\Likes\Event\PostWasLiked::class)) {
@@ -46,14 +56,6 @@ class BadgeServiceProvider extends AbstractServiceProvider
             if (class_exists(\Flarum\Tags\Tag::class)) {
                 $manager->register(new Metric\TagPostsMetric());
             }
-
-            // Bio metric (requires fof/user-bio)
-            // Registered unconditionally, isAvailable() checks if extension is enabled
-            $manager->register(new Metric\HasBioMetric());
-
-            // Nickname metric (requires flarum/nicknames)
-            // Registered unconditionally, isAvailable() checks if extension is enabled
-            $manager->register(new Metric\HasNicknameMetric());
 
             // Best Answer metric (requires fof/best-answer)
             // Registered unconditionally, isAvailable() checks if extension is enabled

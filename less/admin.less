@@ -1138,23 +1138,48 @@
 
   &-condition {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 10px;
     padding: 10px;
     background: var(--body-bg, var(--body-bg));
     border-radius: 6px;
 
+    // The selects size to their longest option, so let them shrink and cut
+    // the label off inside the select instead of pushing the row off screen.
     .Select {
-      min-width: 150px;
+      display: flex;
+      align-items: center;
+      flex: 1 1 150px;
+      min-width: 0;
+
+      select {
+        width: 100%;
+        min-width: 0;
+        text-overflow: ellipsis;
+      }
     }
 
-    .FormControl {
-      flex: 1;
+    .Button {
+      flex: none;
+    }
+
+    // On a phone the metric gets its own line, and the operator, value and
+    // remove button share the next one.
+    @media (max-width: 768px) {
+      .Select:first-child {
+        flex-basis: 100%;
+      }
+
+      .Select + .Select {
+        flex-basis: 0;
+      }
     }
   }
 
   &-value {
-    max-width: 100px;
+    flex: 0 0 80px;
+    min-width: 0;
   }
 
   &-logic {
